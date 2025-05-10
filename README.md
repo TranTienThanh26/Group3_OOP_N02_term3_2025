@@ -19,8 +19,13 @@ github id: dungpnk
 QUẢN LÝ NHÀ HÀNG
 
 #3.Đối tượng:
-ThucDon(MaMon,TenMon,Gia)
+ThucDon(MaMon,TenMon,LoaiMon,Gia)
 
-DonGoiMon(MaDon,SoBan,DanhSachMon)
+DonGoiMon(MaDon,SoBan,ThoiGianGoi,DanhSachMon)
 
-HoaDon(MaHoaDon,SoBan,TongTien)
+HoaDon(MaHoaDon,SoBan,ThoiGianIn,TongTien)
+
+BanAn(MaBan,SoBan,ViTri,TrangThai)
+
+NhanVien(MaNV,TenNV,ChucVu,SĐT)
+
