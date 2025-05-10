@@ -31,13 +31,14 @@ BanAn(MaBan,SoBan,ViTri,TrangThai)
 
 
 #QUẢN LÝ NHÀ HÀNG
+
 class ThucDon{
   private String maMon;
     private String tenMon;
     private String loaiMon;
     private double gia;
   
-  class DonGoiMon
+class DonGoiMon
     private String maDon;
     private int soBan;
     private String thoiGianGoi;
