@@ -28,5 +28,31 @@ HoaDon(MaHoaDon,SoBan,ThoiGianIn,TongTien)
 
 BanAn(MaBan,SoBan,ViTri,TrangThai)
 
-NhanVien(MaNV,TenNV,ChucVu,SĐT)
+
+
+#QUẢN LÝ NHÀ HÀNG
+class ThucDon{
+  private String maMon;
+    private String tenMon;
+    private String loaiMon;
+    private double gia;
+  
+  class DonGoiMon
+    private String maDon;
+    private int soBan;
+    private String thoiGianGoi;
+    private Map<String, Integer> danhSachMon; 
+
+  public class HoaDon {
+    private String maHoaDon;
+    private int soBan;
+    private String thoiGianIn;
+    private double tongTien;
+
+  public class BanAn {
+    private String maBan;
+    private int soBan;
+    private String viTri;
+    private String trangThai;
+
 
