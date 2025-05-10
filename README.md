@@ -2,11 +2,18 @@
 OOP-Group-3
 
 #1.Thành viên:
+
 1.Vũ Thành Trung
+
+github id: thanhtrung2512
 
 2.Trần Tiến Thành
 
+github id: TranTienThanh26
+
 3.Nguyễn Văn Dũng
+
+github id: dungpnk
 
 #2.Tiêu đề:
 QUẢN LÝ NHÀ HÀNG
