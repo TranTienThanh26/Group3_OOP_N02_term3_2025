@@ -51,6 +51,7 @@ public class Ban {
     private String trangThai; // Ví dụ: Mới, Đã xác nhận, Đang chuẩn bị, Đã xong, Hủy
 
 public class HoaDon {
+
    private int idHoaDon;
    private int idBan;
    private int tienMonAn;
