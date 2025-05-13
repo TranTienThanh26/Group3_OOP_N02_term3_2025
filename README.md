@@ -20,40 +20,41 @@ QUẢN LÝ NHÀ HÀNG
 
 #3.Đối tượng:
 
-ThucDon(MaMon,TenMon,LoaiMon,Gia)
-
-DonGoiMon(MaDon,SoBan,ThoiGianGoi,DanhSachMon)
-
-HoaDon(MaHoaDon,SoBan,ThoiGianIn,TongTien)
-
-BanAn(MaBan,SoBan,ViTri,TrangThai)
-
-
+MonAn(maMonAn,tenMonAn,donGia,loaiMonAn,trangThai)
+BanAn(MaBan,TenBan,trangthai)
+DonGoiMon(maDon,maBan,maKH,thoiGianGoi,trangThai)
+HoaDon(idHoaDon,idBan,tienMonAn,tongtien)
 
 #QUẢN LÝ NHÀ HÀNG
 
-class ThucDon{
-  private String maMon;
-    private String tenMon;
-    private String loaiMon;
+public class MonAn {
+
+    private int maMonAn;
+    private String tenMonAn;  // Tên món ăn
+    private int donGia;     // Đơn giá
+    private String loaiMonAn;   // Loại món ăn (ví dụ: Khai vị, Món chính, Tráng miệng)
+    private String trangThai;;
     private double gia;
   
-class DonGoiMon
-    private String maDon;
-    private int soBan;
+public class Ban {
+
+    private int maBan;     // Mã bàn
+    private String tenBan;   // Tên bàn
+    private String trangThai; // Trạng thái bàn (Ví dụ: Trống, Đã đặt, Đang phục vụ)
+
+ public class DonGoiMon {
+
+    private int maDon;
+    private int maBan;
+    private int maKH;
     private String thoiGianGoi;
-    private Map<String, Integer> danhSachMon; 
+    private String trangThai; // Ví dụ: Mới, Đã xác nhận, Đang chuẩn bị, Đã xong, Hủy
 
-  public class HoaDon {
-    private String maHoaDon;
-    private int soBan;
-    private String thoiGianIn;
-    private double tongTien;
-
-  public class BanAn {
-    private String maBan;
-    private int soBan;
-    private String viTri;
-    private String trangThai;
+public class HoaDon{
+   private int idHoaDon;
+   private int idBan;
+   private int tienMonAn;
+   private int tongtien;
+    
 
 
