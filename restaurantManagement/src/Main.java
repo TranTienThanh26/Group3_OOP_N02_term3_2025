@@ -6,6 +6,6 @@ public class Main {
         testBan.main(new String[]{}); // Gọi main của TestModelBan với một mảng String rỗng
         testDonGoiMon.main(new String[]{}); // Gọi main của TestDonGoiMon với một mảng String rỗng
         testHoaDon.main(new String[]{}); // Gọi main của TestHoaDon với một mảng String rỗng
-
+        testNhanVien.main(new String[]{}); //
     }
 }
