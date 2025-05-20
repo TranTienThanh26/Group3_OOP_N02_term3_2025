@@ -88,3 +88,4 @@ public class HoaDon {
 
 ![Sequence Diagram](trung.png)
 ![Sequence Diagram](trungdep.png)
+![Sequence Diagram](thanhdep.png)
