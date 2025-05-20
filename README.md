@@ -86,5 +86,5 @@ public class HoaDon {
 
 - Sinh viên có thể thêm các chức năng vào chương trình để ứng dụng phong phú hơn bằng cách thêm các nghiệp vụ cho bài toán (tùy chọn)
 
-![Sequence Diagram](sodo.png)
+![Sequence Diagram](trung.png)
 
