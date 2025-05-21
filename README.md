@@ -24,12 +24,15 @@ QUẢN LÝ NHÀ HÀNG
 
 MonAn(maMonAn,tenMonAn,donGia,loaiMonAn,trangThai)
 
-BanAn(MaBan,TenBan,trangthai)
+Ban(MaBan,TenBan,trangthai)
 
 DonGoiMon(maDon,maBan,maKH,thoiGianGoi,trangThai)
 
-HoaDon(idHoaDon,idBan,tienMonAn,tongtien)
+HoaDon(idHoaDon,idKH,idBan,ngayHD,tienMonAn,code_voucher,tienGiam,tongtien,trangThai)
 
+KhachHang(maKhachHang,ten,ngayThamGia,doanhSo,diem)
+
+NhanVien(id_NV,tenNV,ngayVL,sdt,chucvu,id_NQL,tinhTrang)
 
 #QUẢN LÝ NHÀ HÀNG
 
@@ -58,16 +61,34 @@ public class Ban {
 
 public class HoaDon {
 
-   private int idHoaDon;
+    private int idHoaDon;
     private int idKH;
     private int idBan;
     private String ngayHD;
     private int tienMonAn;
     private String code_voucher;
     private int tienGiam;
-    private int tongtien;
-    private String trangthai;
+    private int tongTien;
+    private String trangThai;
 
+public class KhachHang {
+
+    private int maKhachHang;
+    private String ten;
+    private String ngayThamGia;
+    private int doanhSo;
+    private int diem;
+
+public class NhanVien {
+
+    private int id_NV;
+    private String tenNV;
+    private String ngayVL;
+    private String sdt;
+    private String chucvu;
+    private int id_NQL;
+    private String tinhTrang;
+}    
     
 #Yêu cầu:
 
@@ -99,6 +120,6 @@ public class HoaDon {
 ![Sequence Diagram](SequenceDiagram.png)
 
 1.2: UML Class Diagram :
-![Sequence Diagram](ClassDiagram.png)
+![Class Diagram](ClassDiagram.png)
 
-![Sequence Diagram](ActivityDiagram.png).
+![Activity Diagram](ActivityDiagram.png).
