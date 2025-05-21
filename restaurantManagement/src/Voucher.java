@@ -1,6 +1,5 @@
 public class Voucher {
 
-    
     // Các thuộc tính
     private String ma;           // Mã
     private String moTa;         // Mô tả
@@ -72,6 +71,4 @@ public class Voucher {
         this.diemDoi = diemDoi;
     }
 
-
 }
-
