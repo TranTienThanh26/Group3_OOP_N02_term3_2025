@@ -96,9 +96,9 @@ public class HoaDon {
 - Sinh viên có thể thêm các chức năng vào chương trình để ứng dụng phong phú hơn bằng cách thêm các nghiệp vụ cho bài toán (tùy chọn)
 
 1.1: UML Sequence Diagram :
-![Sequence Diagram](trung.png)
+![Sequence Diagram](SequenceDiagram.png)
 
 1.2: UML Class Diagram :
-![Sequence Diagram](trungdep.png)
+![Sequence Diagram](ClassDiagram.png)
 
-![Sequence Diagram](thanh.png)
+![Sequence Diagram](ActivityDiagram.png).
