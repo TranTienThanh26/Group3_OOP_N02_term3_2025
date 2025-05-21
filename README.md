@@ -23,9 +23,13 @@ QUẢN LÝ NHÀ HÀNG
 #3.Đối tượng:
 
 MonAn(maMonAn,tenMonAn,donGia,loaiMonAn,trangThai)
+
 BanAn(MaBan,TenBan,trangthai)
+
 DonGoiMon(maDon,maBan,maKH,thoiGianGoi,trangThai)
+
 HoaDon(idHoaDon,idBan,tienMonAn,tongtien)
+
 
 #QUẢN LÝ NHÀ HÀNG
 
@@ -55,9 +59,14 @@ public class Ban {
 public class HoaDon {
 
    private int idHoaDon;
-   private int idBan;
-   private int tienMonAn;
-   private int tongtien;
+    private int idKH;
+    private int idBan;
+    private String ngayHD;
+    private int tienMonAn;
+    private String code_voucher;
+    private int tienGiam;
+    private int tongtien;
+    private String trangthai;
 
     
 #Yêu cầu:
@@ -86,6 +95,10 @@ public class HoaDon {
 
 - Sinh viên có thể thêm các chức năng vào chương trình để ứng dụng phong phú hơn bằng cách thêm các nghiệp vụ cho bài toán (tùy chọn)
 
+1.1: UML Sequence Diagram :
 ![Sequence Diagram](trung.png)
+
+1.2: UML Class Diagram :
 ![Sequence Diagram](trungdep.png)
+
 ![Sequence Diagram](thanh.png)
