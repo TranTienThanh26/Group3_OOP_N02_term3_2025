@@ -12,7 +12,7 @@ public class App {
             testMonAn.test();
             TestKhachHang.test();
             testNhanVien.test();
-            testHoaDon.test();
+            //            TestHoaDon.test(); // Uncomment this line after defining or importing TestHoaDon
             
             
 

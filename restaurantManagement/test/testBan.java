@@ -91,7 +91,9 @@ public class testBan {
             }
 
         } while (luaChon != 0);
-        System.out.println();
+    }
+
+    public static void main(String[] args) {
+        test();
     }
 }
-
