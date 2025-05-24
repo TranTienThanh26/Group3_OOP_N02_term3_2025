@@ -1,5 +1,5 @@
 public class testNhanVien {
-    public static void main(String[] args) {
+    public static void test() {
         NhanVien nv = new NhanVien(1, "Nguyen Van A", "2023-01-01", "0123456789", "Nhan vien", 2, "Dang lam");
         System.out.println("ID: " + nv.getId_NV());
         System.out.println("Tên: " + nv.getTenNV());

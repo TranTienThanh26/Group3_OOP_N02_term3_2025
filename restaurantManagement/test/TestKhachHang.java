@@ -1,5 +1,5 @@
 public class TestKhachHang {
-    public static void main(String[] args) {
+    public static void test() {
      
         KhachHang khach1 = new KhachHang(101, "Nguyễn Văn A", "2023-10-01", 5000000, 150);
 

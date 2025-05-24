@@ -1,8 +1,5 @@
 public class testBan {
-    public static void main(String[] args) {
-        test();
-    }
-
+   
     public static void test() {
         Ban ban = new Ban(1, "Bàn 1", "Trống");
         System.out.println("Mã bàn: " + ban.getMaBan());

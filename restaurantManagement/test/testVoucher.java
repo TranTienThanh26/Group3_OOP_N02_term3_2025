@@ -1,5 +1,5 @@
 public class testVoucher {
-    public static void main(String[] args) {
+    public static void test() {
         // Tạo đối tượng Voucher
         Voucher voucher = new Voucher();
 

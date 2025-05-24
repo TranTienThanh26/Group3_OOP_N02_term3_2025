@@ -1,8 +1,5 @@
 public class testMonAn {
-    public static void main(String[] args) {
-        test();
-    }
-
+   
     public static void test() {
         MonAn mon = new MonAn(1, "Cơm Gà", 45000, "Chính", "Đang bán");
         System.out.println("Mã món ăn: " + mon.getMaMonAn());
