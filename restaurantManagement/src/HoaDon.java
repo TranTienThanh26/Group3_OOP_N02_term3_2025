@@ -76,6 +76,6 @@ public class HoaDon {
     private int tienMonAn;
     private String code_voucher;
     private int tienGiam;
-    private int tongtien;
+    public int tongtien;
     public String trangthai;
 }

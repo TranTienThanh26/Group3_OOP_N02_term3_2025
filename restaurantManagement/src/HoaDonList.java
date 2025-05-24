@@ -11,14 +11,14 @@ public class HoaDonList {
 
     }
 
-    public void inDanhSach( ArrayList<HoaDon> danhsachHoaDon){
+    public void inDanhSach( ){
 
 
-       for (int i =0; i < danhsachHoaDon.size(); i++)
+       for (int i = 0; i < danhsachHoaDon.size(); i++)
        {
 
         System.out.println(danhsachHoaDon.get(i).idHoaDon);
-        System.out.println(danhsachHoaDon.get(i).trangthai);
+        System.out.println(danhsachHoaDon.get(i).tongtien);
 
 
        }
