@@ -5,9 +5,17 @@ public class App {
 
 
         System.out.println("Restaurant Managment!");
-
-            testHoaDon.test();
+            
+            // Ensure testKhachHang is defined or imported
+            
+            testMonAn.test();
             testBan.test();
+            TestKhachHang.test();
+            testNhanVien.test();
+            testHoaDon.test();
+            
+            
+
 
 
     }
