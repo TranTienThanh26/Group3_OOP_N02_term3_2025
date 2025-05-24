@@ -10,8 +10,13 @@ public class testHoaDon {
         System.out.println("Trạng Thái: " + hd.getTrangthai());
 
         HoaDonList dshoadon = new HoaDonList();
+
         dshoadon.themHoaDon(hd);
-        
+
+        dshoadon.inDanhSach(hd);
+
 
 }
+
+
 }

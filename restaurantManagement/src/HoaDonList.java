@@ -11,6 +11,21 @@ public class HoaDonList {
 
     }
 
+    public void inDanhSach( ArrayList<HoaDon> danhsachHoaDon){
+
+
+       for (int i =0; i < danhsachHoaDon.size(); i++)
+       {
+
+        System.out.println(danhsachHoaDon.get(i).idHoaDon);
+        System.out.println(danhsachHoaDon.get(i).trangthai);
+
+
+       }
+
+      
+    }
+
 
 
 
