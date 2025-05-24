@@ -7,7 +7,7 @@ public class App {
         System.out.println("Restaurant Managment!");
 
             testHoaDon.test();
-            
+            testBan.test();
 
 
     }

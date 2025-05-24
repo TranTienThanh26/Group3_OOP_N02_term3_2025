@@ -7,5 +7,6 @@ public class testDonGoiMon {
         System.out.println("Mã đơn: " + don.getMaDon());
         System.out.println("Mã bàn: " + don.getMaBan());
         System.out.println("Trạng thái: " + don.getTrangThai());
+
     }
 }
