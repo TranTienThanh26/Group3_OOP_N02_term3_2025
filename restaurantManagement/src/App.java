@@ -8,8 +8,8 @@ public class App {
             
             // Ensure testKhachHang is defined or imported
             
-            testMonAn.test();
             testBan.test();
+            testMonAn.test();
             TestKhachHang.test();
             testNhanVien.test();
             testHoaDon.test();
