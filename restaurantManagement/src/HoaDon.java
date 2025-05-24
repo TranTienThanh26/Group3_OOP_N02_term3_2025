@@ -39,7 +39,7 @@ public class HoaDon {
     public HoaDon() {
     }
 
-    public HoaDon(int idHoaDon, int idKH, int idBan, String ngayHD, int tienMonAn, int tienGiam, int tongtien){
+    public HoaDon(int idHoaDon, int idKH, int idBan, String ngayHD, int tienMonAn, int tienGiam, int tongtien) {
         this.idHoaDon = idHoaDon;
         this.idKH = idKH;
         this.idBan = idBan;
@@ -48,8 +48,9 @@ public class HoaDon {
         this.tienGiam = tienGiam;
         this.tongtien = tongtien;
     }
-    
-    public HoaDon(int idHoaDon, int idKH, int idBan, String ngayHD, int tienMonAn, String code_voucher, int tienGiam, int tongtien, String trangthai) {
+
+    public HoaDon(int idHoaDon, int idKH, int idBan, String ngayHD, int tienMonAn, String code_voucher, int tienGiam,
+            int tongtien, String trangthai) {
         this.idHoaDon = idHoaDon;
         this.idKH = idKH;
         this.idBan = idBan;
@@ -60,9 +61,15 @@ public class HoaDon {
         this.tongtien = tongtien;
         this.trangthai = trangthai;
     }
-    
-    
-    
+
+     public HoaDon(int idHoaDon,  String trangthai){
+
+        this.idHoaDon = idHoaDon;
+        this.trangthai = trangthai;
+
+
+    }
+
     private int idHoaDon;
     private int idKH;
     private int idBan;
