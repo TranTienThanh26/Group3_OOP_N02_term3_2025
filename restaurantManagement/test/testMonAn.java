@@ -103,7 +103,4 @@ public class testMonAn {
         } while (luaChon != 5);
 
     }
-    public static void main(String[] args) {
-        test();
-}
 }
