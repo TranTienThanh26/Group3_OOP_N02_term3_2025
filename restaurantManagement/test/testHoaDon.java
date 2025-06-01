@@ -7,114 +7,139 @@ public class testHoaDon {
     static Scanner scanner = new Scanner(System.in);
 
     public static void hienThiDanhSach() {
-        System.out.println("\n--- DANH SACH HOA DON ---");
+        System.out.println("\n--- DANH SÁCH HÓA ĐƠN ---");
+        if (danhSachHoaDon.isEmpty()) {
+            System.out.println("Danh sách hóa đơn trống.");
+            return;
+        }
         for (HoaDon hd : danhSachHoaDon) {
-            System.out.println("ID Hoa Don: " + hd.getIdHoaDon());
-            System.out.println("ID Khach Hang: " + hd.getIdKH());
-            System.out.println("ID Ban: " + hd.getIdBan());
-            System.out.println("Ngay Hoa Don: " + hd.getNgayHD());
-            System.out.println("Tien Mon An: " + hd.getTienMonAn());
-            System.out.println("Code Voucher: " + hd.getCode_voucher());
-            System.out.println("Tien Giam: " + hd.getTienGiam());
-            System.out.println("Tong Tien: " + hd.getTongtien());
-            System.out.println("Trang Thai: " + hd.getTrangthai());
-            System.out.println();
+            System.out.println("ID Hóa Đơn: " + hd.getIdHoaDon());
+            System.out.println("ID Khách Hàng: " + hd.getIdKH());
+            System.out.println("ID Bàn: " + hd.getIdBan());
+            System.out.println("Ngày Hóa Đơn: " + hd.getNgayHD());
+            System.out.println("Tiền Món Ăn: " + hd.getTienMonAn());
+            System.out.println("Tổng Tiền: " + hd.getTongtien());
+            System.out.println("Trạng Thái: " + hd.getTrangthai());
+            System.out.println("-------------------------");
         }
     }
 
     public static void themHoaDon() {
-        System.out.print("Nhap ID Hoa Don: ");
-        int idHoaDon = scanner.nextInt(); scanner.nextLine();
+        System.out.print("Nhập ID Hóa Đơn: ");
+        int idHoaDon = scanner.nextInt();
+        scanner.nextLine(); // Đọc bỏ ký tự xuống dòng
 
-        System.out.print("Nhap ID Khach Hang: ");
-        int idKH = scanner.nextInt(); scanner.nextLine();
+        System.out.print("Nhập ID Khách Hàng: ");
+        int idKH = scanner.nextInt();
+        scanner.nextLine();
 
-        System.out.print("Nhap ID Ban: ");
-        int idBan = scanner.nextInt(); scanner.nextLine();
+        System.out.print("Nhập ID Bàn: ");
+        int idBan = scanner.nextInt();
+        scanner.nextLine();
 
-        System.out.print("Nhap Ngay Hoa Don (yyyy-mm-dd): ");
+        System.out.print("Nhập Ngày Hóa Đơn (yyyy-mm-dd): ");
         String ngayHD = scanner.nextLine();
 
-        System.out.print("Nhap Tien Mon An: ");
-        int tienMonAn = scanner.nextInt(); scanner.nextLine();
+        System.out.print("Nhập Tiền Món Ăn: ");
+        int tienMonAn = scanner.nextInt();
+        scanner.nextLine();
 
-        System.out.print("Nhap Code Voucher (neu co): ");
-        String codeVoucher = scanner.nextLine();
+        // Loại bỏ nhập Code Voucher và Tien Giảm
 
-        System.out.print("Nhap Tien Giam: ");
-        int tienGiam = scanner.nextInt(); scanner.nextLine();
+        System.out.print("Nhập Tổng Tiền: ");
+        int tongTien = scanner.nextInt();
+        scanner.nextLine();
 
-        System.out.print("Nhap Tong Tien: ");
-        int tongTien = scanner.nextInt(); scanner.nextLine();
-
-        System.out.print("Nhap Trang Thai: ");
+        System.out.print("Nhập Trạng Thái: ");
         String trangThai = scanner.nextLine();
 
-        HoaDon hoaDon = new HoaDon(idHoaDon, idKH, idBan, ngayHD, tienMonAn, codeVoucher, tienGiam, tongTien, trangThai);
+        // Sử dụng constructor phù hợp với lớp HoaDon hiện tại của bạn
+        HoaDon hoaDon = new HoaDon(idHoaDon, idKH, idBan, ngayHD, tienMonAn, tongTien, trangThai);
         danhSachHoaDon.add(hoaDon);
 
-        System.out.println("Da them hoa don moi!");
+        System.out.println("Đã thêm hóa đơn mới!");
     }
 
     public static void suaHoaDon() {
-        System.out.print("Nhap ID Hoa Don can sua: ");
-        int idHoaDon = scanner.nextInt(); scanner.nextLine();
+        System.out.print("Nhập ID Hóa Đơn cần sửa: ");
+        int idHoaDon = scanner.nextInt();
+        scanner.nextLine();
 
+        boolean timThay = false;
         for (HoaDon hd : danhSachHoaDon) {
             if (hd.getIdHoaDon() == idHoaDon) {
-                System.out.print("Nhap Trang Thai moi: ");
+                System.out.print("Nhập Trạng Thái mới: ");
                 String trangThai = scanner.nextLine();
-                hd.trangthai = trangThai;
-                System.out.println("Da cap nhat hoa don.");
-                return;
+                hd.setTrangthai(trangThai); // Sử dụng setter để cập nhật trạng thái
+                System.out.println("Đã cập nhật hóa đơn.");
+                timThay = true;
+                break;
             }
         }
-        System.out.println("Khong tim thay hoa don.");
+        if (!timThay) {
+            System.out.println("Không tìm thấy hóa đơn có ID " + idHoaDon + ".");
+        }
     }
 
     public static void xoaHoaDon() {
-        System.out.print("Nhap ID Hoa Don can xoa: ");
-        int idHoaDon = scanner.nextInt(); scanner.nextLine();
+        System.out.print("Nhập ID Hóa Đơn cần xóa: ");
+        int idHoaDon = scanner.nextInt();
+        scanner.nextLine();
 
+        boolean daXoa = false;
         for (int i = 0; i < danhSachHoaDon.size(); i++) {
             if (danhSachHoaDon.get(i).getIdHoaDon() == idHoaDon) {
                 danhSachHoaDon.remove(i);
-                System.out.println("Da xoa hoa don.");
-                return;
+                System.out.println("Đã xóa hóa đơn có ID " + idHoaDon + ".");
+                daXoa = true;
+                break; // Quan trọng: Thoát ngay sau khi xóa để tránh lỗi chỉ mục
             }
         }
-        System.out.println("Khong tim thay hoa don.");
+        if (!daXoa) {
+            System.out.println("Không tìm thấy hóa đơn có ID " + idHoaDon + " để xóa.");
+        }
     }
 
     public static void test() {
-        // Khoi tao san vai hoa don
-        danhSachHoaDon.add(new HoaDon(1, 101, 1, "2025-05-20", 200000, "KM10", 20000, 180000, "Da thanh toan"));
-        danhSachHoaDon.add(new HoaDon(2, 102, 2, "2025-05-21", 150000, "", 0, 150000, "Cho thanh toan"));
-        danhSachHoaDon.add(new HoaDon(3, "Dang xu ly"));
+        // Khởi tạo sẵn vài hóa đơn với constructor phù hợp (không có code_voucher, tienGiam)
+        danhSachHoaDon.add(new HoaDon(1, 101, 1, "2025-05-20", 200000, 180000, "Đã thanh toán"));
+        danhSachHoaDon.add(new HoaDon(2, 102, 2, "2025-05-21", 150000, 150000, "Chờ thanh toán"));
+        danhSachHoaDon.add(new HoaDon(3, 303, 3, "2025-05-22", 50000, 50000, "Đang xử lý")); // Ví dụ thêm một hóa đơn đầy đủ
+        danhSachHoaDon.add(new HoaDon(4, "Đã hủy")); // Sử dụng constructor chỉ với ID và trạng thái
 
         int luaChon;
         do {
-            System.out.println("\n--- MENU HOA DON ---");
-            System.out.println("1. Hien thi danh sach hoa don");
-            System.out.println("2. Them hoa don");
-            System.out.println("3. Sua hoa don (cap nhat trang thai)");
-            System.out.println("4. Xoa hoa don");
-            System.out.println("0. Thoat");
-            System.out.print("Chon chuc nang: ");
-            luaChon = scanner.nextInt(); scanner.nextLine();
+            System.out.println("\n--- MENU HÓA ĐƠN ---");
+            System.out.println("1. Hiển thị danh sách hóa đơn");
+            System.out.println("2. Thêm hóa đơn");
+            System.out.println("3. Sửa hóa đơn (cập nhật trạng thái)");
+            System.out.println("4. Xóa hóa đơn");
+            System.out.println("0. Thoát");
+            System.out.print("Chọn chức năng: ");
+            luaChon = scanner.nextInt();
+            scanner.nextLine(); // Đọc bỏ ký tự xuống dòng sau khi đọc số nguyên
 
             switch (luaChon) {
-                case 1 -> hienThiDanhSach();
-                case 2 -> themHoaDon();
-                case 3 -> suaHoaDon();
-                case 4 -> xoaHoaDon();
-                case 0 -> System.out.println("Dang thoat chuong trinh.");
-                default -> System.out.println("Lua chon khong hop le.");
+                case 1:
+                    hienThiDanhSach();
+                    break;
+                case 2:
+                    themHoaDon();
+                    break;
+                case 3:
+                    suaHoaDon();
+                    break;
+                case 4:
+                    xoaHoaDon();
+                    break;
+                case 0:
+                    System.out.println("Đang thoát chương trình.");
+                    break;
+                default:
+                    System.out.println("Lựa chọn không hợp lệ. Vui lòng chọn lại.");
             }
         } while (luaChon != 0);
     }
 
-    public static void main(String[] args) {
-        test();
-    }
+   
 }

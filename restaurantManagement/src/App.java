@@ -7,11 +7,12 @@ public class App {
         System.out.println("Restaurant Managment!");
             
             // Ensure testKhachHang is defined or imported
-            
-            testBan.test();
-            testMonAn.test();
-            TestKhachHang.test();
-            testNhanVien.test();
+            Menu.showMenu();
+            ///testBan.test();
+            ///testMonAn.test();
+            ///TestKhachHang.test();
+            ///testNhanVien.test();
+            ///
             // TestHoaDon.test(); // Uncomment this line after defining or importing TestHoaDon
             
             

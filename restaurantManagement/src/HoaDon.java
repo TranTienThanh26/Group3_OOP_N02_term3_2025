@@ -4,78 +4,98 @@ public class HoaDon {
         return idHoaDon;
     }
 
+    // Setter cho idHoaDon
+    public void setIdHoaDon(int idHoaDon) {
+        this.idHoaDon = idHoaDon;
+    }
+
     public int getIdKH() {
         return idKH;
+    }
+
+    // Setter cho idKH
+    public void setIdKH(int idKH) {
+        this.idKH = idKH;
     }
 
     public int getIdBan() {
         return idBan;
     }
 
+    // Setter cho idBan
+    public void setIdBan(int idBan) {
+        this.idBan = idBan;
+    }
+
     public String getNgayHD() {
         return ngayHD;
+    }
+
+    // Setter cho ngayHD
+    public void setNgayHD(String ngayHD) {
+        this.ngayHD = ngayHD;
     }
 
     public int getTienMonAn() {
         return tienMonAn;
     }
 
-    public String getCode_voucher() {
-        return code_voucher;
-    }
-
-    public int getTienGiam() {
-        return tienGiam;
+    // Setter cho tienMonAn
+    public void setTienMonAn(int tienMonAn) {
+        this.tienMonAn = tienMonAn;
     }
 
     public int getTongtien() {
         return tongtien;
     }
 
+    // Setter cho tongtien
+    public void setTongtien(int tongtien) {
+        this.tongtien = tongtien;
+    }
+
     public String getTrangthai() {
         return trangthai;
+    }
+
+    // Setter cho trangthai
+    public void setTrangthai(String trangthai) {
+        this.trangthai = trangthai;
     }
 
     public HoaDon() {
     }
 
-    public HoaDon(int idHoaDon, int idKH, int idBan, String ngayHD, int tienMonAn, int tienGiam, int tongtien) {
+    public HoaDon(int idHoaDon, int idKH, int idBan, String ngayHD, int tienMonAn, int tongtien) {
         this.idHoaDon = idHoaDon;
         this.idKH = idKH;
         this.idBan = idBan;
         this.ngayHD = ngayHD;
         this.tienMonAn = tienMonAn;
-        this.tienGiam = tienGiam;
         this.tongtien = tongtien;
     }
 
-    public HoaDon(int idHoaDon, int idKH, int idBan, String ngayHD, int tienMonAn, String code_voucher, int tienGiam,
+    public HoaDon(int idHoaDon, int idKH, int idBan, String ngayHD, int tienMonAn,
             int tongtien, String trangthai) {
         this.idHoaDon = idHoaDon;
         this.idKH = idKH;
         this.idBan = idBan;
         this.ngayHD = ngayHD;
         this.tienMonAn = tienMonAn;
-        this.code_voucher = code_voucher;
-        this.tienGiam = tienGiam;
         this.tongtien = tongtien;
         this.trangthai = trangthai;
     }
 
-     public HoaDon(int idHoaDon,  String trangthai){
-
+     public HoaDon(int idHoaDon, String trangthai){
         this.idHoaDon = idHoaDon;
         this.trangthai = trangthai;
-
-
     }
+
     public int idHoaDon;
     private int idKH;
     private int idBan;
     private String ngayHD;
     private int tienMonAn;
-    private String code_voucher;
-    private int tienGiam;
     public int tongtien;
     public String trangthai;
 }

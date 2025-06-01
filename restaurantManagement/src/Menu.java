@@ -1,42 +1,59 @@
-
-import javax.swing.Icon;
+// File: Menu.java
+import java.util.InputMismatchException;
+import java.util.Scanner;
 
 public class Menu {
+    private static Scanner sc = new Scanner(System.in);
 
-    public Icon getIcon() {
-        return icon;
+    public static void showMenu() {
+        testMonAn.khoiTaoDuLieuMau(); // Khởi tạo dữ liệu mẫu khi chương trình bắt đầu
+
+        int choice;
+
+        while (true) {
+            System.out.println("\n========= MENU CHÍNH NHÀ HÀNG =========");
+            System.out.println("1. Hiển thị danh sách món ăn hôm nayMón Ăn (Thêm/Sửa/Xóa)"); // Cập nhật mô tả: bỏ "Tìm kiếm"
+            System.out.println("2. Hiển thị Top 5 món ăn Best SellerBàn Ăn");
+            System.out.println("3. Món Ăn (Thêm/Sửa/Xóa)");
+            System.out.println("4. Bàn Ăn (Thêm/Sửa/Xóa)");
+            System.out.println("5. Hóa Đơn (Thêm/Sửa/Xóa)");
+            System.out.println("0. Thoát");
+            System.out.print("👉 Chọn chức năng: ");
+
+            try {
+                choice = sc.nextInt();
+                sc.nextLine(); // Đọc bỏ ký tự xuống dòng
+            } catch (InputMismatchException e) {
+                System.out.println("⚠️ Lựa chọn không hợp lệ. Vui lòng nhập một số.");
+                sc.nextLine(); // Đọc bỏ dòng nhập lỗi
+                continue; // Tiếp tục vòng lặp để yêu cầu nhập lại
+            }
+
+            switch (choice) {
+                case 1:
+                testMonAn.hienThiDanhSachChiTiet(); // Hiển thị danh sách chi tiết món ăn
+                break;
+                case 2:
+                testMonAn.hienThiTop5BestSeller(); // Hiển thị top 5 món best seller
+                break;
+                case 3:
+                testMonAn.test(); // Gọi menu con của quản lý món ăn
+                break;
+                case 4:
+                testBan.test(); // Nếu có lớp testBan, sẽ gọi ở đây
+                break;
+                case 5:
+                testHoaDon.test(); // Nếu có lớp testHoaDon, sẽ gọi ở đây
+                break;
+                case 0:
+                    System.out.println("👋 Thoát chương trình. Tạm biệt!");
+                    sc.close(); // Đóng scanner trước khi thoát
+                    return; // Thoát khỏi phương thức showMenu
+                default:
+                    System.out.println("⚠️ Vui lòng chọn đúng từ 0 đến 4."); // Cập nhật dải lựa chọn
+            }
+        }
     }
 
-    public void setIcon(Icon icon) {
-        this.icon = icon;
+    
     }
-
-    public String getMenuName() {
-        return menuName;
-    }
-
-    public void setMenuName(String menuName) {
-        this.menuName = menuName;
-    }
-
-    public String[] getSubMenu() {
-        return subMenu;
-    }
-
-    public void setSubMenu(String[] subMenu) {
-        this.subMenu = subMenu;
-    }
-
-    public Menu(Icon icon, String menuName, String... subMenu) {
-        this.icon = icon;
-        this.menuName = menuName;
-        this.subMenu = subMenu;
-    }
-
-    public Menu() {
-    }
-
-    private Icon icon;
-    private String menuName;
-    private String subMenu[];
-}
