@@ -122,4 +122,4 @@ public class NhanVien {
 1.2: UML Class Diagram :
 ![Class Diagram](ClassDiagram.png)
 
-![Activity Diagram](ActivityDiagram.png).
+![Activity Diagram](ActivityDiagramm.png).
