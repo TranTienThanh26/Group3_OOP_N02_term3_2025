@@ -27,7 +27,7 @@ public class testHoaDon {
     public static void themHoaDon() {
         System.out.print("Nhập ID Hóa Đơn: ");
         int idHoaDon = scanner.nextInt();
-        scanner.nextLine(); // Đọc bỏ ký tự xuống dòng
+        scanner.nextLine();
 
         System.out.print("Nhập ID Khách Hàng: ");
         int idKH = scanner.nextInt();
@@ -44,8 +44,6 @@ public class testHoaDon {
         int tienMonAn = scanner.nextInt();
         scanner.nextLine();
 
-        // Loại bỏ nhập Code Voucher và Tien Giảm
-
         System.out.print("Nhập Tổng Tiền: ");
         int tongTien = scanner.nextInt();
         scanner.nextLine();
@@ -53,7 +51,6 @@ public class testHoaDon {
         System.out.print("Nhập Trạng Thái: ");
         String trangThai = scanner.nextLine();
 
-        // Sử dụng constructor phù hợp với lớp HoaDon hiện tại của bạn
         HoaDon hoaDon = new HoaDon(idHoaDon, idKH, idBan, ngayHD, tienMonAn, tongTien, trangThai);
         danhSachHoaDon.add(hoaDon);
 
@@ -70,7 +67,7 @@ public class testHoaDon {
             if (hd.getIdHoaDon() == idHoaDon) {
                 System.out.print("Nhập Trạng Thái mới: ");
                 String trangThai = scanner.nextLine();
-                hd.setTrangthai(trangThai); // Sử dụng setter để cập nhật trạng thái
+                hd.setTrangthai(trangThai);
                 System.out.println("Đã cập nhật hóa đơn.");
                 timThay = true;
                 break;
@@ -92,7 +89,7 @@ public class testHoaDon {
                 danhSachHoaDon.remove(i);
                 System.out.println("Đã xóa hóa đơn có ID " + idHoaDon + ".");
                 daXoa = true;
-                break; // Quan trọng: Thoát ngay sau khi xóa để tránh lỗi chỉ mục
+                break;
             }
         }
         if (!daXoa) {
@@ -100,13 +97,28 @@ public class testHoaDon {
         }
     }
 
-    public static void test() {
-        // Khởi tạo sẵn vài hóa đơn với constructor phù hợp (không có code_voucher, tienGiam)
+    public static void tinhTongDoanhThu() {
+        long tongDoanhThu = 0;
+        for (HoaDon hd : danhSachHoaDon) {
+            if ("Đã thanh toán".equalsIgnoreCase(hd.getTrangthai())) {
+                tongDoanhThu += hd.getTongtien();
+            }
+        }
+        System.out.println("\n--- TỔNG DOANH THU ---");
+        System.out.println("Tổng doanh thu từ các hóa đơn đã thanh toán: " + tongDoanhThu + " VND");
+    }
+ // Phương thức mới để khởi tạo dữ liệu mẫu cho hóa đơn
+ public static void khoiTaoDuLieuMauHoaDon() {
+    if (danhSachHoaDon.isEmpty()) { // Chỉ khởi tạo nếu danh sách đang trống
         danhSachHoaDon.add(new HoaDon(1, 101, 1, "2025-05-20", 200000, 180000, "Đã thanh toán"));
         danhSachHoaDon.add(new HoaDon(2, 102, 2, "2025-05-21", 150000, 150000, "Chờ thanh toán"));
-        danhSachHoaDon.add(new HoaDon(3, 303, 3, "2025-05-22", 50000, 50000, "Đang xử lý")); // Ví dụ thêm một hóa đơn đầy đủ
-        danhSachHoaDon.add(new HoaDon(4, "Đã hủy")); // Sử dụng constructor chỉ với ID và trạng thái
-
+        danhSachHoaDon.add(new HoaDon(3, 303, 3, "2025-05-22", 50000, 50000, "Đang xử lý"));
+        danhSachHoaDon.add(new HoaDon(4, 104, 4, "2025-05-23", 100000, 100000, "Đã thanh toán"));
+        System.out.println("Đã khởi tạo dữ liệu hóa đơn mẫu.");
+    }
+}
+ public static void test() {
+        
         int luaChon;
         do {
             System.out.println("\n--- MENU HÓA ĐƠN ---");
@@ -114,10 +126,11 @@ public class testHoaDon {
             System.out.println("2. Thêm hóa đơn");
             System.out.println("3. Sửa hóa đơn (cập nhật trạng thái)");
             System.out.println("4. Xóa hóa đơn");
+            System.out.println("5. Tính tổng doanh thu");
             System.out.println("0. Thoát");
             System.out.print("Chọn chức năng: ");
             luaChon = scanner.nextInt();
-            scanner.nextLine(); // Đọc bỏ ký tự xuống dòng sau khi đọc số nguyên
+            scanner.nextLine();
 
             switch (luaChon) {
                 case 1:
@@ -132,6 +145,9 @@ public class testHoaDon {
                 case 4:
                     xoaHoaDon();
                     break;
+                case 5:
+                    tinhTongDoanhThu();
+                    break;
                 case 0:
                     System.out.println("Đang thoát chương trình.");
                     break;
@@ -140,6 +156,4 @@ public class testHoaDon {
             }
         } while (luaChon != 0);
     }
-
-   
 }
