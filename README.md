@@ -117,9 +117,9 @@ public class NhanVien {
 - Sinh viên có thể thêm các chức năng vào chương trình để ứng dụng phong phú hơn bằng cách thêm các nghiệp vụ cho bài toán (tùy chọn)
 
 1.1: UML Sequence Diagram :
-![Sequence Diagram](SequenceDiagramm.png)
+![Sequence Diagram](SequenceDiagram.png)
 
 1.2: UML Class Diagram :
 ![Class Diagram](ClassDiagram.png)
 
-![Activity Diagram](ActivityDiagramm.png).
+![Activity Diagram](ActivityDiagram.png).
