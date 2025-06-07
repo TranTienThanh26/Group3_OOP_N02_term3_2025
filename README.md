@@ -117,9 +117,13 @@ public class NhanVien {
 - Sinh viên có thể thêm các chức năng vào chương trình để ứng dụng phong phú hơn bằng cách thêm các nghiệp vụ cho bài toán (tùy chọn)
 
 1.1: UML Sequence Diagram :
-![Sequence Diagram](SequenceDiagram.png)
+![Sequence Diagram](SequenceDiagram.png) 
 
 1.2: UML Class Diagram :
 ![Class Diagram](ClassDiagram.png)
 
 ![Activity Diagram](ActivityDiagram.png).
+
+Lưu đồ thuật toán của phương thức chính: Thông báo danh sách món ăn đã được đặt bởi khách hàng: 
+
+![Algorithm flow chart](Luudothuattoan.png)
