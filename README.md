@@ -127,3 +127,15 @@ public class NhanVien {
 Lưu đồ thuật toán của phương thức chính: Thông báo danh sách món ăn đã được đặt bởi khách hàng: 
 
 ![Algorithm flow chart](Luudothuattoan.png)
+
+Phân công công việc:
+
+Thành viên 	Nhiệm vụ
+
+Trung:	    In danh sách món ăn của khách hàng.
+
+Dũng:	    Kiểm tra món ăn đã được đặt hay chưa.
+
+Thành:	    Hiển thị tên khách hàng đặt món.
+
+
