@@ -7,7 +7,7 @@ public class App {
         System.out.println("Restaurant Managment!");
             
             // Ensure testKhachHang is defined or imported
-            Menu.showMenu();
+             Menu.showMenu();
             ///testBan.test();
             ///testMonAn.test();
             ///TestKhachHang.test();
