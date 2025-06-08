@@ -132,9 +132,9 @@ Phân công công việc:
 
 Thành viên 	Nhiệm vụ
 
-Trung:	    In danh sách món ăn của khách hàng.
+Trung:	    In danh sách món ăn đã đặt của khách hàng.
 
-Dũng:	    Kiểm tra món ăn đã được đặt hay chưa.
+Dũng:	    Kiểm tra món ăn đã được thanh toán hay chưa
 
 Thành:	    Hiển thị tên khách hàng đặt món.
 
