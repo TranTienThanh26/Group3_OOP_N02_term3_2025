@@ -1,7 +1,6 @@
 package com.example.servingwebcontent;
 
 public class NhanVien extends NguoiDung {
-    // userID, tenHienThi, email, password, role đã được kế thừa từ NguoiDung
     private String ngayVL;    // Ngày vào làm
     private String sdt;       // Số điện thoại
     private String chucvu;    // Chức vụ của nhân viên
@@ -14,15 +13,39 @@ public class NhanVien extends NguoiDung {
         this.setRole("nhanvien");
     }
 
-    // Constructor đầy đủ
-    public NhanVien(int userID, String tenNV, String email, String password,
+    // ✅ Constructor đầy đủ có xử lý lỗi
+    public NhanVien(int userID, String email, String password,
                     String ngayVL, String sdt, String chucvu, int id_NQL, String tinhTrang) {
-        super(userID, tenNV, email, password, "nhanvien");
-        this.ngayVL = ngayVL;
-        this.sdt = sdt;
-        this.chucvu = chucvu;
-        this.id_NQL = id_NQL;
-        this.tinhTrang = tinhTrang;
+        super(userID, email, password, "nhanvien");
+
+        try {
+            if (ngayVL == null || ngayVL.trim().isEmpty()) {
+                throw new IllegalArgumentException("Ngày vào làm không được để trống.");
+            }
+            if (sdt == null || !sdt.matches("\\d{10,11}")) {
+                throw new IllegalArgumentException("Số điện thoại phải là 10-11 chữ số.");
+            }
+            if (chucvu == null || chucvu.trim().isEmpty()) {
+                throw new IllegalArgumentException("Chức vụ không được để trống.");
+            }
+            if (id_NQL <= 0) {
+                throw new IllegalArgumentException("ID người quản lý phải lớn hơn 0.");
+            }
+            if (tinhTrang == null || tinhTrang.trim().isEmpty()) {
+                throw new IllegalArgumentException("Tình trạng làm việc không hợp lệ.");
+            }
+
+            this.ngayVL = ngayVL;
+            this.sdt = sdt;
+            this.chucvu = chucvu;
+            this.id_NQL = id_NQL;
+            this.tinhTrang = tinhTrang;
+
+        } catch (IllegalArgumentException e) {
+            System.err.println("Lỗi khi tạo NhanVien: " + e.getMessage());
+        } finally {
+            System.out.println("Khởi tạo NhanVien hoàn tất.");
+        }
     }
 
     // Getters
@@ -63,14 +86,7 @@ public class NhanVien extends NguoiDung {
         this.id_NQL = id_NQL;
     }
 
-    // ❗ Setter duy nhất có try-catch-finally
     public void setTinhTrang(String tinhTrang) {
-        try {
-            this.tinhTrang = tinhTrang;
-        } catch (Exception e) {
-            System.err.println("Lỗi khi gán tình trạng làm việc: " + e.getMessage());
-        } finally {
-            System.out.println("Đã gọi setTinhTrang.");
-        }
+        this.tinhTrang = tinhTrang;
     }
 }

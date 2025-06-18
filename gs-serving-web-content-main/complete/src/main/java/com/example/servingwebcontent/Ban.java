@@ -1,7 +1,8 @@
 package com.example.servingwebcontent;
+
 public class Ban {
 
-    private int maBan;     // Mã bàn
+    private int maBan;       // Mã bàn
     private String tenBan;   // Tên bàn
     private String trangThai; // Trạng thái bàn (Ví dụ: Trống, Đã đặt, Đang phục vụ)
 
@@ -14,9 +15,26 @@ public class Ban {
     }
 
     public Ban(int maBan, String tenBan, String trangThai) {
-        this.maBan = maBan;
-        this.tenBan = tenBan;
-        this.trangThai = trangThai;
+        try {
+            if (maBan <= 0) {
+                throw new IllegalArgumentException("Mã bàn phải lớn hơn 0.");
+            }
+            if (tenBan == null || tenBan.trim().isEmpty()) {
+                throw new IllegalArgumentException("Tên bàn không được để trống.");
+            }
+            if (trangThai == null || trangThai.trim().isEmpty()) {
+                throw new IllegalArgumentException("Trạng thái không được để trống.");
+            }
+
+            this.maBan = maBan;
+            this.tenBan = tenBan;
+            this.trangThai = trangThai;
+
+        } catch (IllegalArgumentException e) {
+            System.err.println("Lỗi khi khởi tạo bàn: " + e.getMessage());
+        } finally {
+            System.out.println("Khởi tạo Ban (3 tham số) đã hoàn tất.");
+        }
     }
 
     public int getMaBan() {
@@ -39,13 +57,7 @@ public class Ban {
         return trangThai;
     }
 
-     public void setTrangThai(String trangThai) {
-        try {
-            this.trangThai = trangThai;
-        } catch (Exception e) {
-            System.err.println("Lỗi khi gán trạng thái bàn: " + e.getMessage());
-        } finally {
-            System.out.println("Thực hiện xong setTrangThai.");
-        }
+    public void setTrangThai(String trangThai) {
+        this.trangThai = trangThai;
     }
 }

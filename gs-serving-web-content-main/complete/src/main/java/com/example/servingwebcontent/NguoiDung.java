@@ -6,23 +6,33 @@ public class NguoiDung {
     private String password;
     private String role;
 
-    // Constructors
+    // ✅ Constructor có bắt lỗi - hợp lý nhất
+    public NguoiDung(int userID, String email, String password, String role) {
+        try {
+            if (userID <= 0) throw new IllegalArgumentException("User ID phải lớn hơn 0.");
+            if (email == null || !email.contains("@"))
+                throw new IllegalArgumentException("Email không hợp lệ.");
+            if (password == null || password.length() < 4)
+                throw new IllegalArgumentException("Mật khẩu phải có ít nhất 4 ký tự.");
+            if (role == null || role.trim().isEmpty())
+                throw new IllegalArgumentException("Vai trò không được để trống.");
+
+            this.userID = userID;
+            this.email = email;
+            this.password = password;
+            this.role = role;
+
+        } catch (IllegalArgumentException e) {
+            System.err.println("Lỗi khi tạo NguoiDung: " + e.getMessage());
+        } finally {
+            System.out.println("Khởi tạo NguoiDung hoàn tất.");
+        }
+    }
+
+    // ✅ Constructor mặc định
     public NguoiDung() {}
 
-    public NguoiDung(int userID, String tenHienThi, String email, String password, String role) {
-        this.userID = userID;
-        this.email = email;
-        this.password = password;
-        this.role = role;
-    }
-
-    public NguoiDung(int userID, String email, String password, String role) {
-        this.userID = userID;
-        this.email = email;
-        this.password = password;
-        this.role = role;
-    }
-
+    // ✅ Constructor rút gọn (mặc định role = "user")
     public NguoiDung(int userID, String email, String password) {
         this.userID = userID;
         this.email = email;
@@ -52,15 +62,8 @@ public class NguoiDung {
         this.userID = userID;
     }
 
-    // ❗ Setter duy nhất có try-catch-finally
     public void setEmail(String email) {
-        try {
-            this.email = email;
-        } catch (Exception e) {
-            System.err.println("Lỗi khi set email: " + e.getMessage());
-        } finally {
-            System.out.println("Đã gọi setEmail.");
-        }
+        this.email = email;
     }
 
     public void setPassword(String password) {

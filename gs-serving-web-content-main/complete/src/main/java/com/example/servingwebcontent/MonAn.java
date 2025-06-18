@@ -13,30 +13,36 @@ public class MonAn {
     }
 
     public MonAn(int maMonAn, String tenMonAn, double donGia, String loaiMonAn) {
-        this.maMonAn = maMonAn;
-        this.tenMonAn = tenMonAn;
-        this.donGia = donGia;
-        this.loaiMonAn = loaiMonAn;
-        this.trangThai = "Dang kinh doanh";
-        this.soLuongDaBan = 0;
+        this(maMonAn, tenMonAn, donGia, loaiMonAn, "Dang kinh doanh", 0);
     }
 
     public MonAn(int maMonAn, String tenMonAn, double donGia, String loaiMonAn, String trangThai) {
-        this.maMonAn = maMonAn;
-        this.tenMonAn = tenMonAn;
-        this.donGia = donGia;
-        this.loaiMonAn = loaiMonAn;
-        this.trangThai = trangThai;
-        this.soLuongDaBan = 0;
+        this(maMonAn, tenMonAn, donGia, loaiMonAn, trangThai, 0);
     }
 
+    // ✅ Constructor chính có kiểm tra lỗi
     public MonAn(int maMonAn, String tenMonAn, double donGia, String loaiMonAn, String trangThai, int soLuongDaBan) {
-        this.maMonAn = maMonAn;
-        this.tenMonAn = tenMonAn;
-        this.donGia = donGia;
-        this.loaiMonAn = loaiMonAn;
-        this.trangThai = trangThai;
-        this.soLuongDaBan = soLuongDaBan;
+        try {
+            if (maMonAn <= 0) throw new IllegalArgumentException("Mã món ăn phải lớn hơn 0.");
+            if (tenMonAn == null || tenMonAn.trim().isEmpty())
+                throw new IllegalArgumentException("Tên món ăn không được để trống.");
+            if (donGia < 0) throw new IllegalArgumentException("Đơn giá không được âm.");
+            if (loaiMonAn == null || loaiMonAn.trim().isEmpty())
+                throw new IllegalArgumentException("Loại món ăn không hợp lệ.");
+            if (soLuongDaBan < 0) throw new IllegalArgumentException("Số lượng đã bán không được âm.");
+
+            this.maMonAn = maMonAn;
+            this.tenMonAn = tenMonAn;
+            this.donGia = donGia;
+            this.loaiMonAn = loaiMonAn;
+            this.trangThai = (trangThai != null && !trangThai.trim().isEmpty()) ? trangThai : "Dang kinh doanh";
+            this.soLuongDaBan = soLuongDaBan;
+
+        } catch (IllegalArgumentException e) {
+            System.err.println("Lỗi khi tạo MonAn: " + e.getMessage());
+        } finally {
+            System.out.println("Khởi tạo MonAn hoàn tất.");
+        }
     }
 
     // Getters
@@ -55,14 +61,8 @@ public class MonAn {
     public void setTrangThai(String trangThai) { this.trangThai = trangThai; }
     public void setSoLuongDaBan(int soLuongDaBan) { this.soLuongDaBan = soLuongDaBan; }
 
-    // ❗ Phương thức tiện ích có try-catch-finally
+    // Phương thức tiện ích
     public void tangSoLuongDaBan(int soLuongThem) {
-        try {
-            this.soLuongDaBan += soLuongThem;
-        } catch (Exception e) {
-            System.err.println("Lỗi khi tăng số lượng đã bán: " + e.getMessage());
-        } finally {
-            System.out.println("Đã gọi tangSoLuongDaBan.");
-        }
+        this.soLuongDaBan += soLuongThem;
     }
 }

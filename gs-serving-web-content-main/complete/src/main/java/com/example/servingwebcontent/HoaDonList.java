@@ -5,8 +5,24 @@ import java.util.ArrayList;
 public class HoaDonList {
     ArrayList<HoaDon> st = new ArrayList<HoaDon>();
 
+    // ✅ Khối try-catch-finally đặt duy nhất tại đây
     public ArrayList<HoaDon> addHoaDon(HoaDon hoaDon) {
-        st.add(hoaDon);
+        try {
+            if (hoaDon == null) {
+                throw new IllegalArgumentException("Đối tượng hóa đơn không được null.");
+            }
+            if (hoaDon.getIdHoaDon() <= 0) {
+                throw new IllegalArgumentException("ID hóa đơn không được để trống.");
+            }
+            st.add(hoaDon);
+        } catch (IllegalArgumentException e) {
+            System.err.println("Lỗi khi thêm hóa đơn: " + e.getMessage());
+        } catch (Exception e) {
+            System.err.println("Lỗi không xác định khi thêm hóa đơn: " + e.getMessage());
+        } finally {
+            System.out.println("Xử lý thêm hóa đơn đã hoàn tất.");
+        }
+
         return st;
     }
 
@@ -24,24 +40,15 @@ public class HoaDonList {
         for (int i = 0; i < st.size(); i++) {
             if (st.get(i).getIdHoaDon() == idHoaDon) {
                 st.remove(i);
-                break; // tránh ConcurrentModificationException
+                break; // thêm break để tránh lỗi ConcurrentModificationException
             }
         }
         return st;
     }
 
-    // ❗Phương thức này được thêm try-catch-finally
     public void printHoaDonList() {
-        try {
-            int len = st.size();
-            for (int i = 0; i < len; i++) {
-                System.out.println("Mã Hóa Đơn: " + st.get(i).getIdHoaDon() +
-                                   " Tổng Tiền Ăn: " + st.get(i).getTongtien());
-            }
-        } catch (Exception e) {
-            System.err.println("Lỗi khi in danh sách hóa đơn: " + e.getMessage());
-        } finally {
-            System.out.println("Đã gọi printHoaDonList.");
+        for (int i = 0; i < st.size(); i++) {
+            System.out.println("Mã Hóa Đơn: " + st.get(i).getIdHoaDon() + " | Tổng Tiền Ăn: " + st.get(i).getTongtien());
         }
     }
 }

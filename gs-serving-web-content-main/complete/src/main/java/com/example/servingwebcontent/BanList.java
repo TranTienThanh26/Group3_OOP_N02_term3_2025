@@ -7,7 +7,23 @@ public class BanList {
     ArrayList<Ban> st = new ArrayList<Ban>();
 
     public ArrayList<Ban> addBan(Ban ba) {
-        st.add(ba);
+        try {
+            if (ba == null) {
+                throw new IllegalArgumentException("Đối tượng bàn không được null.");
+            }
+            if (ba.getTenBan() == null || ba.getTenBan().trim().isEmpty()) {
+                throw new IllegalArgumentException("Tên bàn không hợp lệ.");
+            }
+
+            st.add(ba);
+        } catch (IllegalArgumentException e) {
+            System.err.println("Lỗi khi thêm bàn: " + e.getMessage());
+        } catch (Exception e) {
+            System.err.println("Lỗi không xác định khi thêm bàn: " + e.getMessage());
+        } finally {
+            System.out.println("Kết thúc xử lý thêm bàn.");
+        }
+
         return st;
     }
 
@@ -18,6 +34,7 @@ public class BanList {
                 st.get(i).setTenBan(tenBan);
             }
         }
+
         return st;
     }
 
@@ -25,24 +42,17 @@ public class BanList {
         for (int i = 0; i < st.size(); i++) {
             if (st.get(i).getMaBan() == maBan) {
                 st.remove(i);
-                break; // tránh lỗi khi xóa phần tử trong vòng lặp
+                break; // Thêm break để tránh ConcurrentModificationException
             }
         }
+
         return st;
     }
 
-    // ❗ Phương thức này được thêm try-catch-finally
     public void printBanList() {
-        try {
-            int len = st.size();
-            for (int i = 0; i < len; i++) {
-                System.out.println("maBan: " + st.get(i).getMaBan() +
-                                   " TenBan: " + st.get(i).getTenBan());
-            }
-        } catch (Exception e) {
-            System.err.println("Lỗi khi in danh sách bàn: " + e.getMessage());
-        } finally {
-            System.out.println("Đã gọi printBanList.");
+        int len = st.size();
+        for (int i = 0; i < len; i++) {
+            System.out.println("maBan: " + st.get(i).getMaBan() + " TenBan: " + st.get(i).getTenBan());
         }
     }
 }

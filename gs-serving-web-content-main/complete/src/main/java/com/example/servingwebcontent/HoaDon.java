@@ -10,35 +10,6 @@ public class HoaDon {
     private int tongtien;
     private String trangthai;
 
-    public HoaDon() {
-    }
-
-    public HoaDon(int idHoaDon, int idKH, int idBan, String ngayHD, int tienMonAn, int tongtien) {
-        this.idHoaDon = idHoaDon;
-        this.idKH = idKH;
-        this.idBan = idBan;
-        this.ngayHD = ngayHD;
-        this.tienMonAn = tienMonAn;
-        this.tongtien = tongtien;
-    }
-
-    public HoaDon(int idHoaDon, int idKH, int idBan, String ngayHD, int tienMonAn, int tongtien, String trangthai) {
-        this.idHoaDon = idHoaDon;
-        this.idKH = idKH;
-        this.idBan = idBan;
-        this.ngayHD = ngayHD;
-        this.tienMonAn = tienMonAn;
-        this.tongtien = tongtien;
-        this.trangthai = trangthai;
-    }
-
-    public HoaDon(int idHoaDon, String trangthai) {
-        this.idHoaDon = idHoaDon;
-        this.trangthai = trangthai;
-    }
-
-    // Getter - Setter
-
     public int getIdHoaDon() {
         return idHoaDon;
     }
@@ -91,14 +62,51 @@ public class HoaDon {
         return trangthai;
     }
 
-    // ❗ Setter này có try-catch-finally
     public void setTrangthai(String trangthai) {
+        this.trangthai = trangthai;
+    }
+
+    public HoaDon() {
+    }
+
+    public HoaDon(int idHoaDon, int idKH, int idBan, String ngayHD, int tienMonAn, int tongtien) {
+        this.idHoaDon = idHoaDon;
+        this.idKH = idKH;
+        this.idBan = idBan;
+        this.ngayHD = ngayHD;
+        this.tienMonAn = tienMonAn;
+        this.tongtien = tongtien;
+    }
+
+    public HoaDon(int idHoaDon, String trangthai) {
+        this.idHoaDon = idHoaDon;
+        this.trangthai = trangthai;
+    }
+
+    // ✅ Constructor chính có bắt lỗi và kiểm tra hợp lệ
+    public HoaDon(int idHoaDon, int idKH, int idBan, String ngayHD, int tienMonAn,
+                  int tongtien, String trangthai) {
         try {
+            if (idHoaDon <= 0) throw new IllegalArgumentException("ID hóa đơn phải lớn hơn 0.");
+            if (idKH <= 0) throw new IllegalArgumentException("ID khách hàng phải lớn hơn 0.");
+            if (idBan <= 0) throw new IllegalArgumentException("ID bàn phải khác không.");
+            if (ngayHD == null || ngayHD.trim().isEmpty()) throw new IllegalArgumentException("Ngày hóa đơn không được trống.");
+            if (tienMonAn < 0) throw new IllegalArgumentException("Tiền món ăn không được âm.");
+            if (tongtien < 0) throw new IllegalArgumentException("Tổng tiền không được âm.");
+            if (trangthai == null || trangthai.trim().isEmpty()) throw new IllegalArgumentException("Trạng thái không hợp lệ.");
+
+            this.idHoaDon = idHoaDon;
+            this.idKH = idKH;
+            this.idBan = idBan;
+            this.ngayHD = ngayHD;
+            this.tienMonAn = tienMonAn;
+            this.tongtien = tongtien;
             this.trangthai = trangthai;
-        } catch (Exception e) {
-            System.err.println("Lỗi khi set trạng thái: " + e.getMessage());
+
+        } catch (IllegalArgumentException e) {
+            System.err.println("Lỗi khi tạo hóa đơn: " + e.getMessage());
         } finally {
-            System.out.println("Đã gọi setTrangthai.");
+            System.out.println("Khởi tạo đối tượng HoaDon (đầy đủ) hoàn tất.");
         }
     }
 }
