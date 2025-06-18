@@ -1,4 +1,12 @@
+package com.example.servingwebcontent;
+
 public class CTHD {
+
+    private int ID_HD;
+    private int ID_MonAn;
+    private String tenMonAn;
+    private int soluong;
+    private int thanhTien;
 
     public int getID_HD() {
         return ID_HD;
@@ -30,11 +38,32 @@ public class CTHD {
         this.soluong = soluong;
         this.thanhTien = thanhTien;
     }
-    
-    private int ID_HD;
-    private int ID_MonAn;
-    private String tenMonAn;
-    private int soluong;
-    private int thanhTien;
-    
+
+    // ✔ Setter có try-catch-finally
+    public void setSoluong(int soluong) {
+        try {
+            this.soluong = soluong;
+        } catch (Exception e) {
+            System.err.println("Lỗi khi set số lượng: " + e.getMessage());
+        } finally {
+            System.out.println("Đã gọi setSoluong.");
+        }
+    }
+
+    // ✔ Các setter còn lại
+    public void setID_HD(int ID_HD) {
+        this.ID_HD = ID_HD;
+    }
+
+    public void setID_MonAn(int ID_MonAn) {
+        this.ID_MonAn = ID_MonAn;
+    }
+
+    public void setTenMonAn(String tenMonAn) {
+        this.tenMonAn = tenMonAn;
+    }
+
+    public void setThanhTien(int thanhTien) {
+        this.thanhTien = thanhTien;
+    }
 }

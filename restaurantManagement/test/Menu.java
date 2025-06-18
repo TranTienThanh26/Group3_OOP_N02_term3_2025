@@ -1,9 +1,14 @@
-// File: Menu.java
+
+package com.example.servingwebcontent;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
+// Import TestMonAn if it exists in the same package or another package
+import com.example.servingwebcontent.TestMonAn;
+
 public class Menu {
     private static Scanner sc = new Scanner(System.in);
+    private static TestMonAn testMonAn = new TestMonAn(); // Thêm khai báo và khởi tạo testMonAn
 
     public static void showMenu() {
         testMonAn.khoiTaoDuLieuMau(); // Khởi tạo dữ liệu mẫu khi chương trình bắt đầu

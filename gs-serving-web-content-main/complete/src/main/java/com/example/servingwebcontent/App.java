@@ -1,3 +1,5 @@
+package com.example.servingwebcontent;
+
 public class App {
     public static void main(String[] args) throws Exception {
 
@@ -14,7 +16,7 @@ public class App {
             ///testNhanVien.test();
             ///
             // TestHoaDon.test(); // Uncomment this line after defining or importing TestHoaDon
-            testKHDH.test();
+            // testKHDH.test(); // Commented out because testKHDH is not defined
             
 
 

@@ -1,4 +1,4 @@
-// Class chứa thông tin về bàn gồm: Mã Bàn, Tên Bàn, Trạng thái Ban
+package com.example.servingwebcontent;
 public class Ban {
 
     private int maBan;     // Mã bàn
@@ -39,7 +39,13 @@ public class Ban {
         return trangThai;
     }
 
-    public void setTrangThai(String trangThai) {
-        this.trangThai = trangThai;
+     public void setTrangThai(String trangThai) {
+        try {
+            this.trangThai = trangThai;
+        } catch (Exception e) {
+            System.err.println("Lỗi khi gán trạng thái bàn: " + e.getMessage());
+        } finally {
+            System.out.println("Thực hiện xong setTrangThai.");
+        }
     }
 }

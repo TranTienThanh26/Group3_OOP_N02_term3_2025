@@ -1,4 +1,5 @@
-// MonAn.java - Đại diện cho một món ăn trong nhà hàng
+package com.example.servingwebcontent;
+
 public class MonAn {
     private int maMonAn;
     private String tenMonAn;
@@ -54,8 +55,14 @@ public class MonAn {
     public void setTrangThai(String trangThai) { this.trangThai = trangThai; }
     public void setSoLuongDaBan(int soLuongDaBan) { this.soLuongDaBan = soLuongDaBan; }
 
-    // Phương thức tiện ích để tăng số lượng đã bán
+    // ❗ Phương thức tiện ích có try-catch-finally
     public void tangSoLuongDaBan(int soLuongThem) {
-        this.soLuongDaBan += soLuongThem;
+        try {
+            this.soLuongDaBan += soLuongThem;
+        } catch (Exception e) {
+            System.err.println("Lỗi khi tăng số lượng đã bán: " + e.getMessage());
+        } finally {
+            System.out.println("Đã gọi tangSoLuongDaBan.");
+        }
     }
 }

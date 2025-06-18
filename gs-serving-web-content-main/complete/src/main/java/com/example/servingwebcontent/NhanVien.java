@@ -10,16 +10,14 @@ public class NhanVien extends NguoiDung {
 
     // Constructor mặc định
     public NhanVien() {
-        super(); // Gọi constructor mặc định của lớp cha NguoiDung
-        // Mặc định vai trò cho nhân viên
+        super();
         this.setRole("nhanvien");
     }
 
-    // Constructor có tham số đầy đủ cho NhanVien
+    // Constructor đầy đủ
     public NhanVien(int userID, String tenNV, String email, String password,
                     String ngayVL, String sdt, String chucvu, int id_NQL, String tinhTrang) {
-        // Gọi constructor của lớp cha NguoiDung để khởi tạo các thuộc tính tài khoản
-        super(userID, tenNV, email, password, "nhanvien"); // Vai trò mặc định là "nhanvien"
+        super(userID, tenNV, email, password, "nhanvien");
         this.ngayVL = ngayVL;
         this.sdt = sdt;
         this.chucvu = chucvu;
@@ -27,8 +25,7 @@ public class NhanVien extends NguoiDung {
         this.tinhTrang = tinhTrang;
     }
 
-    // Getters riêng của NhanVien
-    // (Các getters từ NguoiDung như getUserID(), getEmail(), getTenHienThi() vẫn có thể dùng)
+    // Getters
     public String getNgayVL() {
         return ngayVL;
     }
@@ -49,7 +46,7 @@ public class NhanVien extends NguoiDung {
         return tinhTrang;
     }
 
-    // Setters riêng của NhanVien
+    // Setters
     public void setNgayVL(String ngayVL) {
         this.ngayVL = ngayVL;
     }
@@ -66,8 +63,14 @@ public class NhanVien extends NguoiDung {
         this.id_NQL = id_NQL;
     }
 
+    // ❗ Setter duy nhất có try-catch-finally
     public void setTinhTrang(String tinhTrang) {
-        this.tinhTrang = tinhTrang;
+        try {
+            this.tinhTrang = tinhTrang;
+        } catch (Exception e) {
+            System.err.println("Lỗi khi gán tình trạng làm việc: " + e.getMessage());
+        } finally {
+            System.out.println("Đã gọi setTinhTrang.");
+        }
     }
-
-    }
+}
