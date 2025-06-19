@@ -1,6 +1,7 @@
 package com.example.servingwebcontent;
 
 public class NhanVien extends NguoiDung {
+    private int id_NhanVien;  // Mã nhân viên
     private String ngayVL;    // Ngày vào làm
     private String sdt;       // Số điện thoại
     private String chucvu;    // Chức vụ của nhân viên
@@ -15,7 +16,8 @@ public class NhanVien extends NguoiDung {
 
     // ✅ Constructor đầy đủ có xử lý lỗi
     public NhanVien(int userID, String email, String password,
-                    String ngayVL, String sdt, String chucvu, int id_NQL, String tinhTrang) {
+                    int id_NhanVien, String ngayVL, String sdt,
+                    String chucvu, int id_NQL, String tinhTrang) {
         super(userID, email, password, "nhanvien");
 
         try {
@@ -35,6 +37,7 @@ public class NhanVien extends NguoiDung {
                 throw new IllegalArgumentException("Tình trạng làm việc không hợp lệ.");
             }
 
+            this.id_NhanVien = id_NhanVien;
             this.ngayVL = ngayVL;
             this.sdt = sdt;
             this.chucvu = chucvu;
@@ -49,6 +52,10 @@ public class NhanVien extends NguoiDung {
     }
 
     // Getters
+    public int getId_NhanVien() {
+        return id_NhanVien;
+    }
+
     public String getNgayVL() {
         return ngayVL;
     }
@@ -70,6 +77,10 @@ public class NhanVien extends NguoiDung {
     }
 
     // Setters
+    public void setId_NhanVien(int id_NhanVien) {
+        this.id_NhanVien = id_NhanVien;
+    }
+
     public void setNgayVL(String ngayVL) {
         this.ngayVL = ngayVL;
     }
