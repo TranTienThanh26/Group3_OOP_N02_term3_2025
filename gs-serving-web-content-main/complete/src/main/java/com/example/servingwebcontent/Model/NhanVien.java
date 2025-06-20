@@ -1,23 +1,24 @@
 package com.example.servingwebcontent.Model;
 
 public class NhanVien extends NguoiDung {
-    private int id_NhanVien;  // Mã nhân viên
-    private String ngayVL;    // Ngày vào làm
-    private String sdt;       // Số điện thoại
-    private String chucvu;    // Chức vụ của nhân viên
-    private int id_NQL;       // Mã người quản lý trực tiếp
-    private String tinhTrang; // Tình trạng làm việc
+    private int id_NhanVien;   // Mã nhân viên
+    private String ngayVL;     // Ngày vào làm
+    private String sdt;        // Số điện thoại
+    private String chucvu;     // Chức vụ của nhân viên
+    private int id_NQL;        // Mã người quản lý trực tiếp
+    private String tinhTrang;  // Tình trạng làm việc
+    private String tenNhanVien; // ✅ Tên nhân viên
 
-    // Constructor mặc định
+    // ✅ Constructor mặc định
     public NhanVien() {
         super();
         this.setRole("nhanvien");
     }
 
-    // ✅ Constructor đầy đủ có xử lý lỗi
+    // ✅ Constructor đầy đủ có xử lý lỗi và gán tên nhân viên
     public NhanVien(int userID, String email, String password,
                     int id_NhanVien, String ngayVL, String sdt,
-                    String chucvu, int id_NQL, String tinhTrang) {
+                    String chucvu, int id_NQL, String tinhTrang, String tenNhanVien) {
         super(userID, email, password, "nhanvien");
 
         try {
@@ -36,6 +37,9 @@ public class NhanVien extends NguoiDung {
             if (tinhTrang == null || tinhTrang.trim().isEmpty()) {
                 throw new IllegalArgumentException("Tình trạng làm việc không hợp lệ.");
             }
+            if (tenNhanVien == null || tenNhanVien.trim().isEmpty()) {
+                throw new IllegalArgumentException("Tên nhân viên không được để trống.");
+            }
 
             this.id_NhanVien = id_NhanVien;
             this.ngayVL = ngayVL;
@@ -43,6 +47,7 @@ public class NhanVien extends NguoiDung {
             this.chucvu = chucvu;
             this.id_NQL = id_NQL;
             this.tinhTrang = tinhTrang;
+            this.tenNhanVien = tenNhanVien; // ✅ Gán tên nhân viên
 
         } catch (IllegalArgumentException e) {
             System.err.println("Lỗi khi tạo NhanVien: " + e.getMessage());
@@ -51,7 +56,7 @@ public class NhanVien extends NguoiDung {
         }
     }
 
-    // Getters
+    // ✅ Getters
     public int getId_NhanVien() {
         return id_NhanVien;
     }
@@ -76,7 +81,11 @@ public class NhanVien extends NguoiDung {
         return tinhTrang;
     }
 
-    // Setters
+    public String getTenNhanVien() {
+        return tenNhanVien;
+    }
+
+    // ✅ Setters
     public void setId_NhanVien(int id_NhanVien) {
         this.id_NhanVien = id_NhanVien;
     }
@@ -99,5 +108,9 @@ public class NhanVien extends NguoiDung {
 
     public void setTinhTrang(String tinhTrang) {
         this.tinhTrang = tinhTrang;
+    }
+
+    public void setTenNhanVien(String tenNhanVien) {
+        this.tenNhanVien = tenNhanVien;
     }
 }

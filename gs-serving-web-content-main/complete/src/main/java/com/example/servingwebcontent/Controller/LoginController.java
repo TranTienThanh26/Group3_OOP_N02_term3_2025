@@ -29,7 +29,7 @@ public class LoginController {
             session.setAttribute("user", user);
 
             if ("Nhan Vien".equalsIgnoreCase(user.getRole())) {
-                return "redirect:/admin";
+                return "redirect:/NhanVienHome";
             } else if ("Khach Hang".equalsIgnoreCase(user.getRole())) {
                 return "redirect:/CustomerHome";
             } else {
