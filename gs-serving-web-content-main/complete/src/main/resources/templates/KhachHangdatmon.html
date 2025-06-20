@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Thông tin khách hàng</title>
+</head>
+<body>
+    <h2>Nhập thông tin khách hàng</h2>
+
+    <form th:action="@{/submit-khachhang}" method="post">
+        <label>User ID:</label><br>
+        <input type="number" name="userID" required><br><br>
+
+        <label>Tên khách hàng:</label><br>
+        <input type="text" name="tenKhachHang" required><br><br>
+
+        <label>Email:</label><br>
+        <input type="email" name="email" required><br><br>
+
+        <label>Password:</label><br>
+        <input type="password" name="password" required><br><br>
+
+        <label>Ngày tham gia:</label><br>
+        <input type="text" name="ngayThamGia" placeholder="yyyy-MM-dd" required><br><br>
+
+        <label>Doanh số:</label><br>
+        <input type="number" name="doanhSo" required><br><br>
+
+        <label>Điểm tích lũy:</label><br>
+        <input type="number" name="diem" required><br><br>
+
+        <button type="submit">Gửi</button>
+    </form>
+
+    <p th:if="${message}" th:text="${message}"></p>
+
+    <div th:if="${khachHang.tenHienThi}">
+        <h3>Thông tin đã nhập:</h3>
+        <p><strong>User ID:</strong> <span th:text="${khachHang.userID}"></span></p>
+        <p><strong>Tên KH:</strong> <span th:text="${khachHang.tenHienThi}"></span></p>
+        <p><strong>Email:</strong> <span th:text="${khachHang.email}"></span></p>
+        <p><strong>Ngày tham gia:</strong> <span th:text="${khachHang.ngayThamGia}"></span></p>
+        <p><strong>Doanh số:</strong> <span th:text="${khachHang.doanhSo}"></span></p>
+        <p><strong>Điểm:</strong> <span th:text="${khachHang.diem}"></span></p>
+    </div>
+</body>
+</html>
