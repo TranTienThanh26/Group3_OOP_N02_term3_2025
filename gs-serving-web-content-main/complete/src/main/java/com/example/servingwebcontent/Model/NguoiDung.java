@@ -5,6 +5,7 @@ public class NguoiDung {
     private String email;
     private String password;
     private String role;
+    public String hoTen; // ✅ Dùng chung cho hiển thị tên người dùng
 
     // ✅ Constructor có bắt lỗi - hợp lý nhất
     public NguoiDung(int userID, String email, String password, String role) {
@@ -57,6 +58,10 @@ public class NguoiDung {
         return role;
     }
 
+    public String getHoTen() {
+        return hoTen;
+    }
+
     // Setters
     public void setUserID(int userID) {
         this.userID = userID;
@@ -72,5 +77,9 @@ public class NguoiDung {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public void setHoTen(String hoTen) {
+        this.hoTen = hoTen;
     }
 }

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Trang Nhân Viên – TTD Restaurant</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/swiper@8/swiper-bundle.min.css" />
+  <script src="https://unpkg.com/swiper@8/swiper-bundle.min.js"></script>
+  <link rel="icon" href="/images/favicon.ico" type="image/x-icon">
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+    }
+    img:hover {
+      transform: scale(1.05);
+      transition: transform 0.3s ease-in-out;
+    }
+  </style>
+</head>
+<body class="bg-white">
+
+<!-- 🌟 Thanh điều hướng -->
+<header class="bg-black text-white py-4 px-8 flex justify-between items-center shadow-md">
+  <h1 class="text-xl font-bold tracking-wide">TTD RESTAURANT – Nhân viên</h1>
+  <nav class="space-x-6 text-sm">
+    <a href="/manage/menu" class="hover:text-yellow-400"> Món ăn</a>
+    <a href="/manage/orders" class="hover:text-yellow-400"> Bàn ăn</a>
+    <a href="/manage/tables" class="hover:text-yellow-400"> Hóa đơn</a>
+    <a href="/manage/menu" class="hover:text-yellow-400"> Nhân viên</a>
+    <a href="/manage/menu" class="hover:text-yellow-400"> Khách Hàng</a>
+    <a href="/logoutNhanVien" class="hover:text-red-400"> Đăng xuất</a>
+  </nav>
+</header>
+
+<!-- 👋 Chào mừng -->
+<section class="text-center py-12 px-4">
+  <p class="text-sm tracking-widest text-gray-500">WELCOME STAFF</p>
+  <h2 class="text-4xl font-extrabold mb-4">CHÀO MỪNG, <span th:text="${user.hoTen}">Tên nhân viên</span>!</h2>
+  <p class="max-w-3xl mx-auto text-gray-600">
+    Cảm ơn bạn đã đồng hành cùng TTD Restaurant. Nơi tinh hoa ẩm thực Việt Nam được nâng tầm. Hãy cùng nhau mang đến những trải nghiệm tuyệt vời nhất cho khách hàng. 
+  </p>
+</section>
+
+<!-- 🍽 Slider món ăn -->
+<div class="swiper mt-10 max-w-6xl mx-auto px-6">
+  <div class="swiper-wrapper">
+    <div class="swiper-slide text-center">
+      <img src="/images/bun_dau.jpg" alt="Bún đậu mắm tôm" class="rounded-lg w-full h-80 object-cover mb-4">
+      <p class="font-semibold text-lg">Bún đậu mắm tôm</p>
+    </div>
+    <div class="swiper-slide text-center">
+      <img src="/images/com_tam.jpg" alt="Cơm tấm sườn trứng" class="rounded-lg w-full h-80 object-cover mb-4">
+      <p class="font-semibold text-lg">Cơm tấm sườn trứng</p>
+    </div>
+    <div class="swiper-slide text-center">
+      <img src="/images/banh_mi_chaothapcam.jpg" alt="Bánh mì chảo thập cẩm" class="rounded-lg w-full h-80 object-cover mb-4">
+      <p class="font-semibold text-lg">Bánh mì chảo thập cẩm</p>
+    </div>
+    <div class="swiper-slide text-center">
+      <img src="/images/mi_muoiot.jpg" alt="Mì trộn muối ớt tỏi" class="rounded-lg w-full h-80 object-cover mb-4">
+      <p class="font-semibold text-lg">Mì trộn muối ớt tỏi</p>
+    </div>
+    <div class="swiper-slide text-center">
+      <img src="/images/khoai_lang_phomai.jpg" alt="Khoai lang lắc phô mai" class="rounded-lg w-full h-80 object-cover mb-4">
+      <p class="font-semibold text-lg">Khoai lang lắc phô mai</p>
+    </div>
+  </div>
+  <div class="swiper-pagination mt-4"></div>
+</div>
+
+<!-- 👣 Footer -->
+<footer class="bg-black text-white text-center py-4 text-sm mt-12">
+  © 2025 TTD Restaurant. Dành cho nhân viên.
+</footer>
+
+<!-- JS khởi tạo Swiper -->
+<script>
+  const swiper = new Swiper('.swiper', {
+    loop: true,
+    autoplay: {
+      delay: 3000,
+      disableOnInteraction: false,
+    },
+    pagination: {
+      el: '.swiper-pagination',
+    },
+  });
+</script>
+
+</body>
+</html>

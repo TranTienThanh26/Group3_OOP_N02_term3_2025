@@ -35,6 +35,7 @@ public class KhachHang extends NguoiDung {
             this.setEmail(email);
             this.setPassword(password);
             this.setRole("khachhang");
+            this.setHoTen(tenKhachHang);
 
             this.ngayThamGia = ngayThamGia;
             this.doanhSo = doanhSo;

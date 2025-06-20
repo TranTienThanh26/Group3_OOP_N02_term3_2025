@@ -28,27 +28,30 @@
     <p class="uppercase text-sm tracking-widest text-gray-300 mb-2">Xin chào, mời bạn đến với</p>
     <h1 class="text-5xl md:text-6xl font-extrabold mb-8 tracking-wide">TTD RESTAURANT</h1>
 
-    <form th:action="@{/login}" method="post"
+    <form th:action="@{/login}" method="post" th:object="${nguoiDung}"
           class="max-w-md mx-auto bg-white/10 p-6 rounded-xl backdrop-blur-md shadow-2xl space-y-4 text-left">
 
-      <input type="text" name="name" placeholder="Họ và tên" required
+      <!-- Họ và tên -->
+      <input type="text" name="name" placeholder="Họ và tên"
              class="w-full px-4 py-3 rounded-md bg-white/90 text-gray-800 focus:outline-none shadow" />
 
-      <input type="email" name="email" placeholder="Email" required
+      <!-- Email -->
+      <input type="email" th:field="*{email}" placeholder="Email" required
              class="w-full px-4 py-3 rounded-md bg-white/90 text-gray-800 focus:outline-none shadow" />
 
-      <input type="tel" name="phone" placeholder="Số điện thoại" required
+      <!-- Số điện thoại -->
+      <input type="tel" name="phone" placeholder="Số điện thoại"
              class="w-full px-4 py-3 rounded-md bg-white/90 text-gray-800 focus:outline-none shadow" />
 
       <!-- Giới tính -->
       <div class="flex gap-4 text-white">
-        <label><input type="radio" name="gender" value="Nam" required class="mr-1"> Nam</label>
-        <label><input type="radio" name="gender" value="Nữ" required class="mr-1"> Nữ</label>
-        <label><input type="radio" name="gender" value="Khác" required class="mr-1"> Khác</label>
+        <label><input type="radio" name="gender" value="Nam" class="mr-1"> Nam</label>
+        <label><input type="radio" name="gender" value="Nữ" class="mr-1"> Nữ</label>
+        <label><input type="radio" name="gender" value="Khác" class="mr-1"> Khác</label>
       </div>
 
       <!-- Vai trò -->
-      <select name="role" required
+      <select name="role"
               class="w-full px-4 py-3 rounded-md bg-white/90 text-gray-800 focus:outline-none shadow">
         <option value="">-- Chọn vai trò --</option>
         <option value="Khach Hang">🛍️ Khách hàng</option>
@@ -57,17 +60,19 @@
 
       <!-- Mật khẩu -->
       <div class="relative">
-        <input type="password" name="password" id="password" placeholder="Mật khẩu" required
+        <input type="password" th:field="*{password}" id="password" placeholder="Mật khẩu" required
                class="w-full px-4 py-3 rounded-md bg-white/90 text-gray-800 focus:outline-none shadow" />
         <button type="button" onclick="togglePassword()"
                 class="absolute right-4 top-3 text-gray-700 hover:text-black">👁️</button>
       </div>
 
+      <!-- Nút Đăng nhập -->
       <button type="submit"
               class="w-full bg-white text-black font-semibold py-3 rounded-md hover:bg-gray-100 transition">
         ĐĂNG NHẬP
       </button>
 
+      <!-- Thông báo lỗi -->
       <div th:if="${error}" class="text-red-500 text-sm mt-2" th:text="${error}"></div>
     </form>
   </div>

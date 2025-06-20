@@ -1,7 +1,10 @@
 package com.example.servingwebcontent.Controller;
 
 import com.example.servingwebcontent.Model.NguoiDung;
+import com.example.servingwebcontent.Model.NhanVien;
+import com.example.servingwebcontent.Model.KhachHang;
 import com.example.servingwebcontent.database.NguoiDungAiven;
+
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,23 +22,33 @@ public class LoginController {
     @PostMapping("/login")
     public String processLogin(@ModelAttribute("nguoiDung") NguoiDung nguoiDung,
                                Model model, HttpSession session) {
+
         String email = nguoiDung.getEmail();
         String password = nguoiDung.getPassword();
 
         NguoiDungAiven db = new NguoiDungAiven();
-        NguoiDung user = db.login(email, password);
+        NguoiDung user = db.login(email, password); // Trả về NhanVien hoặc KhachHang
 
         if (user != null) {
+            // 👉 Gán tên hiển thị dùng chung
+            if ("Nhan Vien".equalsIgnoreCase(user.getRole()) && user instanceof NhanVien nv) {
+                user.setHoTen(nv.getHoTen());
+            } else if ("Khach Hang".equalsIgnoreCase(user.getRole()) && user instanceof KhachHang kh) {
+                user.setHoTen(kh.getHoTen());
+            }
+
+            // 👉 Lưu user vào session
             session.setAttribute("user", user);
 
-            if ("Nhan Vien".equalsIgnoreCase(user.getRole())) {
-                return "redirect:/NhanVienHome";
-            } else if ("Khach Hang".equalsIgnoreCase(user.getRole())) {
-                return "redirect:/CustomerHome";
-            } else {
-                model.addAttribute("error", "⚠️ Vai trò không hợp lệ.");
-                return "login";
-            }
+            // 👉 Điều hướng theo vai trò
+            return switch (user.getRole().toLowerCase()) {
+                case "nhan vien" -> "redirect:/NhanVienHome";
+                case "khach hang" -> "redirect:/CustomerHome";
+                default -> {
+                    model.addAttribute("error", "⚠️ Vai trò không hợp lệ.");
+                    yield "login";
+                }
+            };
         } else {
             model.addAttribute("error", "❌ Sai email hoặc mật khẩu.");
             return "login";
