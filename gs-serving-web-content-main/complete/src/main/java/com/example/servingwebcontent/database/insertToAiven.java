@@ -3,74 +3,52 @@ package com.example.servingwebcontent.database;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
-import java.sql.SQLException; // Import SQLException để xử lý lỗi tốt hơn
-import java.util.Random;
+import java.sql.SQLException;
+import java.util.UUID;
 
-import com.example.servingwebcontent.NguoiDung; // Sử dụng lớp NguoiDung của bạn
+import com.example.servingwebcontent.Model.NguoiDung;
 
 public class insertToAiven {
 
-    public void insertNguoiDungToDb(NguoiDung nguoiDung) { // Đổi tên phương thức và tham số
-        Connection conn = null;
+    // Kết nối Aiven
+    private static final String JDBC_URL =
+        "jdbc:mysql://mysql-338b99d8-restaurantmanager.e.aivencloud.com:19834/defaultdb?ssl-mode=REQUIRED";
+    private static final String USER = "avnadmin";
+    private static final String PASSWORD = "AVNS_HNm9Mr2leXuYSrqITaj";
 
-        try {
-            // 1. Load JDBC Driver
-            Class.forName("com.mysql.cj.jdbc.Driver");
+    public void insertNguoiDungToDb(NguoiDung nguoiDung) {
+        try (
+            Connection conn = DriverManager.getConnection(JDBC_URL, USER, PASSWORD);
+            PreparedStatement pst = conn.prepareStatement(
+                "INSERT INTO NguoiDung (UserID, Email, MatKhau, VaiTro) VALUES (?, ?, ?, ?)"
+            )
+        ) {
+            // Tạo userId nếu chưa có (bạn có thể dùng AUTO_INCREMENT trong DB để đơn giản hóa hơn)
+            int userId = nguoiDung.getUserID() == 0
+                         ? Math.abs(UUID.randomUUID().hashCode()) // random nhưng ít trùng lặp hơn Random
+                         : nguoiDung.getUserID();
 
-            // 2. Thiết lập kết nối
-            // Loại bỏ "sqluser", "password" vì thông tin xác thực đã có trong URL
-            conn = DriverManager.getConnection(
-                    "jdbc:mysql://avnadmin:AVNS_HNm9Mr2leXuYSrqITaj@mysql-338b99d8-restaurantmanager.e.aivencloud.com:19834/defaultdb?ssl-mode=REQUIRED");
-
-            // 3. Xử lý userID (nếu userID được tự sinh trong DB thì bỏ đoạn này)
-            // Nếu userID tự tăng trong DB, bạn không cần tạo Random ID ở đây.
-            // Nếu không, hãy tạo một ID duy nhất hơn (ví dụ: Random lớn hơn, hoặc UUID).
-            if (nguoiDung.getUserID() == 0) { // Giả định 0 là chưa set ID
-                Random rand = new Random();
-                nguoiDung.setUserID(rand.nextInt(1000000)); // Tăng phạm vi để tránh trùng lặp
+            String role = nguoiDung.getRole();
+            if (role == null || role.trim().isEmpty()) {
+                role = "Khach Hang"; // Giá trị mặc định hợp lệ theo ENUM trong DB
             }
 
-            // 4. Chuẩn bị và thực thi câu lệnh INSERT
-            // Cập nhật câu lệnh SQL để bao gồm 'email', 'password', và 'role'
-            // Đảm bảo tên cột trong DB khớp với tên bạn định nghĩa.
-            // Ví dụ, nếu bảng là 'nguoi_dung' và cột là 'user_id', 'email', 'password', 'role':
-            String sql = "INSERT INTO nguoi_dung(userID, email, password, role) VALUES(?, ?, ?, ?)";
-            
-            try (PreparedStatement pst = conn.prepareStatement(sql)) {
-                pst.setInt(1, nguoiDung.getUserID());
-                pst.setString(2, nguoiDung.getEmail());
-                pst.setString(3, nguoiDung.getPassword());
-                
-                // Gán giá trị mặc định cho role nếu chưa được set
-                String roleToInsert = nguoiDung.getRole();
-                if (roleToInsert == null || roleToInsert.isEmpty()) {
-                    roleToInsert = "user"; // Hoặc "khach_hang" hoặc giá trị mặc định khác
-                }
-                pst.setString(4, roleToInsert);
+            pst.setInt(1, userId);
+            pst.setString(2, nguoiDung.getEmail());
+            pst.setString(3, nguoiDung.getPassword());
+            pst.setString(4, role);
 
-                pst.executeUpdate();
-                System.out.println("NguoiDung inserted successfully with ID: " + nguoiDung.getUserID() + " and Role: " + roleToInsert);
+            int rows = pst.executeUpdate();
+            if (rows > 0) {
+                System.out.printf("✅ Người dùng được chèn thành công (ID: %d, Email: %s, Vai trò: %s)\n",
+                                  userId, nguoiDung.getEmail(), role);
+            } else {
+                System.out.println("⚠️ Không có bản ghi nào được chèn.");
             }
 
-        } catch (ClassNotFoundException e) {
-            System.err.println("JDBC Driver not found: " + e.getMessage());
-            e.printStackTrace();
         } catch (SQLException e) {
-            System.err.println("Database error: " + e.getMessage());
+            System.err.println("❌ Lỗi khi thao tác với database:");
             e.printStackTrace();
-        } catch (Exception e) {
-            System.err.println("An unexpected error occurred: " + e.getMessage());
-            e.printStackTrace();
-        } finally {
-            // 5. Đóng kết nối trong khối finally để đảm bảo nó luôn được đóng
-            try {
-                if (conn != null && !conn.isClosed()) {
-                    conn.close();
-                }
-            } catch (SQLException e) {
-                System.err.println("Error closing database connection: " + e.getMessage());
-                e.printStackTrace();
-            }
         }
     }
 }

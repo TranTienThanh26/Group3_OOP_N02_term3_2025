@@ -1,88 +1,48 @@
 package com.example.servingwebcontent.database;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
+import java.util.List;
 
-import com.example.servingwebcontent.MonAn;
+import com.example.servingwebcontent.Model.MonAn;
 
 public class monAnAiven {
 
-    public monAnAiven() {}
+    private static final String JDBC_URL =
+        "jdbc:mysql://mysql-338b99d8-restaurantmanager.e.aivencloud.com:19834/defaultdb?ssl-mode=REQUIRED";
+    private static final String USER = "avnadmin";
+    private static final String PASSWORD = "AVNS_HNm9Mr2leXuYSrqITaj";
 
-    public ArrayList<MonAn> getMonAnListFromAiven() {
-        ArrayList<MonAn> items = new ArrayList<>();
+    public List<MonAn> getMonAnListFromAiven() {
+        List<MonAn> items = new ArrayList<>();
 
-        Connection conn = null;
-        Statement sta = null;
-        ResultSet setdata = null;
+        String query = "SELECT MaMonAn, TenMonAn, DonGia, LoaiMonAn, TrangThai, SoLuongDaBan, HinhAnh FROM MonAn";
 
-        try {
-            try {
-                // Load JDBC driver
-                Class.forName("com.mysql.cj.jdbc.Driver");
-            } catch (Exception e) {
-                System.err.println("❌ Lỗi khi load JDBC driver:");
-                e.printStackTrace();
+        try (
+            Connection conn = DriverManager.getConnection(JDBC_URL, USER, PASSWORD);
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(query)
+        ) {
+            while (rs.next()) {
+                MonAn monAn = new MonAn();
+                monAn.setMaMonAn(rs.getInt("MaMonAn"));
+                monAn.setTenMonAn(rs.getString("TenMonAn"));
+                monAn.setDonGia(rs.getDouble("DonGia"));
+                monAn.setLoaiMonAn(rs.getString("LoaiMonAn"));
+                monAn.setTrangThai(rs.getString("TrangThai"));
+                monAn.setSoLuongDaBan(rs.getInt("SoLuongDaBan"));
+                monAn.setHinhAnh(rs.getString("HinhAnh")); // 👈 Thêm dòng này
+
+                // In kiểm tra
+                System.out.printf("📦 Món ăn: ID=%d, Tên=%s, Giá=%.2f, Hình=%s\n",
+                        monAn.getMaMonAn(), monAn.getTenMonAn(), monAn.getDonGia(), monAn.getHinhAnh());
+
+                items.add(monAn);
             }
 
-            try {
-                // Thiết lập kết nối – dùng biến môi trường cho bảo mật nếu cần
-                String url = "jdbc:mysql://mysql-338b99d8-restaurantmanager.e.aivencloud.com:19834/defaultdb?ssl-mode=REQUIRED";
-                String user = "avnadmin";
-                String pass = "AVNS_HNm9Mr2leXuYSrqITaj"; // Thay bằng biến môi trường nếu chạy thực tế
-
-                conn = DriverManager.getConnection(url, user, pass);
-                sta = conn.createStatement();
-
-                String query = "SELECT ma_mon_an, ten_mon_an, don_gia, loai_mon_an, trang_thai, so_luong_da_ban FROM mon_an LIMIT 10";
-                setdata = sta.executeQuery(query);
-
-                while (setdata.next()) {
-                    MonAn monAn = new MonAn();
-
-                    monAn.setMaMonAn(setdata.getInt("ma_mon_an"));
-                    monAn.setTenMonAn(setdata.getString("ten_mon_an"));
-                    monAn.setDonGia(setdata.getDouble("don_gia"));
-                    monAn.setLoaiMonAn(setdata.getString("loai_mon_an"));
-                    monAn.setTrangThai(setdata.getString("trang_thai"));
-                    monAn.setSoLuongDaBan(setdata.getInt("so_luong_da_ban"));
-
-                    // In để kiểm tra
-                    System.out.println("MON AN AIVEN DATA:");
-                    System.out.println("Mã: " + monAn.getMaMonAn() +
-                                       ", Tên: " + monAn.getTenMonAn() +
-                                       ", Giá: " + monAn.getDonGia());
-
-                    items.add(monAn);
-                }
-
-            } catch (Exception e) {
-                System.err.println("❌ Lỗi khi truy vấn cơ sở dữ liệu Aiven:");
-                e.printStackTrace();
-            }
-
-        } finally {
-            // Đảm bảo tài nguyên được giải phóng
-            try {
-                if (setdata != null) setdata.close();
-            } catch (Exception e) {
-                System.err.println("❌ Lỗi khi đóng ResultSet: " + e.getMessage());
-            }
-
-            try {
-                if (sta != null) sta.close();
-            } catch (Exception e) {
-                System.err.println("❌ Lỗi khi đóng Statement: " + e.getMessage());
-            }
-
-            try {
-                if (conn != null) conn.close();
-            } catch (Exception e) {
-                System.err.println("❌ Lỗi khi đóng Connection: " + e.getMessage());
-            }
+        } catch (SQLException e) {
+            System.err.println("❌ Lỗi khi truy vấn MonAn từ Aiven:");
+            e.printStackTrace();
         }
 
         return items;

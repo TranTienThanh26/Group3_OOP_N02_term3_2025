@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Thực Đơn - TTD Restaurant</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+    .card:hover {
+      transform: translateY(-4px) scale(1.02);
+    }
+    .card {
+      transition: all 0.3s ease-in-out;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+<!-- NAVIGATION -->
+<nav class="bg-white border-b shadow-sm sticky top-0 z-30">
+  <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
+    <div class="text-xl font-bold text-red-600">TTD Restaurant</div>
+    <ul class="flex space-x-6 font-semibold text-sm text-gray-700">
+      <li><a href="#monchinh" class="hover:text-red-500">MÓN CHÍNH</a></li>
+      <li><a href="#khaivi" class="hover:text-red-500">KHAI VỊ</a></li>
+      <li><a href="#trangmieng" class="hover:text-red-500">TRÁNG MIỆNG</a></li>
+      <li><a href="#douong" class="hover:text-red-500">ĐỒ UỐNG</a></li>
+      <li>
+        <a href="/cart" class="hover:text-red-500 flex items-center space-x-1 relative">
+          <span>🛒</span>
+          <span>Giỏ hàng</span>
+          <sup id="cartCountBadge" class="absolute -top-2 -right-4 bg-red-500 text-white text-xs rounded-full px-1.5 py-0.5 hidden">0</sup>
+        </a>
+      </li>
+      </ul>
+  </div>
+</nav>
+
+<!-- DANH MỤC TEMPLATE (Áp dụng cho tất cả danh mục) -->
+<section id="monchinh" class="max-w-6xl mx-auto py-10 px-4">
+  <h2 class="text-2xl font-bold mb-2 text-red-600">MÓN CHÍNH</h2>
+  <div class="grid md:grid-cols-2 gap-6 mt-6">
+    <div th:each="mon : ${monChinh}"
+         class="card bg-white rounded-2xl shadow-lg p-4 flex justify-between items-center cursor-pointer"
+         th:attr="data-title=${mon.tenMonAn},
+                  data-img='/images/' + ${mon.hinhAnh},
+                  data-price=${#numbers.formatDecimal(mon.donGia, 0, 'COMMA', 0, 'POINT')} + '₫'"
+         onclick="handleCardClick(this)">
+      <div>
+        <h3 class="text-lg font-bold text-gray-900" th:text="${mon.tenMonAn}">Tên món</h3>
+        <p class="text-sm text-gray-500 italic">Hương vị độc đáo, khó quên</p>
+        <p class="text-base font-semibold mt-2 text-red-500"
+           th:text="${#numbers.formatDecimal(mon.donGia, 0, 'COMMA', 0, 'POINT')} + '₫'">Giá</p>
+      </div>
+      <img th:src="@{/images/{img}(img=${mon.hinhAnh})}" alt="Hình món ăn"
+           class="w-28 h-20 rounded-lg object-cover shadow" />
+    </div>
+  </div>
+</section>
+
+<section id="khaivi" class="max-w-6xl mx-auto py-10 px-4">
+  <h2 class="text-2xl font-bold mb-2 text-red-600">KHAI VỊ</h2>
+  <div class="grid md:grid-cols-2 gap-6 mt-6">
+    <div th:each="mon : ${khaiVi}"
+         class="card bg-white rounded-2xl shadow-lg p-4 flex justify-between items-center cursor-pointer"
+         th:attr="data-title=${mon.tenMonAn},
+                  data-img='/images/' + ${mon.hinhAnh},
+                  data-price=${#numbers.formatDecimal(mon.donGia, 0, 'COMMA', 0, 'POINT')} + '₫'"
+         onclick="handleCardClick(this)">
+      <div>
+        <h3 class="text-lg font-bold text-gray-900" th:text="${mon.tenMonAn}">Tên món</h3>
+        <p class="text-sm text-gray-500 italic">Món khai vị tuyệt hảo</p>
+        <p class="text-base font-semibold mt-2 text-red-500"
+           th:text="${#numbers.formatDecimal(mon.donGia, 0, 'COMMA', 0, 'POINT')} + '₫'"></p>
+      </div>
+      <img th:src="@{/images/{img}(img=${mon.hinhAnh})}" alt="Hình món ăn"
+           class="w-28 h-20 rounded-lg object-cover shadow" />
+    </div>
+  </div>
+</section>
+
+<section id="trangmieng" class="max-w-6xl mx-auto py-10 px-4">
+  <h2 class="text-2xl font-bold mb-2 text-red-600">TRÁNG MIỆNG</h2>
+  <div class="grid md:grid-cols-2 gap-6 mt-6">
+    <div th:each="mon : ${trangMieng}"
+         class="card bg-white rounded-2xl shadow-lg p-4 flex justify-between items-center cursor-pointer"
+         th:attr="data-title=${mon.tenMonAn},
+                  data-img='/images/' + ${mon.hinhAnh},
+                  data-price=${#numbers.formatDecimal(mon.donGia, 0, 'COMMA', 0, 'POINT')} + '₫'"
+         onclick="handleCardClick(this)">
+      <div>
+        <h3 class="text-lg font-bold text-gray-900" th:text="${mon.tenMonAn}">Tên món</h3>
+        <p class="text-sm text-gray-500 italic">Ngọt ngào kết thúc bữa ăn</p>
+        <p class="text-base font-semibold mt-2 text-red-500"
+           th:text="${#numbers.formatDecimal(mon.donGia, 0, 'COMMA', 0, 'POINT')} + '₫'"></p>
+      </div>
+      <img th:src="@{/images/{img}(img=${mon.hinhAnh})}" alt="Hình món ăn"
+           class="w-28 h-20 rounded-lg object-cover shadow" />
+    </div>
+  </div>
+</section>
+
+<section id="douong" class="max-w-6xl mx-auto py-10 px-4">
+  <h2 class="text-2xl font-bold mb-2 text-red-600">ĐỒ UỐNG</h2>
+  <div class="grid md:grid-cols-2 gap-6 mt-6">
+    <div th:each="mon : ${doUong}"
+         class="card bg-white rounded-2xl shadow-lg p-4 flex justify-between items-center cursor-pointer"
+         th:attr="data-title=${mon.tenMonAn},
+                  data-img='/images/' + ${mon.hinhAnh},
+                  data-price=${#numbers.formatDecimal(mon.donGia, 0, 'COMMA', 0, 'POINT')} + '₫'"
+         onclick="handleCardClick(this)">
+      <div>
+        <h3 class="text-lg font-bold text-gray-900" th:text="${mon.tenMonAn}">Tên món</h3>
+        <p class="text-sm text-gray-500 italic">Giải khát sảng khoái</p>
+        <p class="text-base font-semibold mt-2 text-red-500"
+           th:text="${#numbers.formatDecimal(mon.donGia, 0, 'COMMA', 0, 'POINT')} + '₫'"></p>
+      </div>
+      <img th:src="@{/images/{img}(img=${mon.hinhAnh})}" alt="Hình món ăn"
+           class="w-28 h-20 rounded-lg object-cover shadow" />
+    </div>
+  </div>
+</section>
+
+<!-- MODAL DETAIL STYLE -->
+<div id="imageModal" class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 hidden">
+  <div class="bg-white rounded-xl overflow-hidden max-w-lg w-full animate-fade-in">
+    <div class="relative">
+      <img id="modalImage" src="" alt="Hình món ăn" class="w-full h-72 object-cover">
+      <button onclick="closeModal()" class="absolute top-4 right-4 text-white text-xl font-bold">&times;</button>
+    </div>
+    <div class="px-6 py-4">
+      <h2 id="modalTitle" class="text-xl font-bold text-gray-900 mb-1">Tên món</h2>
+      <p id="modalPrice" class="text-base text-red-500 font-semibold">Giá</p>
+    </div>
+
+    <!-- GIAO DIỆN ĐẸP HƠN: SỐ LƯỢNG VÀ GIỎ HÀNG -->
+    <div class="px-6 py-4 border-t flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-white">
+      <div class="flex items-center space-x-4">
+        <button onclick="updateQuantity(-1)" class="w-10 h-10 flex items-center justify-center text-xl font-bold bg-gray-200 text-gray-700 rounded-full hover:bg-gray-300 transition">
+          &minus;
+        </button>
+        <input id="quantityInput" type="number" value="1" min="1"
+               class="w-14 text-center text-lg font-medium border border-gray-300 rounded-lg py-1 focus:outline-none focus:ring-2 focus:ring-red-400" />
+        <button onclick="updateQuantity(1)" class="w-10 h-10 flex items-center justify-center text-xl font-bold bg-gray-200 text-gray-700 rounded-full hover:bg-gray-300 transition">
+          +
+        </button>
+      </div>
+      <button onclick="addToCart()" class="w-full sm:w-auto flex items-center justify-center space-x-2 bg-gradient-to-r from-orange-500 to-red-500 text-white font-semibold px-6 py-3 rounded-full hover:opacity-90 transition">
+        <span>🛒 Thêm vào giỏ</span>
+        <span id="modalTotal" class="font-bold">0₫</span>
+      </button>
+    </div>
+
+    <div class="px-6 py-4 flex justify-end">
+      <button onclick="closeModal()" class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600">Đóng</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const badge = document.getElementById("cartCountBadge");
+  
+    // 👉 Khởi tạo biến cartCount từ sessionStorage (nếu có)
+    let cartCount = parseInt(sessionStorage.getItem("cartCount")) || 0;
+    if (cartCount > 0 && badge) {
+      badge.innerText = cartCount;
+      badge.classList.remove("hidden");
+    }
+  
+    // 👉 Xử lý khi người dùng click vào món ăn
+    window.handleCardClick = function (element) {
+      const title = element.dataset.title;
+      const imageUrl = element.dataset.img;
+      const price = element.dataset.price;
+  
+      document.getElementById('modalTitle').innerText = title;
+      document.getElementById('modalImage').src = imageUrl;
+      document.getElementById('modalPrice').innerText = price;
+      document.getElementById('quantityInput').value = 1;
+  
+      updateTotal();
+      document.getElementById('imageModal').classList.remove('hidden');
+    }
+  
+    // 👉 Cập nhật số lượng khi nhấn + hoặc -
+    window.updateQuantity = function (delta) {
+      const input = document.getElementById("quantityInput");
+      let current = parseInt(input.value) || 1;
+      current = Math.max(1, current + delta);
+      input.value = current;
+      updateTotal();
+    }
+  
+    // 👉 Tính tổng tiền trong modal
+    function updateTotal() {
+      const quantity = parseInt(document.getElementById("quantityInput").value);
+      const priceText = document.getElementById("modalPrice").innerText.replace(/[₫,]/g, '');
+      const price = parseInt(priceText) || 0;
+      const total = quantity * price;
+      document.getElementById("modalTotal").innerText = total.toLocaleString('vi-VN') + '₫';
+    }
+  
+    // 👉 Thêm vào giỏ hàng
+    window.addToCart = function () {
+      const title = document.getElementById('modalTitle').innerText;
+      const quantity = parseInt(document.getElementById("quantityInput").value);
+      const priceText = document.getElementById("modalPrice").innerText.replace(/[₫,]/g, '');
+      const price = parseInt(priceText) || 0;
+      const total = quantity * price;
+  
+      fetch('/cart/add', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          tenMonAn: title,
+          soluong: quantity,
+          thanhTien: total
+        })
+      })
+      .then(res => {
+        if (res.ok) {
+          // 👉 Cập nhật số lượng giỏ hàng
+          cartCount += quantity;
+          sessionStorage.setItem("cartCount", cartCount);
+  
+          if (badge) {
+            badge.innerText = cartCount;
+            badge.classList.remove("hidden");
+          }
+  
+          alert(`✅ Đã thêm ${quantity} x ${title} (${total.toLocaleString('vi-VN')}₫) vào giỏ hàng!`);
+          closeModal();
+        } else {
+          alert("❌ Không thể thêm vào giỏ hàng. Vui lòng thử lại.");
+        }
+      })
+      .catch(err => {
+        console.error('Lỗi khi thêm vào giỏ hàng:', err);
+      });
+    }
+  
+    // 👉 Đóng modal
+    window.closeModal = function () {
+      document.getElementById('imageModal').classList.add('hidden');
+    }
+  });
+  </script>
+  
