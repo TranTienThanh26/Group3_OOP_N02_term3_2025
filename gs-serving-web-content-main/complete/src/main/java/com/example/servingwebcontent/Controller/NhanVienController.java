@@ -16,18 +16,10 @@ public class NhanVienController {
         if (user == null) return "redirect:/login";
 
         model.addAttribute("user", user);
-        return "NhanVienHome";
+        return "Admin/NhanVienHome"; // cần tạo file NhanVienHome.html
     }
 
-    // 📋 Quản lý thực đơn
-    @GetMapping("/manage/menu")
-    public String manageMenu(HttpSession session, Model model) {
-        NhanVien user = getNhanVienFromSession(session);
-        if (user == null) return "redirect:/login";
-
-        model.addAttribute("user", user);
-        return "ManageMenu"; // cần tạo file ManageMenu.html
-    }
+   
 
     // 🧾 Quản lý đơn hàng
     @GetMapping("/manage/orders")

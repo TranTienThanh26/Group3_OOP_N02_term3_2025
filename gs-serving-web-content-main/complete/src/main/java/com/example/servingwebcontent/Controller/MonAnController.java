@@ -27,9 +27,7 @@ public class MonAnController {
         model.addAttribute("trangMieng", filterByType(allDishes, "Tráng miệng"));
         model.addAttribute("doUong", filterByType(allDishes, "Đồ uống"));
 
-        return "Menu"; // tên file Menu.html trong templates
-    }
-
+        return "customer/Menu";}// Trả về view menu.html
     // Hàm lọc theo loại món ăn (không phân biệt hoa thường)
     private List<MonAn> filterByType(List<MonAn> list, String type) {
         return list.stream()

@@ -19,7 +19,7 @@ public class CustomerController {
             return "redirect:/login";
         }
         model.addAttribute("user", user);
-        return "CustomerHome";
+        return "Customer/CustomerHome";
     }
 
     
