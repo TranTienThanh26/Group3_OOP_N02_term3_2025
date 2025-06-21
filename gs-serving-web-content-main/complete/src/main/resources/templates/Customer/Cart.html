@@ -7,7 +7,12 @@
 </head>
 <body class="bg-gray-100 p-6">
 <div class="max-w-4xl mx-auto bg-white p-6 shadow-md rounded">
-    <h2 class="text-2xl font-bold mb-4">🛒 Giỏ Hàng Của Bạn</h2>
+    <h2 class="text-2xl font-bold mb-2">🛒 Giỏ Hàng Của Bạn</h2>
+
+    <!-- 🪑 Bàn đã đặt (sẽ hiển thị bằng JavaScript nếu có) -->
+    <div id="tableInfo" class="text-green-600 font-semibold mb-4 hidden">
+        🪑 Bàn đã đặt: <span id="tableName"></span>
+    </div>
 
     <!-- Nếu giỏ hàng chưa khởi tạo -->
     <div th:if="${cart == null}">
@@ -68,5 +73,16 @@
         </form>
     </div>
 </div>
+
+<!-- SCRIPT để hiển thị bàn đã đặt -->
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const table = sessionStorage.getItem("selectedTable");
+    if (table) {
+      document.getElementById("tableName").innerText = table;
+      document.getElementById("tableInfo").classList.remove("hidden");
+    }
+  });
+</script>
 </body>
 </html>
