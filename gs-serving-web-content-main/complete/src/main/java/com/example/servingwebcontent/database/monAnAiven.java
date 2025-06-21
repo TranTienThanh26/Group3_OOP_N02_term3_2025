@@ -13,9 +13,9 @@ public class monAnAiven {
     private static final String USER = "avnadmin";
     private static final String PASSWORD = "AVNS_HNm9Mr2leXuYSrqITaj";
 
+    // ✅ Lấy danh sách món ăn
     public List<MonAn> getMonAnListFromAiven() {
         List<MonAn> items = new ArrayList<>();
-
         String query = "SELECT MaMonAn, TenMonAn, DonGia, LoaiMonAn, TrangThai, SoLuongDaBan, HinhAnh FROM MonAn";
 
         try (
@@ -31,20 +31,78 @@ public class monAnAiven {
                 monAn.setLoaiMonAn(rs.getString("LoaiMonAn"));
                 monAn.setTrangThai(rs.getString("TrangThai"));
                 monAn.setSoLuongDaBan(rs.getInt("SoLuongDaBan"));
-                monAn.setHinhAnh(rs.getString("HinhAnh")); // 👈 Thêm dòng này
-
-                // In kiểm tra
-                System.out.printf("📦 Món ăn: ID=%d, Tên=%s, Giá=%.2f, Hình=%s\n",
-                        monAn.getMaMonAn(), monAn.getTenMonAn(), monAn.getDonGia(), monAn.getHinhAnh());
-
+                monAn.setHinhAnh(rs.getString("HinhAnh"));
                 items.add(monAn);
             }
-
         } catch (SQLException e) {
             System.err.println("❌ Lỗi khi truy vấn MonAn từ Aiven:");
             e.printStackTrace();
         }
 
         return items;
+    }
+
+    // ✅ Cập nhật món ăn đầy đủ (đã sửa)
+    public void update(MonAn monAn) {
+        String query = "UPDATE MonAn SET TenMonAn = ?, DonGia = ?, LoaiMonAn = ?, TrangThai = ?, SoLuongDaBan = ?, HinhAnh = ? WHERE MaMonAn = ?";
+
+        try (
+            Connection conn = DriverManager.getConnection(JDBC_URL, USER, PASSWORD);
+            PreparedStatement stmt = conn.prepareStatement(query)
+        ) {
+            stmt.setString(1, monAn.getTenMonAn());
+            stmt.setDouble(2, monAn.getDonGia());
+            stmt.setString(3, monAn.getLoaiMonAn());
+            stmt.setString(4, monAn.getTrangThai());
+            stmt.setInt(5, monAn.getSoLuongDaBan());
+            stmt.setString(6, monAn.getHinhAnh());
+            stmt.setInt(7, monAn.getMaMonAn());
+
+            int rows = stmt.executeUpdate();
+            System.out.println("✅ Đã cập nhật " + rows + " món ăn.");
+        } catch (SQLException e) {
+            System.err.println("❌ Lỗi khi cập nhật MonAn:");
+            e.printStackTrace();
+        }
+    }
+
+    // ✅ Thêm món ăn mới
+    public void themMonAn(MonAn monAn) {
+        String query = "INSERT INTO MonAn (TenMonAn, DonGia, LoaiMonAn, TrangThai, SoLuongDaBan, HinhAnh) VALUES (?, ?, ?, ?, ?, ?)";
+
+        try (
+            Connection conn = DriverManager.getConnection(JDBC_URL, USER, PASSWORD);
+            PreparedStatement stmt = conn.prepareStatement(query)
+        ) {
+            stmt.setString(1, monAn.getTenMonAn());
+            stmt.setDouble(2, monAn.getDonGia());
+            stmt.setString(3, monAn.getLoaiMonAn());
+            stmt.setString(4, monAn.getTrangThai());
+            stmt.setInt(5, monAn.getSoLuongDaBan());
+            stmt.setString(6, monAn.getHinhAnh());
+
+            int rows = stmt.executeUpdate();
+            System.out.println("✅ Đã thêm " + rows + " món ăn mới.");
+        } catch (SQLException e) {
+            System.err.println("❌ Lỗi khi thêm MonAn:");
+            e.printStackTrace();
+        }
+    }
+
+    // ✅ Xoá món ăn theo ID
+    public void deleteById(int id) {
+        String query = "DELETE FROM MonAn WHERE MaMonAn = ?";
+
+        try (
+            Connection conn = DriverManager.getConnection(JDBC_URL, USER, PASSWORD);
+            PreparedStatement stmt = conn.prepareStatement(query)
+        ) {
+            stmt.setInt(1, id);
+            int rows = stmt.executeUpdate();
+            System.out.println("🗑️ Đã xoá " + rows + " món ăn.");
+        } catch (SQLException e) {
+            System.err.println("❌ Lỗi khi xoá MonAn:");
+            e.printStackTrace();
+        }
     }
 }

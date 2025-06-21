@@ -29,6 +29,12 @@
       <li><a href="#trangmieng" class="hover:text-red-500">TRÁNG MIỆNG</a></li>
       <li><a href="#douong" class="hover:text-red-500">ĐỒ UỐNG</a></li>
       <li>
+        <a href="/tables" class="hover:text-red-500 flex items-center space-x-1">
+          <span>📋</span>
+          <span>Bàn</span>
+        </a>
+      </li>
+       <li>
         <a href="/cart" class="hover:text-red-500 flex items-center space-x-1 relative">
           <span>🛒</span>
           <span>Giỏ hàng</span>
@@ -162,14 +168,17 @@
 
 <script>
   document.addEventListener("DOMContentLoaded", function () {
-    const badge = document.getElementById("cartCountBadge");
+  const badge = document.getElementById("cartCountBadge");
+
   
-    // 👉 Khởi tạo biến cartCount từ sessionStorage (nếu có)
-    let cartCount = parseInt(sessionStorage.getItem("cartCount")) || 0;
-    if (cartCount > 0 && badge) {
-      badge.innerText = cartCount;
-      badge.classList.remove("hidden");
-    }
+  fetch('/cart/total')
+    .then(res => res.json())
+    .then(count => {
+      if (count > 0) {
+        badge.innerText = count;
+        badge.classList.remove("hidden");
+      }
+    });
   
     // 👉 Xử lý khi người dùng click vào món ăn
     window.handleCardClick = function (element) {
@@ -204,44 +213,43 @@
       document.getElementById("modalTotal").innerText = total.toLocaleString('vi-VN') + '₫';
     }
   
-    // 👉 Thêm vào giỏ hàng
     window.addToCart = function () {
-      const title = document.getElementById('modalTitle').innerText;
-      const quantity = parseInt(document.getElementById("quantityInput").value);
-      const priceText = document.getElementById("modalPrice").innerText.replace(/[₫,]/g, '');
-      const price = parseInt(priceText) || 0;
-      const total = quantity * price;
-  
-      fetch('/cart/add', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          tenMonAn: title,
-          soluong: quantity,
-          thanhTien: total
-        })
-      })
-      .then(res => {
-        if (res.ok) {
-          // 👉 Cập nhật số lượng giỏ hàng
-          cartCount += quantity;
-          sessionStorage.setItem("cartCount", cartCount);
-  
-          if (badge) {
-            badge.innerText = cartCount;
-            badge.classList.remove("hidden");
-          }
-  
-          alert(`✅ Đã thêm ${quantity} x ${title} (${total.toLocaleString('vi-VN')}₫) vào giỏ hàng!`);
-          closeModal();
-        } else {
-          alert("❌ Không thể thêm vào giỏ hàng. Vui lòng thử lại.");
-        }
-      })
-      .catch(err => {
-        console.error('Lỗi khi thêm vào giỏ hàng:', err);
-      });
+  const title = document.getElementById('modalTitle').innerText;
+  const quantity = parseInt(document.getElementById("quantityInput").value);
+  const priceText = document.getElementById("modalPrice").innerText.replace(/[₫,]/g, '');
+  const price = parseInt(priceText) || 0;
+
+  fetch('/cart/add', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      tenMonAn: title,
+      soLuong: quantity,
+      donGia: price
+    })
+  })
+  .then(res => {
+    if (res.ok) {
+      return fetch('/cart/total'); // lấy lại số lượng từ server
+    } else {
+      throw new Error("Thêm vào giỏ hàng thất bại");
     }
+  })
+  .then(res => res.json())
+  .then(count => {
+    if (badge) {
+      badge.innerText = count;
+      badge.classList.remove("hidden");
+    }
+    alert(`✅ Đã thêm ${quantity} x ${title} vào giỏ hàng!`);
+    closeModal();
+  })
+  .catch(err => {
+    console.error('Lỗi khi thêm vào giỏ hàng:', err);
+    alert("❌ Không thể thêm món vào giỏ hàng.");
+  });
+}
+
   
     // 👉 Đóng modal
     window.closeModal = function () {

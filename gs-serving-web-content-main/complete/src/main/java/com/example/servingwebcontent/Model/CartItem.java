@@ -38,6 +38,6 @@ public class CartItem {
     }
 
     public int getThanhTien() {
-        return donGia * soLuong;
+        return this.donGia * this.soLuong;
     }
 }

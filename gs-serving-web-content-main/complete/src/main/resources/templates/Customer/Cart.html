@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Giỏ Hàng</title>
+    <meta charset="UTF-8">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 p-6">
+<div class="max-w-4xl mx-auto bg-white p-6 shadow-md rounded">
+    <h2 class="text-2xl font-bold mb-4">🛒 Giỏ Hàng Của Bạn</h2>
+
+    <!-- Nếu giỏ hàng chưa khởi tạo -->
+    <div th:if="${cart == null}">
+        <p class="text-gray-500 italic">Không thể hiển thị giỏ hàng. Vui lòng thử lại.</p>
+    </div>
+
+    <!-- Nếu giỏ hàng rỗng -->
+    <div th:if="${#lists.isEmpty(cart)}">
+        <p class="text-gray-600 italic">Giỏ hàng của bạn đang trống.</p>
+    </div>
+
+    <!-- Nếu có món trong giỏ -->
+    <div th:if="${not #lists.isEmpty(cart)}">
+        <table class="table-auto w-full text-left border-collapse">
+            <thead>
+            <tr class="bg-gray-200">
+                <th class="p-2">Tên Món Ăn</th>
+                <th class="p-2 text-center">Số Lượng</th>
+                <th class="p-2 text-right">Đơn Giá</th>
+                <th class="p-2 text-right">Thành Tiền</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="item : ${cart}" class="border-b">
+                <td class="p-2" th:text="${item.tenMonAn}">Tên món</td>
+                <td class="p-2 text-center" th:text="${item.soLuong}">1</td>
+                <td class="p-2 text-right"
+                    th:text="${#numbers.formatDecimal(item.getThanhTien() / item.soLuong, 0, 'POINT', '.', ',')} + '₫'">
+                    60.000₫
+                </td>
+                <td class="p-2 text-right"
+                    th:text="${#numbers.formatDecimal(item.getThanhTien(), 0, 'POINT', '.', ',')} + '₫'">
+                    60.000₫
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+        <!-- Tổng cộng -->
+        <div class="text-right mt-4">
+            <p class="text-xl font-semibold">Tổng cộng:
+                <span class="text-red-600 font-bold"
+                      th:text="${#numbers.formatDecimal(total, 0, 'POINT', '.', ',')} + '₫'">0₫</span>
+            </p>
+        </div>
+    </div>
+
+    <!-- Nút điều hướng -->
+    <div class="mt-6 flex justify-between">
+        <a href="/menu" class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded">
+            ← Tiếp tục chọn món
+        </a>
+
+        <form th:action="@{/invoice/confirm}" method="post">
+            <button type="submit" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded">
+                Xác nhận & Thanh toán
+            </button>
+        </form>
+    </div>
+</div>
+</body>
+</html>
