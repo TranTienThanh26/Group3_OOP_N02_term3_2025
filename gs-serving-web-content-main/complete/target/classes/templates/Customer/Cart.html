@@ -1,151 +1,88 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
+    <title>Giỏ Hàng</title>
     <meta charset="UTF-8">
-    <title>🛒 Giỏ Hàng - TTD Restaurant</title>
-
-    <!-- Font đẹp -->
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
-
-    <style>
-        body {
-            background: url('/images/Giaodien1.jpeg') no-repeat center center fixed;
-            background-size: cover;
-            font-family: 'Montserrat', sans-serif;
-        }
-        .glass-card {
-            background: rgba(15, 15, 15, 0.75);
-            backdrop-filter: blur(12px);
-            border-radius: 1.25rem;
-            padding: 2.5rem;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.7);
-        }
-        .font-heading {
-            font-family: 'Playfair Display', serif;
-        }
-        .btn-gold {
-            background-color: #facc15;
-            color: #111827;
-        }
-        .btn-gold:hover {
-            background-color: #eab308;
-        }
-        .btn-white {
-            background-color: #f3f4f6;
-            color: #111827;
-        }
-        .btn-white:hover {
-            background-color: #e5e7eb;
-        }
-        .table-row:hover {
-            background-color: rgba(255, 255, 255, 0.05);
-        }
-    </style>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
+<body class="bg-gray-100 p-6">
+<div class="max-w-4xl mx-auto bg-white p-6 shadow-md rounded">
+    <h2 class="text-2xl font-bold mb-2">🛒 Giỏ Hàng Của Bạn</h2>
 
-<body class="min-h-screen flex items-center justify-center px-4 py-10 text-white">
-<div class="max-w-6xl w-full glass-card">
-    <h1 class="text-4xl font-heading text-yellow-400 text-center mb-10">🛒 Giỏ Hàng Của Bạn</h1>
-
-    <!-- 🪑 Bàn đã đặt (nếu có) -->
-    <div id="tableInfo" class="text-green-300 font-semibold text-lg mb-6 text-center hidden">
+    <!-- 🪑 Bàn đã đặt (sẽ hiển thị bằng JavaScript nếu có) -->
+    <div id="tableInfo" class="text-green-600 font-semibold mb-4 hidden">
         🪑 Bàn đã đặt: <span id="tableName"></span>
-        <button onclick="cancelTable()" class="ml-2 text-sm text-red-400 hover:text-red-300 underline">(Huỷ)</button>
     </div>
 
-    <!-- Nếu giỏ hàng trống -->
-    <div th:if="${#lists.isEmpty(cart)}" class="text-center">
-        <p class="text-gray-300 italic">Bạn chưa chọn món nào.</p>
-        <a href="/menu" class="mt-4 inline-block px-5 py-2 btn-gold rounded-full font-semibold shadow">← Quay lại thực đơn</a>
+    <!-- Nếu giỏ hàng chưa khởi tạo -->
+    <div th:if="${cart == null}">
+        <p class="text-gray-500 italic">Không thể hiển thị giỏ hàng. Vui lòng thử lại.</p>
     </div>
 
-    <!-- Nếu có món -->
+    <!-- Nếu giỏ hàng rỗng -->
+    <div th:if="${#lists.isEmpty(cart)}">
+        <p class="text-gray-600 italic">Giỏ hàng của bạn đang trống.</p>
+    </div>
+
+    <!-- Nếu có món trong giỏ -->
     <div th:if="${not #lists.isEmpty(cart)}">
-        <div class="overflow-x-auto rounded-xl shadow">
-            <table class="w-full text-sm table-auto">
-                <thead class="bg-gray-800 uppercase tracking-widest text-xs">
-                    <tr>
-                        <th class="p-3 text-left">Món Ăn</th>
-                        <th class="p-3 text-center">Số Lượng</th>
-                        <th class="p-3 text-right">Đơn Giá</th>
-                        <th class="p-3 text-right">Thành Tiền</th>
-                        <th class="p-3 text-center">Thao Tác</th>
-                    </tr>
-                </thead>
-                <tbody>
-                <tr th:each="item : ${cart}" class="table-row border-b border-gray-700">
-                    <td class="p-3 font-medium text-yellow-100" th:text="${item.tenMonAn}">Tên món</td>
-                    <td class="p-3 text-center">
-                        <form th:action="@{/cart/update}" method="post" class="flex justify-center items-center gap-2">
-                            <input type="hidden" name="tenMonAn" th:value="${item.tenMonAn}" />
-                            <input type="number" name="soLuong" min="1" th:value="${item.soLuong}" class="w-16 p-1 rounded text-center text-black" />
-                            <button type="submit" class="text-yellow-400 hover:text-yellow-300 text-xs font-semibold">Cập nhật</button>
-                        </form>
-                    </td>
-                    <td class="p-3 text-right text-yellow-300" th:text="${item.donGia} + '₫'">0₫</td>
-                    <td class="p-3 text-right font-bold text-green-400" th:text="${item.thanhTien} + '₫'">0₫</td>
-                    <td class="p-3 text-center">
-                        <form th:action="@{/cart/remove}" method="post">
-                            <input type="hidden" name="tenMonAn" th:value="${item.tenMonAn}" />
-                            <button type="submit" class="text-red-400 hover:text-red-300 text-xs font-semibold">Xoá</button>
-                        </form>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
+        <table class="table-auto w-full text-left border-collapse">
+            <thead>
+            <tr class="bg-gray-200">
+                <th class="p-2">Tên Món Ăn</th>
+                <th class="p-2 text-center">Số Lượng</th>
+                <th class="p-2 text-right">Đơn Giá</th>
+                <th class="p-2 text-right">Thành Tiền</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="item : ${cart}" class="border-b">
+                <td class="p-2" th:text="${item.tenMonAn}">Tên món</td>
+                <td class="p-2 text-center" th:text="${item.soLuong}">1</td>
+                <td class="p-2 text-right"
+                    th:text="${#numbers.formatDecimal(item.getThanhTien() / item.soLuong, 0, 'POINT', '.', ',')} + '₫'">
+                    60.000₫
+                </td>
+                <td class="p-2 text-right"
+                    th:text="${#numbers.formatDecimal(item.getThanhTien(), 0, 'POINT', '.', ',')} + '₫'">
+                    60.000₫
+                </td>
+            </tr>
+            </tbody>
+        </table>
 
-        <!-- Tổng tiền & hành động -->
-        <div class="mt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-            <p class="text-xl font-bold text-yellow-200">
-                Tổng cộng: <span th:text="${total} + '₫'">0₫</span>
+        <!-- Tổng cộng -->
+        <div class="text-right mt-4">
+            <p class="text-xl font-semibold">Tổng cộng:
+                <span class="text-red-600 font-bold"
+                      th:text="${#numbers.formatDecimal(total, 0, 'POINT', '.', ',')} + '₫'">0₫</span>
             </p>
-            <div class="flex gap-3">
-                <a href="/menu" class="btn-white px-6 py-2 rounded-full font-semibold shadow">← Chọn thêm món</a>
-                <form th:action="@{/invoice/confirm}" method="post">
-                    <button type="submit" class="btn-gold px-6 py-2 rounded-full font-bold shadow">✅ Xác nhận đặt món</button>
-                </form>
-            </div>
         </div>
+    </div>
+
+    <!-- Nút điều hướng -->
+    <div class="mt-6 flex justify-between">
+        <a href="/menu" class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded">
+            ← Tiếp tục chọn món
+        </a>
+
+        <form th:action="@{/invoice/confirm}" method="post">
+            <button type="submit" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded">
+                Xác nhận & Thanh toán
+            </button>
+        </form>
     </div>
 </div>
 
-<!-- Script xử lý bàn đã đặt -->
+<!-- SCRIPT để hiển thị bàn đã đặt -->
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const table = sessionStorage.getItem("selectedTable");
-        if (table) {
-            document.getElementById("tableName").innerText = table;
-            document.getElementById("tableInfo").classList.remove("hidden");
-        }
-    });
-
-    function cancelTable() {
-        const table = sessionStorage.getItem("selectedTable");
-        if (!table) return;
-
-        fetch('/api/ban/huyban', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ tenBan: table })
-        })
-        .then(res => {
-            if (res.ok) {
-                sessionStorage.removeItem("selectedTable");
-                document.getElementById("tableInfo").classList.add("hidden");
-                const badge = document.getElementById("tableCheckBadge");
-                if (badge) badge.classList.add("hidden");
-                alert("✅ Đã huỷ đặt bàn " + table);
-            } else {
-                alert("❌ Không thể huỷ bàn.");
-            }
-        })
-        .catch(err => {
-            console.error("❌ Lỗi huỷ bàn:", err);
-            alert("❌ Có lỗi khi huỷ bàn.");
-        });
+  document.addEventListener("DOMContentLoaded", function () {
+    const table = sessionStorage.getItem("selectedTable");
+    if (table) {
+      document.getElementById("tableName").innerText = table;
+      document.getElementById("tableInfo").classList.remove("hidden");
     }
+  });
 </script>
 </body>
 </html>
