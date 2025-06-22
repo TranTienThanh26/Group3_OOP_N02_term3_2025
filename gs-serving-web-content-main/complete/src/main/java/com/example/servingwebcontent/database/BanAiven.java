@@ -57,7 +57,7 @@ public class BanAiven {
         }
     }
 
-    // ✅ Cập nhật thông tin bàn
+    // ✅ Cập nhật thông tin bàn (tên + trạng thái)
     public void updateBan(Ban ban) {
         String query = "UPDATE Ban SET TenBan = ?, TrangThai = ? WHERE MaBan = ?";
 
@@ -81,8 +81,7 @@ public class BanAiven {
     public void deleteById(int maBan) {
         String query = "DELETE FROM Ban WHERE MaBan = ?";
 
-        try (
-            Connection conn = DriverManager.getConnection(JDBC_URL, USER, PASSWORD);
+        try (Connection conn = DriverManager.getConnection(JDBC_URL, USER, PASSWORD);
             PreparedStatement stmt = conn.prepareStatement(query)
         ) {
             stmt.setInt(1, maBan);
@@ -94,7 +93,7 @@ public class BanAiven {
         }
     }
 
-    // ✅ Cập nhật trạng thái bàn riêng (đặt bàn)
+    // ✅ Cập nhật trạng thái bàn riêng
     public void capNhatTrangThai(int maBan, String trangThaiMoi) {
         String query = "UPDATE Ban SET TrangThai = ? WHERE MaBan = ?";
 
@@ -110,5 +109,32 @@ public class BanAiven {
             System.err.println("❌ Lỗi khi cập nhật trạng thái Ban:");
             e.printStackTrace();
         }
+    }
+
+    // ✅ (Tuỳ chọn) Tìm bàn theo tên (có thể dùng trong tìm kiếm nâng cao)
+    public List<Ban> timBanTheoTen(String keyword) {
+        List<Ban> result = new ArrayList<>();
+        String query = "SELECT MaBan, TenBan, TrangThai FROM Ban WHERE TenBan LIKE ?";
+
+        try (
+            Connection conn = DriverManager.getConnection(JDBC_URL, USER, PASSWORD);
+            PreparedStatement stmt = conn.prepareStatement(query)
+        ) {
+            stmt.setString(1, "%" + keyword + "%");
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                Ban ban = new Ban();
+                ban.setMaBan(rs.getInt("MaBan"));
+                ban.setTenBan(rs.getString("TenBan"));
+                ban.setTrangThai(rs.getString("TrangThai"));
+                result.add(ban);
+            }
+        } catch (SQLException e) {
+            System.err.println("❌ Lỗi khi tìm kiếm bàn:");
+            e.printStackTrace();
+        }
+
+        return result;
     }
 }
