@@ -2,13 +2,13 @@
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title>Quản Lý Thực Đơn - TTD Restaurant</title>
+  <title>Thực Đơn - TTD Restaurant</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
   <style>
     body { font-family: 'Inter', sans-serif; }
     .card:hover { transform: translateY(-4px) scale(1.01); }
-    .card { transition: all 0.3s ease-in-out; }
+    .card { transition: all 0.3s ease-in-out; cursor: pointer; }
   </style>
 </head>
 <body class="bg-gray-100 text-gray-800">
@@ -16,108 +16,183 @@
 <!-- NAVIGATION -->
 <nav class="bg-white border-b shadow-sm sticky top-0 z-30">
   <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
-    <div class="text-xl font-bold text-red-600">TTD Restaurant - Quản Lý Thực Đơn</div>
+    <div class="text-xl font-bold text-red-600">TTD Restaurant</div>
+    <ul class="flex space-x-6 font-semibold text-sm text-gray-700">
+      <li><a href="#monchinh" class="hover:text-red-500">MÓN CHÍNH</a></li>
+      <li><a href="#khaivi" class="hover:text-red-500">KHAI VỊ</a></li>
+      <li><a href="#trangmieng" class="hover:text-red-500">TRÁNG MIỆNG</a></li>
+      <li><a href="#douong" class="hover:text-red-500">ĐỒ UỐNG</a></li>
+    </ul>
   </div>
 </nav>
 
-<!-- FORM THÊM MÓN -->
-<section class="max-w-6xl mx-auto py-6 px-4">
-  <h2 class="text-xl font-bold mb-2">➕ Thêm Món Ăn</h2>
-  <form id="addForm" enctype="multipart/form-data" class="grid md:grid-cols-2 gap-4 bg-white p-4 rounded shadow">
-    <input type="hidden" name="action" value="add">
-    <input name="tenMonAn" id="addTenMon" type="text" placeholder="Tên món" required class="border p-2 rounded">
-    <input name="donGia" id="addGia" type="number" placeholder="Đơn giá" required class="border p-2 rounded">
-    <select name="loaiMonAn" id="addLoai" required class="border p-2 rounded">
-      <option value="">Chọn loại</option>
-      <option value="Món chính">Món chính</option>
-      <option value="Khai vị">Khai vị</option>
-      <option value="Tráng miệng">Tráng miệng</option>
-      <option value="Đồ uống">Đồ uống</option>
-    </select>
-    <input name="hinhAnhFile" id="addImage" type="file" accept="image/*" required class="border p-2 rounded">
-    <button type="button" onclick="submitAddForm()" class="col-span-2 bg-green-500 text-white py-2 rounded hover:bg-green-600">Thêm món</button>
+<!-- TÌM KIẾM MÓN ĂN -->
+<div class="max-w-6xl mx-auto px-4 mt-6">
+  <form th:action="@{/manage/menu}" method="get" class="flex flex-col md:flex-row items-start md:items-center gap-3">
+    <input type="text" name="keyword"
+           placeholder="Tìm món ăn theo tên..."
+           th:value="${keyword}"
+           class="w-full md:w-[300px] px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+    />
+    <button type="submit"
+            class="bg-blue-600 text-white font-semibold px-5 py-2 rounded-md shadow hover:bg-blue-700 transition-all duration-200">
+      Tìm kiếm
+    </button>
   </form>
+</div>
+
+<!-- SCRIPT ẨN/HIỆN -->
+<script>
+  function toggleOptions(id) {
+    const panel = document.getElementById(id);
+    panel.classList.toggle('hidden');
+  }
+</script>
+
+<!-- TEMPLATE DANH MỤC (KHÔNG CÒN TIÊU ĐỀ) -->
+<section th:fragment="danhMuc(mons)" class="max-w-6xl mx-auto py-6 px-4">
+  <div class="grid md:grid-cols-2 gap-6">
+    <div th:each="mon : ${mons}" class="bg-white rounded-xl shadow p-4">
+      <div class="card flex items-center space-x-4" th:onclick="'toggleOptions(\'options-' + ${mon.maMonAn} + '\')'">
+        <img th:src="@{/images/{img}(img=${mon.hinhAnh})}" alt="Ảnh món ăn" class="w-24 h-20 rounded object-cover">
+        <div>
+          <h3 class="text-lg font-bold" th:text="${mon.tenMonAn}">Tên món</h3>
+          <p class="text-red-500 font-semibold" th:text="${#numbers.formatDecimal(mon.donGia, 0, 'COMMA', 0, 'POINT')} + '₫'">Đơn giá</p>
+          <p class="text-gray-600 text-sm">Đã bán: <span th:text="${mon.soLuongDaBan}">0</span></p>
+        </div>
+      </div>
+
+      <div th:id="'options-' + ${mon.maMonAn}" class="hidden mt-3 pl-28 space-x-4">
+        <button th:attr="data-modal-target='modal-edit-' + ${mon.maMonAn}"
+                th:attrappend="data-modal-toggle='modal-edit-' + ${mon.maMonAn}"
+                class="text-blue-600 hover:underline">Sửa</button>
+        <a th:href="@{/manage/menu/delete/{id}(id=${mon.maMonAn})}"
+           onclick="return confirm('Bạn có chắc chắn muốn xóa món ăn này không?')"
+           class="text-red-600 hover:underline">Xóa</a>
+      </div>
+
+      <!-- Modal sửa -->
+      <div th:id="'modal-edit-' + ${mon.maMonAn}" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black bg-opacity-50">
+        <div class="bg-white rounded-xl shadow-xl max-w-md w-full p-6">
+          <h3 class="text-lg font-bold mb-4 text-red-600">Chỉnh sửa món ăn</h3>
+          <form th:action="@{/manage/menu/update}" method="post" enctype="multipart/form-data">
+            <input type="hidden" name="maMonAn" th:value="${mon.maMonAn}" />
+            <div class="mb-3">
+              <label class="block mb-1 text-sm font-medium">Tên món:</label>
+              <input type="text" name="tenMonAn" th:value="${mon.tenMonAn}" class="w-full border px-3 py-2 rounded" required>
+            </div>
+            <div class="mb-3">
+              <label class="block mb-1 text-sm font-medium">Đơn giá:</label>
+              <input type="number" name="donGia" th:value="${mon.donGia}" class="w-full border px-3 py-2 rounded" required>
+            </div>
+            <div class="mb-3">
+              <label class="block mb-1 text-sm font-medium">Loại món:</label>
+              <input type="text" name="loaiMonAn" th:value="${mon.loaiMonAn}" class="w-full border px-3 py-2 rounded" required>
+            </div>
+            <div class="mb-3">
+              <label class="block mb-1 text-sm font-medium">Số lượng đã bán:</label>
+              <input type="number" name="soLuongDaBan" th:value="${mon.soLuongDaBan}" class="w-full border px-3 py-2 rounded" required>
+            </div>
+            <div class="mb-3">
+              <label class="block mb-1 text-sm font-medium">Ảnh món ăn mới:</label>
+              <input type="file" name="hinhAnhFile" accept="image/*" class="w-full border px-3 py-2 rounded">
+              <img th:src="@{/images/{img}(img=${mon.hinhAnh})}" class="w-20 h-16 mt-2 rounded" alt="Ảnh hiện tại">
+            </div>
+            <div class="flex justify-end space-x-3 mt-4">
+              <button type="submit" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">Cập nhật</button>
+              <button type="button" onclick="this.closest('.fixed').classList.add('hidden')" class="text-gray-500">Đóng</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
 </section>
 
-<!-- Gọi fragment danh mục đã khai báo -->
-<div th:insert="~{this :: danhmuc('monchinh', '🍛 MÓN CHÍNH', ${monChinh})}"></div>
-<div th:insert="~{this :: danhmuc('khaivi', '🥗 KHAI VỊ', ${khaiVi})}"></div>
-<div th:insert="~{this :: danhmuc('trangmieng', '🍰 TRÁNG MIỀNG', ${trangMieng})}"></div>
-<div th:insert="~{this :: danhmuc('douong', '🥤 ĐỒ UỐNG', ${doUong})}"></div>
+<!-- NÚT THÊM MÓN ĂN -->
+<div class="max-w-6xl mx-auto px-4 mt-8 text-right">
+  <button onclick="document.getElementById('modal-add').classList.remove('hidden')"
+          class="bg-green-600 text-white font-semibold px-5 py-2 rounded hover:bg-green-700">
+    + Thêm món ăn
+  </button>
+</div>
 
-<!-- MODAL Sửa MÓN -->
-<div id="editModal" class="hidden fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
-  <div class="bg-white p-6 rounded-lg w-full max-w-md">
-    <h2 class="text-xl font-bold mb-4">✏️ Chỉnh Sửa Món Ăn</h2>
-    <form id="editForm" enctype="multipart/form-data" class="grid gap-4">
-      <input type="hidden" name="action" value="update">
-      <input type="hidden" name="maMonAn" id="editId">
-      <input type="text" name="tenMonAn" id="editName" class="border p-2 rounded" required>
-      <input type="number" name="donGia" id="editPrice" class="border p-2 rounded" required>
-      <select name="loaiMonAn" id="editType" class="border p-2 rounded">
-        <option value="Món chính">Món chính</option>
-        <option value="Khai vị">Khai vị</option>
-        <option value="Tráng miệng">Tráng miệng</option>
-        <option value="Đồ uống">Đồ uống</option>
-      </select>
-      <input type="file" name="hinhAnhFile" id="editImage" accept="image/*" class="border p-2 rounded">
-      <div class="flex justify-end space-x-2">
-        <button type="button" onclick="closeEditModal()" class="px-4 py-2 border rounded">Hủy</button>
-        <button type="button" onclick="submitEditForm()" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Lưu</button>
+<!-- Modal thêm món ăn -->
+<div id="modal-add" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black bg-opacity-50">
+  <div class="bg-white rounded-xl shadow-xl max-w-md w-full p-6">
+    <h3 class="text-lg font-bold mb-4 text-green-600">Thêm món ăn mới</h3>
+    <form th:action="@{/manage/menu/add}" method="post" enctype="multipart/form-data">
+      <div class="mb-3">
+        <label class="block mb-1 text-sm font-medium">Tên món:</label>
+        <input type="text" name="tenMonAn" class="w-full border px-3 py-2 rounded" required>
+      </div>
+      <div class="mb-3">
+        <label class="block mb-1 text-sm font-medium">Đơn giá:</label>
+        <input type="number" name="donGia" class="w-full border px-3 py-2 rounded" required>
+      </div>
+      <div class="mb-3">
+        <label class="block mb-1 text-sm font-medium">Loại món:</label>
+        <select name="loaiMonAn" class="w-full border px-3 py-2 rounded" required>
+          <option value="Món chính">MÓN CHÍNH</option>
+          <option value="Khai vị">KHAI VỊ</option>
+          <option value="Tráng miệng">TRÁNG MIỆNG</option>
+          <option value="Đồ uống">ĐỒ UỐNG</option>
+        </select>
+      </div>
+      <div class="mb-3">
+        <label class="block mb-1 text-sm font-medium">Ảnh món ăn:</label>
+        <input type="file" name="hinhAnhFile" accept="image/*" class="w-full border px-3 py-2 rounded">
+      </div>
+      <div class="flex justify-end space-x-3 mt-4">
+        <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Thêm</button>
+        <button type="button" onclick="this.closest('.fixed').classList.add('hidden')" class="text-gray-500">Đóng</button>
       </div>
     </form>
   </div>
 </div>
 
-<!-- SCRIPT -->
+<!-- HIỂN THỊ KẾT QUẢ TÌM KIẾM -->
+<div th:if="${isSearch}" class="max-w-6xl mx-auto px-4 mt-10">
+  <h2 class="text-2xl font-bold mb-6 text-red-600">KẾT QUẢ TÌM KIẾM</h2>
+
+  <section th:if="${#lists.size(monChinh) > 0}" th:replace="~{this :: danhMuc(${monChinh})}"></section>
+  <section th:if="${#lists.size(khaiVi) > 0}" th:replace="~{this :: danhMuc(${khaiVi})}"></section>
+  <section th:if="${#lists.size(trangMieng) > 0}" th:replace="~{this :: danhMuc(${trangMieng})}"></section>
+  <section th:if="${#lists.size(doUong) > 0}" th:replace="~{this :: danhMuc(${doUong})}"></section>
+
+  <p th:if="${#lists.isEmpty(monChinh) and #lists.isEmpty(khaiVi) and #lists.isEmpty(trangMieng) and #lists.isEmpty(doUong)}"
+     class="text-gray-500 text-lg mt-4">Không tìm thấy món ăn phù hợp.</p>
+</div>
+
+<!-- HIỂN THỊ TẤT CẢ KHI KHÔNG TÌM KIẾM -->
+<div th:if="${!isSearch}">
+  <h2 class="text-2xl font-bold mb-6 text-red-600 px-4">MÓN CHÍNH</h2>
+  <section id="monchinh" th:replace="~{this :: danhMuc(${monChinh})}"></section>
+
+  <h2 class="text-2xl font-bold mb-6 text-red-600 px-4">KHAI VỊ</h2>
+  <section id="khaivi" th:replace="~{this :: danhMuc(${khaiVi})}"></section>
+
+  <h2 class="text-2xl font-bold mb-6 text-red-600 px-4">TRÁNG MIỆNG</h2>
+  <section id="trangmieng" th:replace="~{this :: danhMuc(${trangMieng})}"></section>
+
+  <h2 class="text-2xl font-bold mb-6 text-red-600 px-4">ĐỒ UỐNG</h2>
+  <section id="douong" th:replace="~{this :: danhMuc(${doUong})}"></section>
+</div>
+
+<!-- SCRIPT mở modal -->
 <script>
-  function openEditModal(id, name, price, type) {
-    document.getElementById('editId').value = id;
-    document.getElementById('editName').value = name;
-    document.getElementById('editPrice').value = price;
-    document.getElementById('editType').value = type;
-    document.getElementById('editModal').classList.remove('hidden');
-  }
-  function closeEditModal() {
-    document.getElementById('editModal').classList.add('hidden');
-  }
-  function submitEditForm() {
-    const form = document.getElementById("editForm");
-    const formData = new FormData(form);
-    formData.append("action", "update");
-    fetch("/manage/menu", {
-      method: "POST",
-      body: formData
-    })
-    .then(res => res.text())
-    .then(() => {
-      alert("✔️ Cập nhật thành công!");
-      location.reload();
-    })
-    .catch(err => {
-      alert("❌ Cập nhật thất bại!");
-      console.error(err);
+  document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll("[data-modal-toggle]").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        const modalId = btn.getAttribute("data-modal-toggle");
+        const modal = document.getElementById(modalId);
+        if (modal) {
+          modal.classList.remove("hidden");
+        }
+      });
     });
-  }
-  function submitAddForm() {
-    const form = document.getElementById("addForm");
-    const formData = new FormData(form);
-    formData.append("action", "add");
-    fetch("/manage/menu", {
-      method: "POST",
-      body: formData
-    })
-    .then(res => res.text())
-    .then(() => {
-      alert("✔️ Thêm món thành công!");
-      location.reload();
-    })
-    .catch(err => {
-      alert("❌ Thêm thất bại!");
-      console.error(err);
-    });
-  }
+  });
 </script>
 
 </body>
-</html>
+</html>  
