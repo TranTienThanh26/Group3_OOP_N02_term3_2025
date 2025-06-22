@@ -1,4 +1,3 @@
-<!-- File: src/main/resources/templates/Admin/BanAn.html -->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
@@ -9,8 +8,13 @@
             loadBanAn();
 
             function loadBanAn() {
-                fetch("/api/ban")
-                    .then(response => response.json())
+                fetch("/ban/api")
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error("Không thể tải danh sách bàn");
+                        }
+                        return response.json();
+                    })
                     .then(data => {
                         const tableBody = document.getElementById("banan-table-body");
                         tableBody.innerHTML = "";
@@ -27,11 +31,14 @@
                             `;
                             tableBody.appendChild(row);
                         });
+                    })
+                    .catch(error => {
+                        alert("Lỗi khi tải danh sách bàn: " + error.message);
                     });
             }
 
             window.datBan = function (maBan) {
-                fetch("/api/ban/datban", {
+                fetch("/ban/api/datban", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ maBan: maBan })
@@ -40,11 +47,14 @@
                 .then(msg => {
                     alert(msg);
                     loadBanAn();
+                })
+                .catch(error => {
+                    alert("Lỗi khi đặt bàn: " + error.message);
                 });
             }
 
             window.huyBan = function (tenBan) {
-                fetch("/api/ban/huyban", {
+                fetch("/ban/api/huyban", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ tenBan: tenBan })
@@ -53,30 +63,62 @@
                 .then(msg => {
                     alert(msg);
                     loadBanAn();
+                })
+                .catch(error => {
+                    alert("Lỗi khi huỷ bàn: " + error.message);
                 });
             }
         });
     </script>
+
     <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        h2 {
+            text-align: center;
+            margin-top: 20px;
+        }
+
         table {
             width: 80%;
             margin: auto;
             border-collapse: collapse;
             margin-top: 30px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
         }
+
         th, td {
             padding: 12px;
             border: 1px solid #ccc;
             text-align: center;
         }
+
+        th {
+            background-color: #f0f0f0;
+        }
+
         button {
             padding: 5px 10px;
             margin: 2px;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        button:not(:disabled):hover {
+            background-color: #dcdcdc;
         }
     </style>
 </head>
 <body>
-    <h2 style="text-align: center; margin-top: 20px;">Danh sách Bàn Ăn</h2>
+    <h2>Danh sách Bàn Ăn</h2>
     <table>
         <thead>
             <tr>
