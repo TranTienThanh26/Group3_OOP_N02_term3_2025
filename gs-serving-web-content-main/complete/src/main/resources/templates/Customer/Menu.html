@@ -29,6 +29,14 @@
       <li><a href="#trangmieng" class="hover:text-red-500">TRÁNG MIỆNG</a></li>
       <li><a href="#douong" class="hover:text-red-500">ĐỒ UỐNG</a></li>
       <li>
+        <a href="#" onclick="openTableModal()" class="hover:text-red-500 flex items-center space-x-1 relative">
+          <span>📋</span>
+          <span>Bàn</span>
+          <sup id="tableCheckBadge" class="absolute -top-2 -right-4 bg-green-500 text-white text-xs rounded-full px-1.5 py-0.5 hidden">✔</sup>
+        </a>
+      </li>
+      
+       <li>
         <a href="/cart" class="hover:text-red-500 flex items-center space-x-1 relative">
           <span>🛒</span>
           <span>Giỏ hàng</span>
@@ -162,14 +170,17 @@
 
 <script>
   document.addEventListener("DOMContentLoaded", function () {
-    const badge = document.getElementById("cartCountBadge");
+  const badge = document.getElementById("cartCountBadge");
+
   
-    // 👉 Khởi tạo biến cartCount từ sessionStorage (nếu có)
-    let cartCount = parseInt(sessionStorage.getItem("cartCount")) || 0;
-    if (cartCount > 0 && badge) {
-      badge.innerText = cartCount;
-      badge.classList.remove("hidden");
-    }
+  fetch('/cart/total')
+    .then(res => res.json())
+    .then(count => {
+      if (count > 0) {
+        badge.innerText = count;
+        badge.classList.remove("hidden");
+      }
+    });
   
     // 👉 Xử lý khi người dùng click vào món ăn
     window.handleCardClick = function (element) {
@@ -204,49 +215,189 @@
       document.getElementById("modalTotal").innerText = total.toLocaleString('vi-VN') + '₫';
     }
   
-    // 👉 Thêm vào giỏ hàng
     window.addToCart = function () {
-      const title = document.getElementById('modalTitle').innerText;
-      const quantity = parseInt(document.getElementById("quantityInput").value);
-      const priceText = document.getElementById("modalPrice").innerText.replace(/[₫,]/g, '');
-      const price = parseInt(priceText) || 0;
-      const total = quantity * price;
-  
-      fetch('/cart/add', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          tenMonAn: title,
-          soluong: quantity,
-          thanhTien: total
-        })
-      })
-      .then(res => {
-        if (res.ok) {
-          // 👉 Cập nhật số lượng giỏ hàng
-          cartCount += quantity;
-          sessionStorage.setItem("cartCount", cartCount);
-  
-          if (badge) {
-            badge.innerText = cartCount;
-            badge.classList.remove("hidden");
-          }
-  
-          alert(`✅ Đã thêm ${quantity} x ${title} (${total.toLocaleString('vi-VN')}₫) vào giỏ hàng!`);
-          closeModal();
-        } else {
-          alert("❌ Không thể thêm vào giỏ hàng. Vui lòng thử lại.");
-        }
-      })
-      .catch(err => {
-        console.error('Lỗi khi thêm vào giỏ hàng:', err);
-      });
+  const title = document.getElementById('modalTitle').innerText;
+  const quantity = parseInt(document.getElementById("quantityInput").value);
+  const priceText = document.getElementById("modalPrice").innerText.replace(/[₫,]/g, '');
+  const price = parseInt(priceText) || 0;
+
+  fetch('/cart/add', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      tenMonAn: title,
+      soLuong: quantity,
+      donGia: price
+    })
+  })
+  .then(res => {
+    if (res.ok) {
+      return fetch('/cart/total'); // lấy lại số lượng từ server
+    } else {
+      throw new Error("Thêm vào giỏ hàng thất bại");
     }
+  })
+  .then(res => res.json())
+  .then(count => {
+    if (badge) {
+      badge.innerText = count;
+      badge.classList.remove("hidden");
+    }
+    alert(`✅ Đã thêm ${quantity} x ${title} vào giỏ hàng!`);
+
+    closeModal();
+  })
+  .catch(err => {
+    console.error('Lỗi khi thêm vào giỏ hàng:', err);
+    alert("❌ Không thể thêm món vào giỏ hàng.");
+  });
+}
+
   
     // 👉 Đóng modal
     window.closeModal = function () {
       document.getElementById('imageModal').classList.add('hidden');
     }
   });
-  </script>
   
+  </script>
+  <!-- MODAL CHỌN BÀN -->
+<div id="tableModal" class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 hidden">
+  <div class="bg-white rounded-xl max-w-md w-full p-6 shadow-lg">
+    <h2 class="text-xl font-bold mb-4 text-gray-800">Chọn bàn ăn</h2>
+    <div id="tableList" class="grid grid-cols-2 gap-4">
+      <!-- Danh sách bàn sẽ được render bằng JS -->
+    </div>
+    <div class="mt-4 hidden" id="confirmTableArea">
+      <p class="text-sm text-gray-600 mb-2">Đang chọn: <span id="selectedTableName" class="font-semibold text-red-500"></span></p>
+      <button onclick="confirmTableSelection()"
+              class="w-full bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition">
+        ✅ Đặt bàn
+      </button>
+    </div>
+    <div class="mt-6 text-right">
+      <button onclick="closeTableModal()" class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600">Đóng</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  let selectedMaBan = null;
+  let selectedTenBan = null;
+
+  // 👉 Mở modal và load danh sách bàn
+  window.openTableModal = function () {
+    const modal = document.getElementById('tableModal');
+    const listDiv = document.getElementById('tableList');
+    document.getElementById("confirmTableArea").classList.add("hidden");
+    listDiv.innerHTML = '<p class="text-gray-500 col-span-2">Đang tải danh sách bàn...</p>';
+
+    fetch('/api/ban')
+      .then(res => res.json())
+      .then(data => {
+        listDiv.innerHTML = '';
+        data.forEach(ban => {
+          const btn = document.createElement('button');
+          btn.className = "bg-gray-100 border rounded-lg p-3 hover:bg-green-100 transition text-sm font-semibold text-gray-700";
+          btn.innerText = `${ban.tenBan} (${ban.trangThai})`;
+          btn.disabled = ban.trangThai !== "Trống";
+          btn.onclick = () => selectTable(ban.maBan, ban.tenBan);
+          listDiv.appendChild(btn);
+        });
+      })
+      .catch(err => {
+        listDiv.innerHTML = '<p class="text-red-500 col-span-2">Không thể tải danh sách bàn.</p>';
+        console.error(err);
+      });
+
+    modal.classList.remove('hidden');
+  };
+
+  // 👉 Đóng modal bàn
+  window.closeTableModal = function () {
+    document.getElementById('tableModal').classList.add('hidden');
+  };
+
+  // 👉 Người dùng click chọn bàn
+  window.selectTable = function (maBan, tenBan) {
+    selectedMaBan = maBan;
+    selectedTenBan = tenBan;
+    document.getElementById("selectedTableName").innerText = tenBan;
+    document.getElementById("confirmTableArea").classList.remove("hidden");
+  };
+
+  // 👉 Xác nhận “Đặt bàn”
+  window.confirmTableSelection = function () {
+    if (!selectedMaBan) return;
+
+    fetch('/api/ban/datban', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ maBan: selectedMaBan })
+    })
+    .then(res => {
+      if (res.ok) {
+        sessionStorage.setItem("selectedTable", selectedTenBan);
+        document.getElementById("tableCheckBadge").classList.remove("hidden");
+        alert(`✅ Đã đặt ${selectedTenBan}`);
+        closeTableModal();
+        updateTableInfoInCart();
+        updateCartBadge(); // 🛒 cập nhật số
+      } else {
+        alert("❌ Không thể đặt bàn.");
+      }
+    })
+    .catch(err => {
+      alert("❌ Có lỗi khi đặt bàn.");
+      console.error(err);
+    });
+  };
+
+  // 👉 Hiển thị bàn đã đặt (ví dụ trong giỏ hàng)
+  function updateTableInfoInCart() {
+    const table = sessionStorage.getItem("selectedTable");
+    if (table) {
+      let tableInfoDiv = document.getElementById("selectedTableInfo");
+      if (!tableInfoDiv) {
+        const cartSection = document.querySelector("#cartInfo") || document.body;
+        tableInfoDiv = document.createElement("div");
+        tableInfoDiv.id = "selectedTableInfo";
+        tableInfoDiv.className = "text-sm text-green-600 font-semibold mt-2";
+        cartSection.appendChild(tableInfoDiv);
+      }
+      tableInfoDiv.innerText = `🪑 Bàn đã đặt: ${table}`;
+    }
+  }
+
+  // 👉 Cập nhật badge 🛒: tổng số món + bàn
+  function updateCartBadge() {
+    const badge = document.getElementById("cartCountBadge");
+    let count = 0;
+
+    fetch('/cart/total')
+      .then(res => res.json())
+      .then(serverCount => {
+        count += serverCount || 0;
+
+        if (sessionStorage.getItem("selectedTable")) {
+          count += 1;
+        }
+
+        if (count > 0) {
+          badge.innerText = count;
+          badge.classList.remove("hidden");
+        } else {
+          badge.classList.add("hidden");
+        }
+      })
+      .catch(err => {
+        console.error("Lỗi khi cập nhật badge giỏ hàng:", err);
+      });
+  }
+
+  // 👉 Khi mở lại trang
+  document.addEventListener("DOMContentLoaded", function () {
+    updateTableInfoInCart();
+    updateCartBadge();
+  });
+</script>
