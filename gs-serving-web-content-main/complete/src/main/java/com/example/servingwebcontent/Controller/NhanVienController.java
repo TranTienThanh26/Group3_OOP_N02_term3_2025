@@ -21,15 +21,7 @@ public class NhanVienController {
 
    
 
-    // 🧾 Quản lý đơn hàng
-    @GetMapping("/manage/orders")
-    public String manageOrders(HttpSession session, Model model) {
-        NhanVien user = getNhanVienFromSession(session);
-        if (user == null) return "redirect:/login";
 
-        model.addAttribute("user", user);
-        return "ManageOrders"; // cần tạo file ManageOrders.html
-    }
 
     // 🪑 Quản lý bàn
     @GetMapping("/manage/tables")
