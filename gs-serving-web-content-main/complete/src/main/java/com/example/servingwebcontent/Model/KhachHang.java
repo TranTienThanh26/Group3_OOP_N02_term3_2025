@@ -1,25 +1,25 @@
 package com.example.servingwebcontent.Model;
 
 public class KhachHang extends NguoiDung {
-    // userID, tenHienThi, email, password, role đã được kế thừa từ NguoiDung
-    private String ngayThamGia; // Ngày khách hàng tham gia
-    private int doanhSo;       // Tổng doanh số đã mua
-    private int diem;          // Điểm tích lũy
+    private String ten;           // Tên khách hàng (tương ứng với cột Ten trong bảng KhachHang)
+    private String ngayThamGia;  // Ngày khách hàng tham gia
+    private int doanhSo;         // Tổng doanh số đã mua
+    private int diem;            // Điểm tích lũy
 
-    // Constructor mặc định
+    // ✅ Constructor mặc định
     public KhachHang() {
         super(); // Gọi constructor mặc định của lớp cha NguoiDung
         this.setRole("khachhang");
     }
 
-    // ✅ Constructor hợp lệ duy nhất chứa xử lý lỗi
-    public KhachHang(int userID, String tenKhachHang, String email, String password,
+    // ✅ Constructor đầy đủ có kiểm tra dữ liệu
+    public KhachHang(int userID, String ten, String email, String password,
                      String ngayThamGia, int doanhSo, int diem) {
         super(); // gọi trước để tránh lỗi constructor chain
 
         try {
             if (userID <= 0) throw new IllegalArgumentException("User ID phải lớn hơn 0.");
-            if (tenKhachHang == null || tenKhachHang.trim().isEmpty())
+            if (ten == null || ten.trim().isEmpty())
                 throw new IllegalArgumentException("Tên khách hàng không được để trống.");
             if (email == null || !email.contains("@"))
                 throw new IllegalArgumentException("Email không hợp lệ.");
@@ -35,8 +35,8 @@ public class KhachHang extends NguoiDung {
             this.setEmail(email);
             this.setPassword(password);
             this.setRole("khachhang");
-            this.setHoTen(tenKhachHang);
 
+            this.ten = ten;
             this.ngayThamGia = ngayThamGia;
             this.doanhSo = doanhSo;
             this.diem = diem;
@@ -48,26 +48,34 @@ public class KhachHang extends NguoiDung {
         }
     }
 
-    // Getters
+    // ✅ Getter/Setter cho tên
+    public String getTen() {
+        return ten;
+    }
+
+    public void setTen(String ten) {
+        this.ten = ten;
+    }
+
+    // ✅ Các getter/setter còn lại
     public String getNgayThamGia() {
         return ngayThamGia;
+    }
+
+    public void setNgayThamGia(String ngayThamGia) {
+        this.ngayThamGia = ngayThamGia;
     }
 
     public int getDoanhSo() {
         return doanhSo;
     }
 
-    public int getDiem() {
-        return diem;
-    }
-
-    // Setters
-    public void setNgayThamGia(String ngayThamGia) {
-        this.ngayThamGia = ngayThamGia;
-    }
-
     public void setDoanhSo(int doanhSo) {
         this.doanhSo = doanhSo;
+    }
+
+    public int getDiem() {
+        return diem;
     }
 
     public void setDiem(int diem) {

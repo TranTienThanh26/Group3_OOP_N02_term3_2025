@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Quản lý Nhân Viên</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background-color: #f4f6f8;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 30px 20px;
+            background: #ffffff;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            border-radius: 16px;
+        }
+
+        h1, h2 {
+            color: #2c3e50;
+            margin-top: 24px;
+        }
+
+        form {
+            margin-top: 15px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        input, button, a {
+            padding: 10px 14px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            outline: none;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        input:focus {
+            border-color: #3498db;
+            box-shadow: 0 0 6px rgba(52, 152, 219, 0.3);
+        }
+
+        button {
+            background-color: #ecf0f1;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background-color: #d0d7de;
+        }
+
+        button[type="submit"] {
+            background-color: #2ecc71;
+            color: white;
+            border: none;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #27ae60;
+        }
+
+        button[type="button"] {
+            background-color: #f1c40f;
+            color: white;
+            border: none;
+        }
+
+        button[type="button"]:hover {
+            background-color: #f39c12;
+        }
+
+        a {
+            background-color: #e74c3c;
+            color: white;
+            text-decoration: none;
+            border: none;
+            font-weight: bold;
+        }
+
+        a:hover {
+            background-color: #c0392b;
+        }
+
+        table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: separate;
+            border-spacing: 0;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            background-color: #ffffff;
+        }
+
+        th, td {
+            padding: 14px;
+            border-bottom: 1px solid #f0f0f0;
+            text-align: center;
+        }
+
+        th {
+            background-color: #ecf0f1;
+            font-weight: bold;
+            color: #34495e;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        td button, td a {
+            margin: 2px;
+        }
+
+        td a {
+            display: inline-block;
+            padding: 6px 12px;
+        }
+
+        h2 {
+            margin-top: 40px;
+            margin-bottom: 10px;
+            font-size: 20px;
+        }
+    </style>
+
+    <script>
+        function fillEdit(button) {
+            document.getElementById("id_NhanVien").value = button.getAttribute("data-id");
+            document.getElementById("tenNV").value = button.getAttribute("data-ten");
+            document.getElementById("ngayVL").value = button.getAttribute("data-ngayvl");
+            document.getElementById("sdt").value = button.getAttribute("data-sdt");
+            document.getElementById("chucvu").value = button.getAttribute("data-chucvu");
+            document.getElementById("id_NQL").value = button.getAttribute("data-idnql");
+            document.getElementById("tinhTrang").value = button.getAttribute("data-tinhtrang");
+        }
+    </script>
+</head>
+<body>
+<div class="container">
+    <h1>Quản lý Nhân Viên</h1>
+
+    <!-- 🔍 Tìm kiếm -->
+    <form th:action="@{/nhanvien/timkiem}" method="get">
+        <input type="text" name="keyword" placeholder="Nhập tên nhân viên" th:value="${tuKhoa}">
+        <button type="submit">🔍 Tìm</button>
+        <a th:href="@{/nhanvien}">↻ Tải lại</a>
+    </form>
+
+    <!-- ➕ Thêm nhân viên -->
+    <h2>Thêm Nhân Viên</h2>
+    <form th:action="@{/nhanvien/them}" method="post" th:object="${nvMoi}">
+        <input type="text" th:field="*{hoTen}" placeholder="Tên nhân viên" required>
+        <input type="date" th:field="*{ngayVL}" required>
+        <input type="text" th:field="*{sdt}" placeholder="Số điện thoại" required>
+        <input type="text" th:field="*{chucvu}" placeholder="Chức vụ">
+        <input type="number" th:field="*{id_NQL}" placeholder="ID NQL">
+        <input type="text" th:field="*{tinhTrang}" placeholder="Tình trạng">
+        <button type="submit">➕ Thêm</button>
+    </form>
+
+    <!-- 📋 Danh sách nhân viên -->
+    <h2>Danh sách Nhân Viên</h2>
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Tên</th>
+            <th>Ngày VL</th>
+            <th>SĐT</th>
+            <th>Chức vụ</th>
+            <th>ID NQL</th>
+            <th>Tình trạng</th>
+            <th>Hành động</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="nv : ${dsNhanVien}">
+            <td th:text="${nv.id_NhanVien}">1</td>
+            <td th:text="${nv.hoTen}">Nguyễn Văn A</td>
+            <td th:text="${nv.ngayVL}">2025-01-01</td>
+            <td th:text="${nv.sdt}">0123456789</td>
+            <td th:text="${nv.chucvu}">Phục vụ</td>
+            <td th:text="${nv.id_NQL}">2</td>
+            <td th:text="${nv.tinhTrang}">Đang làm</td>
+            <td>
+                <button type="button"
+                        onclick="fillEdit(this)"
+                        th:attr="data-id=${nv.id_NhanVien},
+                                 data-ten=${nv.hoTen},
+                                 data-ngayvl=${nv.ngayVL},
+                                 data-sdt=${nv.sdt},
+                                 data-chucvu=${nv.chucvu},
+                                 data-idnql=${nv.id_NQL},
+                                 data-tinhtrang=${nv.tinhTrang}">
+                    ✏️ Sửa
+                </button>
+                <a th:href="@{/nhanvien/xoa/{id}(id=${nv.id_NhanVien})}">🗑️ Xoá</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+
+</div>
+</body>
+</html>

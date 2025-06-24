@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Quản lý Khách Hàng</title>
+  <style>
+    :root {
+      --main-color: #2980b9;
+      --hover-color: #1c6ca1;
+      --accent: #2ecc71;
+      --light-gray: #f9f9f9;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: var(--light-gray);
+      color: #2c3e50;
+    }
+
+    .container {
+      max-width: 1080px;
+      margin: 40px auto;
+      background: #fff;
+      padding: 32px;
+      border-radius: 16px;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 24px;
+      font-size: 28px;
+      color: var(--main-color);
+    }
+
+    form.search-form {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    input, button, a {
+      padding: 10px 14px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 15px;
+      transition: all 0.3s ease;
+    }
+
+    input:focus {
+      border-color: var(--main-color);
+      box-shadow: 0 0 5px rgba(41, 128, 185, 0.4);
+    }
+
+    button {
+      background-color: #ecf0f1;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    button:hover {
+      background-color: #d5dde5;
+    }
+
+    .btn-save {
+      background-color: var(--accent);
+      color: #fff;
+      border: none;
+    }
+
+    .btn-save:hover {
+      background-color: #27ae60;
+    }
+
+    .btn-delete {
+      background-color: #e74c3c;
+      color: white;
+      text-decoration: none;
+      border: none;
+      display: inline-block;
+    }
+
+    .btn-delete:hover {
+      background-color: #c0392b;
+    }
+
+    .btn-edit {
+      background-color: #f39c12;
+      color: white;
+    }
+
+    .btn-edit:hover {
+      background-color: #d68910;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
+    }
+
+    th, td {
+      padding: 14px 18px;
+      text-align: center;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    th {
+      background-color: #f2f6fa;
+      color: #2c3e50;
+    }
+
+    tr:hover {
+      background-color: #f6fbff;
+    }
+
+    h2 {
+      margin-top: 40px;
+      font-size: 20px;
+      border-left: 6px solid var(--main-color);
+      padding-left: 12px;
+      color: var(--main-color);
+    }
+
+    @media (max-width: 768px) {
+      form.search-form {
+        flex-direction: column;
+      }
+
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+
+  <script>
+    function fillEdit(button) {
+      document.getElementById("userID").value = button.getAttribute("data-id");
+      document.getElementById("tenKH").value = button.getAttribute("data-ten");
+      document.getElementById("email").value = button.getAttribute("data-email");
+      document.getElementById("matKhau").value = button.getAttribute("data-mk");
+      document.getElementById("ngayTG").value = button.getAttribute("data-ngaytg");
+      document.getElementById("diem").value = button.getAttribute("data-diem");
+    }
+  </script>
+</head>
+<body>
+<div class="container">
+  <h1>📋 Quản Lý Khách Hàng</h1>
+
+  <form class="search-form" th:action="@{/khachhang/tim}" method="get">
+    <input type="text" name="keyword" placeholder="🔍 Tìm theo tên" th:value="${tuKhoa}" style="flex-grow: 1">
+    <button type="submit">Tìm</button>
+    <a class="btn-delete" th:href="@{/khachhang}">↻ Tải lại</a>
+  </form>
+
+  <h2>📝 Thêm hoặc Sửa Khách Hàng</h2>
+  <form th:action="@{/khachhang/luu}" method="post" th:object="${khachHang}">
+    <input type="hidden" th:field="*{userID}" id="userID">
+    <div class="form-grid">
+      <input type="text" th:field="*{hoTen}" id="tenKH" placeholder="👤 Họ tên khách hàng" required>
+      <input type="email" th:field="*{email}" id="email" placeholder="📧 Email khách hàng" required>
+      <input type="password" th:field="*{matKhau}" id="matKhau" placeholder="🔒 Password" required>
+      <input type="date" th:field="*{ngayThamGia}" id="ngayTG" required>
+      <input type="number" th:field="*{diem}" id="diem" placeholder="⭐ Điểm" min="0">
+    </div>
+    <button type="submit" class="btn-save">💾 Lưu</button>
+  </form>
+
+  <h2>📄 Danh Sách Khách Hàng</h2>
+  <table>
+    <thead>
+    <tr>
+      <th>#</th>
+      <th>👤 Họ Tên</th>
+      <th>📧 Email</th>
+      <th>🔒 Password</th>
+      <th>📅 Ngày Tham Gia</th>
+      <th>⭐ Điểm</th>
+      <th>⚙️ Hành Động</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="kh : ${danhSachKhachHang}">
+      <td th:text="${kh.userID}">1</td>
+      <td th:text="${kh.hoTen}">Nguyễn Văn A</td>
+      <td th:text="${kh.email}">example@gmail.com</td>
+      <td th:text="${kh.matKhau}">******</td>
+      <td th:text="${kh.ngayThamGia}">2025-06-01</td>
+      <td th:text="${kh.diem}">50</td>
+      <td>
+        <button type="button" class="btn-edit"
+                onclick="fillEdit(this)"
+                th:attr="data-id=${kh.userID},
+                         data-ten=${kh.hoTen},
+                         data-email=${kh.email},
+                         data-mk=${kh.matKhau},
+                         data-ngaytg=${kh.ngayThamGia},
+                         data-diem=${kh.diem}">
+          ✏️ Sửa
+        </button>
+        <a class="btn-delete" th:href="@{/khachhang/xoa/{id}(id=${kh.userID})}">🗑️ Xoá</a>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+</body>
+</html>
