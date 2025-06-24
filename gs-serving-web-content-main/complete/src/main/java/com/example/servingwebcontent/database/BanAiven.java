@@ -81,7 +81,8 @@ public class BanAiven {
     public void deleteById(int maBan) {
         String query = "DELETE FROM Ban WHERE MaBan = ?";
 
-        try (Connection conn = DriverManager.getConnection(JDBC_URL, USER, PASSWORD);
+        try (
+            Connection conn = DriverManager.getConnection(JDBC_URL, USER, PASSWORD);
             PreparedStatement stmt = conn.prepareStatement(query)
         ) {
             stmt.setInt(1, maBan);
@@ -93,7 +94,7 @@ public class BanAiven {
         }
     }
 
-    // ✅ Cập nhật trạng thái bàn riêng
+    // ✅ Cập nhật trạng thái bàn riêng (dành cho đặt bàn)
     public void capNhatTrangThai(int maBan, String trangThaiMoi) {
         String query = "UPDATE Ban SET TrangThai = ? WHERE MaBan = ?";
 
@@ -111,7 +112,7 @@ public class BanAiven {
         }
     }
 
-    // ✅ (Tuỳ chọn) Tìm bàn theo tên (có thể dùng trong tìm kiếm nâng cao)
+    // ✅ Tìm bàn theo tên
     public List<Ban> timBanTheoTen(String keyword) {
         List<Ban> result = new ArrayList<>();
         String query = "SELECT MaBan, TenBan, TrangThai FROM Ban WHERE TenBan LIKE ?";
@@ -136,5 +137,16 @@ public class BanAiven {
         }
 
         return result;
+    }
+
+    // ✅ Trả về MaBan theo TenBan (hỗ trợ chọn bàn trong giỏ hàng / hóa đơn)
+    public int getMaBanTheoTen(String tenBan) {
+        List<Ban> danhSachBan = getBanListFromAiven();
+        for (Ban b : danhSachBan) {
+            if (b.getTenBan().equalsIgnoreCase(tenBan)) {
+                return b.getMaBan();
+            }
+        }
+        return -1; // Không tìm thấy
     }
 }

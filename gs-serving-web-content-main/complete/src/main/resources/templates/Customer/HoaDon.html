@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>📄 Hóa Đơn - TTD Restaurant</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background: #1e293b;
+            font-family: 'Segoe UI', sans-serif;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(8px);
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+    </style>
+</head>
+<body class="text-white min-h-screen flex flex-col items-center p-10">
+
+<div class="w-full max-w-6xl glass-card">
+    <h1 class="text-3xl font-bold text-yellow-400 mb-6 text-center">📄 Đây là hóa đơn của bạn</h1>
+
+    <div th:if="${#lists.isEmpty(dsHoaDon)}" class="text-center text-gray-300 italic">
+        Không có hóa đơn nào được tạo.
+    </div>
+
+    <form id="formThanhToan" method="get" action="/hoadon/thanhtoan">
+        <input type="hidden" name="id" id="selectedHoaDonId" />
+        <table th:if="${not #lists.isEmpty(dsHoaDon)}" class="w-full table-auto text-sm text-left border border-gray-600">
+            <thead class="bg-gray-800 text-gray-200 uppercase">
+            <tr>
+                <th class="p-3 text-center">Chọn</th>
+                <th class="p-3">Mã HĐ</th>
+                <th class="p-3">Khách Hàng</th>
+                <th class="p-3">Bàn</th>
+                <th class="p-3">Ngày</th>
+                <th class="p-3">Tiền Món</th>
+                <th class="p-3">Tổng</th>
+                <th class="p-3 text-center">Trạng Thái</th>
+                <th class="p-3 text-center">Hành Động</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="hd : ${dsHoaDon}" class="border-b border-gray-700 hover:bg-gray-700/20">
+                <td class="p-3 text-center">
+                    <input type="radio" name="hoaDonId" th:value="${hd.idHoaDon}" class="radio-hoa-don">
+                </td>
+                <td class="p-3" th:text="${hd.idHoaDon}">1</td>
+                <td class="p-3" th:text="${hd.idKH}">KH1</td>
+                <td class="p-3" th:text="${hd.idBan}">B1</td>
+                <td class="p-3" th:text="${hd.ngayHD}">2025-06-22 12:00:00</td>
+                <td class="p-3 text-green-300 font-semibold gia-tien" th:text="${hd.tienMonAn}">100000</td>
+                <td class="p-3 text-green-400 font-bold gia-tien" th:text="${hd.tongtien}">120000</td>
+                <td class="p-3 text-yellow-300" th:text="${hd.trangthai}">Chưa thanh toán</td>
+                <td class="p-3 text-center space-x-2">
+                    <button type="button" th:attr="data-id=${hd.idHoaDon}"
+                            class="bg-blue-500 hover:bg-blue-400 text-white py-1 px-3 rounded text-sm btn-xem">
+                        Xem
+                    </button>
+                    <a th:href="@{/hoadon/xoa/{id}(id=${hd.idHoaDon})}"
+                       class="text-red-400 hover:text-red-300 text-sm font-medium"
+                       onclick="return confirm('Bạn có chắc muốn xoá hóa đơn này?')">
+                        Xoá
+                    </a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+        <div class="text-center mt-8 space-x-4">
+            <a href="/cart"
+               class="bg-yellow-400 text-gray-800 font-bold px-5 py-2 rounded-full shadow hover:bg-yellow-300">
+                ← Quay về giỏ hàng
+            </a>
+
+            <button type="submit"
+                    class="bg-green-500 text-white font-bold px-5 py-2 rounded-full shadow hover:bg-green-400">
+                💳 Thanh Toán Hóa Đơn
+            </button>
+        </div>
+    </form>
+</div>
+
+<!-- Modal (không thay đổi) -->
+<div id="modalHoaDon" class="fixed inset-0 bg-black/60 hidden flex justify-center items-center z-50">
+    <div class="bg-white text-gray-800 w-full max-w-md rounded-xl shadow-lg p-6 relative">
+        <button onclick="closeModal()" class="absolute top-2 right-2 text-gray-500 hover:text-black text-lg">✕</button>
+        <h2 class="text-xl font-bold mb-4 text-center">Chi Tiết Hóa Đơn</h2>
+        <div id="modalContent" class="space-y-2 text-sm"></div>
+    </div>
+</div>
+
+<!-- JS -->
+<script th:inline="javascript">
+    function formatDatetime(datetimeStr) {
+        const d = new Date(datetimeStr);
+        if (isNaN(d)) return datetimeStr;
+        return d.toLocaleString('vi-VN');
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('.gia-tien').forEach(el => {
+            const value = parseInt(el.textContent);
+            if (!isNaN(value)) {
+                el.textContent = value.toLocaleString('vi-VN') + ' ₫';
+            }
+        });
+
+        const radios = document.querySelectorAll('.radio-hoa-don');
+        const inputHidden = document.getElementById('selectedHoaDonId');
+
+        radios.forEach(radio => {
+            radio.addEventListener('change', () => {
+                inputHidden.value = radio.value;
+            });
+        });
+
+        document.getElementById('formThanhToan').addEventListener('submit', e => {
+            if (!inputHidden.value) {
+                e.preventDefault();
+                alert("⚠️ Vui lòng chọn một hóa đơn để thanh toán!");
+            }
+        });
+
+        // Modal xử lý
+        const dataHoaDon = /*[[${dsHoaDon}]]*/ [];
+        const idHoaDonTamList = /*[[${dsHoaDonTamID}]]*/ [];
+
+        document.querySelectorAll('.btn-xem').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const id = parseInt(btn.getAttribute('data-id'));
+                openModal(id, dataHoaDon, idHoaDonTamList);
+            });
+        });
+    });
+
+    function openModal(id, dataHoaDon, idHoaDonTamList) {
+        const hd = dataHoaDon.find(h => h.idHoaDon === id);
+        if (!hd) return;
+
+        let html = `
+            <p><strong>Mã hóa đơn:</strong> ${hd.idHoaDon}</p>
+            <p><strong>Khách hàng ID:</strong> ${hd.idKH}</p>
+            <p><strong>Bàn đã đặt:</strong> ${hd.idBan}</p>
+            <p><strong>Trạng thái:</strong> ${hd.trangthai}</p>
+            <p><strong>Thời gian:</strong> ${formatDatetime(hd.ngayHD)}</p>
+            <p class="font-semibold mt-2">🍽 Món đã đặt:</p>
+            <ul class="list-disc list-inside">`;
+
+        const isTam = idHoaDonTamList.includes(hd.idHoaDon);
+        if (isTam && hd.dsMonAn && hd.dsMonAn.length > 0) {
+            for (let mon of hd.dsMonAn) {
+                const tien = parseInt(mon.thanhTien || (mon.soLuong * mon.donGia));
+                html += `<li>${mon.tenMonAn} x ${mon.soLuong} = ${tien.toLocaleString('vi-VN')} ₫</li>`;
+            }
+        } else {
+            html += `<li>Không có thông tin món ăn</li>`;
+        }
+
+        html += `</ul>`;
+        document.getElementById('modalContent').innerHTML = html;
+
+        const modal = document.getElementById('modalHoaDon');
+        modal.classList.remove('hidden');
+    }
+
+    function closeModal() {
+        document.getElementById('modalHoaDon').classList.add('hidden');
+    }
+</script>
+
+</body>
+</html>

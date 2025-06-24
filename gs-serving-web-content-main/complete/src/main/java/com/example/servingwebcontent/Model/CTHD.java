@@ -6,6 +6,7 @@ public class CTHD {
     private int ID_MonAn;
     private String tenMonAn;
     private int soluong;
+    private int donGia;      // ✅ Thêm dòng này
     private int thanhTien;
 
     public int getID_HD() {
@@ -24,14 +25,17 @@ public class CTHD {
         return soluong;
     }
 
+    public int getDonGia() {        // ✅ Getter mới
+        return donGia;
+    }
+
     public int getThanhTien() {
         return thanhTien;
     }
 
-    public CTHD() {
-    }
+    public CTHD() {}
 
-    public CTHD(int ID_HD, int ID_MonAn, String tenMonAn, int soluong, int thanhTien) {
+    public CTHD(int ID_HD, int ID_MonAn, String tenMonAn, int soluong, int donGia, int thanhTien) {
         try {
             if (ID_HD <= 0) {
                 throw new IllegalArgumentException("ID hóa đơn phải > 0.");
@@ -45,6 +49,9 @@ public class CTHD {
             if (soluong <= 0) {
                 throw new IllegalArgumentException("Số lượng phải lớn hơn 0.");
             }
+            if (donGia < 0) {
+                throw new IllegalArgumentException("Đơn giá không được âm.");
+            }
             if (thanhTien < 0) {
                 throw new IllegalArgumentException("Thành tiền không được âm.");
             }
@@ -53,6 +60,7 @@ public class CTHD {
             this.ID_MonAn = ID_MonAn;
             this.tenMonAn = tenMonAn;
             this.soluong = soluong;
+            this.donGia = donGia;
             this.thanhTien = thanhTien;
 
         } catch (IllegalArgumentException e) {

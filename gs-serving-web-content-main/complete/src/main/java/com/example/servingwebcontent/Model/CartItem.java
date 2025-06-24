@@ -1,43 +1,74 @@
 package com.example.servingwebcontent.Model;
 
-public class CartItem {
+import java.io.Serializable;
+
+public class CartItem implements Serializable {
+    private static final long serialVersionUID = 1L;
+
+    private int maMonAn;
     private String tenMonAn;
     private int soLuong;
     private int donGia;
+    private int thanhTien;
 
+    // ✅ Constructor mặc định
     public CartItem() {}
 
-    public CartItem(String tenMonAn, int soLuong, int donGia) {
+    // ✅ Constructor đầy đủ
+    public CartItem(int maMonAn, String tenMonAn, int soLuong, int donGia) {
+        this.maMonAn = maMonAn;
         this.tenMonAn = tenMonAn;
         this.soLuong = soLuong;
         this.donGia = donGia;
+        this.thanhTien = soLuong * donGia;
+    }
+
+    // ===== GETTERS =====
+    public int getMaMonAn() {
+        return maMonAn;
     }
 
     public String getTenMonAn() {
         return tenMonAn;
     }
 
-    public void setTenMonAn(String tenMonAn) {
-        this.tenMonAn = tenMonAn;
-    }
-
     public int getSoLuong() {
         return soLuong;
-    }
-
-    public void setSoLuong(int soLuong) {
-        this.soLuong = soLuong;
     }
 
     public int getDonGia() {
         return donGia;
     }
 
-    public void setDonGia(int donGia) {
-        this.donGia = donGia;
+    public int getThanhTien() {
+        return thanhTien;
     }
 
-    public int getThanhTien() {
-        return this.donGia * this.soLuong;
+    // ===== SETTERS =====
+    public void setMaMonAn(int maMonAn) {
+        this.maMonAn = maMonAn;
+    }
+
+    public void setTenMonAn(String tenMonAn) {
+        this.tenMonAn = tenMonAn;
+    }
+
+    public void setSoLuong(int soLuong) {
+        this.soLuong = soLuong;
+        updateThanhTien();
+    }
+
+    public void setDonGia(int donGia) {
+        this.donGia = donGia;
+        updateThanhTien();
+    }
+
+    public void setThanhTien(int thanhTien) {
+        this.thanhTien = thanhTien;
+    }
+
+    // ===== TIỆN ÍCH: cập nhật lại thành tiền =====
+    private void updateThanhTien() {
+        this.thanhTien = this.soLuong * this.donGia;
     }
 }

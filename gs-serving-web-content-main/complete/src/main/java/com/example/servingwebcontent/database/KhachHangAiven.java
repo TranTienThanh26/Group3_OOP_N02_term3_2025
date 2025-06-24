@@ -13,6 +13,75 @@ public class KhachHangAiven {
     private static final String USER = "avnadmin";
     private static final String PASSWORD = "AVNS_HNm9Mr2leXuYSrqITaj";
 
+    // ===========================
+    // 🔍 Tiện ích tra cứu đơn giản
+    // ===========================
+
+    // ✅ Trả về MaKhachHang từ UserID
+    public static int layMaKhachHangTheoUserID(int userId) {
+        int maKH = -1;
+        String query = "SELECT MaKhachHang FROM KhachHang WHERE UserID = ?";
+
+        try (
+            Connection conn = DriverManager.getConnection(JDBC_URL, USER, PASSWORD);
+            PreparedStatement stmt = conn.prepareStatement(query)
+        ) {
+            stmt.setInt(1, userId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    maKH = rs.getInt("MaKhachHang");
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("❌ Lỗi khi truy vấn MaKhachHang: " + e.getMessage());
+        }
+
+        return maKH;
+    }
+
+    // ✅ Kiểm tra tồn tại UserID trong bảng KhachHang
+    public static boolean tonTaiKhachHang(int userId) {
+        String query = "SELECT COUNT(*) FROM KhachHang WHERE UserID = ?";
+        try (
+            Connection conn = DriverManager.getConnection(JDBC_URL, USER, PASSWORD);
+            PreparedStatement stmt = conn.prepareStatement(query)
+        ) {
+            stmt.setInt(1, userId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0;
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("❌ Lỗi khi kiểm tra tồn tại khách hàng: " + e.getMessage());
+        }
+        return false;
+    }
+
+    // ✅ Lấy tên khách hàng theo UserID
+    public static String layTenKhachHang(int userId) {
+        String ten = null;
+        String query = "SELECT TenKH FROM KhachHang WHERE UserID = ?";
+        try (
+            Connection conn = DriverManager.getConnection(JDBC_URL, USER, PASSWORD);
+            PreparedStatement stmt = conn.prepareStatement(query)
+        ) {
+            stmt.setInt(1, userId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    ten = rs.getString("TenKH");
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("❌ Lỗi khi lấy tên khách hàng: " + e.getMessage());
+        }
+        return ten;
+    }
+
+    // ===========================
+    // 📦 CRUD Khách Hàng
+    // ===========================
+
     // ✅ Lấy danh sách tất cả khách hàng
     public List<KhachHang> getAllKhachHang() {
         List<KhachHang> list = new ArrayList<>();

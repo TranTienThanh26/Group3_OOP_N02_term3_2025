@@ -1,13 +1,22 @@
 package com.example.servingwebcontent.Model;
 
-public class NguoiDung {
+import java.io.Serializable;
+
+public class NguoiDung implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     private int userID;
     private String email;
     private String password;
     private String role;
-    public String hoTen; // ✅ Dùng chung cho hiển thị tên người dùng
+    private String hoTen; // ✅ Dùng chung để hiển thị tên người dùng
 
-    // ✅ Constructor có bắt lỗi - hợp lý nhất
+    // ✅ Constructor mặc định
+    public NguoiDung() {
+        System.out.println("Khởi tạo NguoiDung mặc định.");
+    }
+
+    // ✅ Constructor có kiểm tra hợp lệ
     public NguoiDung(int userID, String email, String password, String role) {
         try {
             if (userID <= 0) throw new IllegalArgumentException("User ID phải lớn hơn 0.");
@@ -24,24 +33,22 @@ public class NguoiDung {
             this.role = role;
 
         } catch (IllegalArgumentException e) {
-            System.err.println("Lỗi khi tạo NguoiDung: " + e.getMessage());
+            System.err.println("❌ Lỗi khi tạo NguoiDung: " + e.getMessage());
         } finally {
-            System.out.println("Khởi tạo NguoiDung hoàn tất.");
+            System.out.println("✅ Khởi tạo NguoiDung hoàn tất.");
         }
     }
 
-    // ✅ Constructor mặc định
-    public NguoiDung() {}
-
-    // ✅ Constructor rút gọn (mặc định role = "user")
+    // ✅ Constructor rút gọn (role mặc định = "user")
     public NguoiDung(int userID, String email, String password) {
         this.userID = userID;
         this.email = email;
         this.password = password;
         this.role = "user";
+        System.out.println("✅ Tạo NguoiDung với role mặc định 'user'.");
     }
 
-    // Getters
+    // ===== GETTERS =====
     public int getUserID() {
         return userID;
     }
@@ -62,7 +69,7 @@ public class NguoiDung {
         return hoTen;
     }
 
-    // Setters
+    // ===== SETTERS =====
     public void setUserID(int userID) {
         this.userID = userID;
     }

@@ -1,6 +1,11 @@
 package com.example.servingwebcontent.Model;
 
-public class HoaDon {
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
+public class HoaDon implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     private int idHoaDon;
     private int idKH;
@@ -9,7 +14,9 @@ public class HoaDon {
     private int tienMonAn;
     private int tongtien;
     private String trangthai;
+    private List<CartItem> dsMonAn = new ArrayList<>();
 
+    // ✅ Getter - Setter
     public int getIdHoaDon() {
         return idHoaDon;
     }
@@ -66,9 +73,19 @@ public class HoaDon {
         this.trangthai = trangthai;
     }
 
+    public List<CartItem> getDsMonAn() {
+        return dsMonAn;
+    }
+
+    public void setDsMonAn(List<CartItem> dsMonAn) {
+        this.dsMonAn = dsMonAn;
+    }
+
+    // ✅ Constructor mặc định
     public HoaDon() {
     }
 
+    // ✅ Constructor cơ bản
     public HoaDon(int idHoaDon, int idKH, int idBan, String ngayHD, int tienMonAn, int tongtien) {
         this.idHoaDon = idHoaDon;
         this.idKH = idKH;
@@ -78,35 +95,33 @@ public class HoaDon {
         this.tongtien = tongtien;
     }
 
+    // ✅ Constructor đơn giản
     public HoaDon(int idHoaDon, String trangthai) {
         this.idHoaDon = idHoaDon;
         this.trangthai = trangthai;
     }
 
-    // ✅ Constructor chính có bắt lỗi và kiểm tra hợp lệ
+    // ✅ Constructor đầy đủ có kiểm tra nhẹ và log
     public HoaDon(int idHoaDon, int idKH, int idBan, String ngayHD, int tienMonAn,
                   int tongtien, String trangthai) {
-        try {
-            if (idHoaDon <= 0) throw new IllegalArgumentException("ID hóa đơn phải lớn hơn 0.");
-            if (idKH <= 0) throw new IllegalArgumentException("ID khách hàng phải lớn hơn 0.");
-            if (idBan <= 0) throw new IllegalArgumentException("ID bàn phải khác không.");
-            if (ngayHD == null || ngayHD.trim().isEmpty()) throw new IllegalArgumentException("Ngày hóa đơn không được trống.");
-            if (tienMonAn < 0) throw new IllegalArgumentException("Tiền món ăn không được âm.");
-            if (tongtien < 0) throw new IllegalArgumentException("Tổng tiền không được âm.");
-            if (trangthai == null || trangthai.trim().isEmpty()) throw new IllegalArgumentException("Trạng thái không hợp lệ.");
 
-            this.idHoaDon = idHoaDon;
-            this.idKH = idKH;
-            this.idBan = idBan;
-            this.ngayHD = ngayHD;
-            this.tienMonAn = tienMonAn;
-            this.tongtien = tongtien;
-            this.trangthai = trangthai;
+        this.idHoaDon = idHoaDon;
+        this.idKH = idKH;
+        this.idBan = idBan;
+        this.ngayHD = ngayHD;
+        this.tienMonAn = tienMonAn;
+        this.tongtien = tongtien;
+        this.trangthai = trangthai;
 
-        } catch (IllegalArgumentException e) {
-            System.err.println("Lỗi khi tạo hóa đơn: " + e.getMessage());
-        } finally {
-            System.out.println("Khởi tạo đối tượng HoaDon (đầy đủ) hoàn tất.");
-        }
+        // ⚠️ Log kiểm tra hợp lệ (không throw)
+        if (idHoaDon <= 0) System.out.println("⚠️ [LOG] ID hóa đơn không hợp lệ (có thể là hóa đơn mới).");
+        if (idKH <= 0) System.out.println("⚠️ [LOG] ID khách hàng không hợp lệ.");
+        if (idBan <= 0) System.out.println("⚠️ [LOG] ID bàn không hợp lệ.");
+        if (ngayHD == null || ngayHD.trim().isEmpty()) System.out.println("⚠️ [LOG] Ngày hóa đơn bị trống.");
+        if (tienMonAn < 0) System.out.println("⚠️ [LOG] Tiền món ăn âm.");
+        if (tongtien < 0) System.out.println("⚠️ [LOG] Tổng tiền âm.");
+        if (trangthai == null || trangthai.trim().isEmpty()) System.out.println("⚠️ [LOG] Trạng thái rỗng.");
+
+        System.out.println("✅ [LOG] Đã tạo hóa đơn mới: HD=" + idHoaDon + ", KH=" + idKH + ", Bàn=" + idBan);
     }
 }
