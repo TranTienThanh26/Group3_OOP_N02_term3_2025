@@ -84,7 +84,7 @@
     </form>
 </div>
 
-<!-- Modal (không thay đổi) -->
+<!-- Modal -->
 <div id="modalHoaDon" class="fixed inset-0 bg-black/60 hidden flex justify-center items-center z-50">
     <div class="bg-white text-gray-800 w-full max-w-md rounded-xl shadow-lg p-6 relative">
         <button onclick="closeModal()" class="absolute top-2 right-2 text-gray-500 hover:text-black text-lg">✕</button>
@@ -95,6 +95,9 @@
 
 <!-- JS -->
 <script th:inline="javascript">
+    const dataHoaDon = /*[[${jsonDsHoaDon}]]*/ '[]';
+    const idHoaDonTamList = /*[[${dsHoaDonTamID}]]*/ [];
+
     function formatDatetime(datetimeStr) {
         const d = new Date(datetimeStr);
         if (isNaN(d)) return datetimeStr;
@@ -125,19 +128,16 @@
             }
         });
 
-        // Modal xử lý
-        const dataHoaDon = /*[[${dsHoaDon}]]*/ [];
-        const idHoaDonTamList = /*[[${dsHoaDonTamID}]]*/ [];
-
+        const dsParsed = JSON.parse(dataHoaDon);
         document.querySelectorAll('.btn-xem').forEach(btn => {
             btn.addEventListener('click', () => {
                 const id = parseInt(btn.getAttribute('data-id'));
-                openModal(id, dataHoaDon, idHoaDonTamList);
+                openModal(id, dsParsed);
             });
         });
     });
 
-    function openModal(id, dataHoaDon, idHoaDonTamList) {
+    function openModal(id, dataHoaDon) {
         const hd = dataHoaDon.find(h => h.idHoaDon === id);
         if (!hd) return;
 
@@ -150,11 +150,13 @@
             <p class="font-semibold mt-2">🍽 Món đã đặt:</p>
             <ul class="list-disc list-inside">`;
 
-        const isTam = idHoaDonTamList.includes(hd.idHoaDon);
-        if (isTam && hd.dsMonAn && hd.dsMonAn.length > 0) {
+        if (hd.dsMonAn && hd.dsMonAn.length > 0) {
             for (let mon of hd.dsMonAn) {
-                const tien = parseInt(mon.thanhTien || (mon.soLuong * mon.donGia));
-                html += `<li>${mon.tenMonAn} x ${mon.soLuong} = ${tien.toLocaleString('vi-VN')} ₫</li>`;
+                const soLuong = mon.soLuong || mon.soluong || 1;
+                const donGia = mon.donGia || mon.dongia || 0;
+                const tenMon = mon.tenMonAn || mon.tenMon || "Không rõ";
+                const tien = mon.thanhTien || (soLuong * donGia);
+                html += `<li>${tenMon} x ${soLuong} = ${tien.toLocaleString('vi-VN')} ₫</li>`;
             }
         } else {
             html += `<li>Không có thông tin món ăn</li>`;

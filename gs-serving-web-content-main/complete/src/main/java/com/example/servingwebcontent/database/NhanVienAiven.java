@@ -8,10 +8,9 @@ import java.util.List;
 
 public class NhanVienAiven {
 
-    private static final String JDBC_URL =
-        "jdbc:mysql://mysql-338b99d8-restaurantmanager.e.aivencloud.com:19834/defaultdb?ssl-mode=REQUIRED";
-    private static final String USER = "avnadmin";
-    private static final String PASSWORD = "AVNS_HNm9Mr2leXuYSrqITaj";
+    private Connection getConn() throws SQLException {
+        return new myConnection().getConnection();
+    }
 
     // ✅ Lấy danh sách tất cả nhân viên
     public List<NhanVien> getAllNhanVien() {
@@ -19,7 +18,7 @@ public class NhanVienAiven {
         String query = "SELECT Id_NV, TenNV, NgayVL, Sdt, ChucVu, Id_NQL, TinhTrang FROM NhanVien";
 
         try (
-            Connection conn = DriverManager.getConnection(JDBC_URL, USER, PASSWORD);
+            Connection conn = getConn();
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(query)
         ) {
@@ -47,7 +46,7 @@ public class NhanVienAiven {
         String query = "INSERT INTO NhanVien (TenNV, NgayVL, Sdt, ChucVu, Id_NQL, TinhTrang) VALUES (?, ?, ?, ?, ?, ?)";
 
         try (
-            Connection conn = DriverManager.getConnection(JDBC_URL, USER, PASSWORD);
+            Connection conn = getConn();
             PreparedStatement stmt = conn.prepareStatement(query)
         ) {
             stmt.setString(1, nv.getHoTen());
@@ -70,7 +69,7 @@ public class NhanVienAiven {
         String query = "UPDATE NhanVien SET TenNV = ?, NgayVL = ?, Sdt = ?, ChucVu = ?, Id_NQL = ?, TinhTrang = ? WHERE Id_NV = ?";
 
         try (
-            Connection conn = DriverManager.getConnection(JDBC_URL, USER, PASSWORD);
+            Connection conn = getConn();
             PreparedStatement stmt = conn.prepareStatement(query)
         ) {
             stmt.setString(1, nv.getHoTen());
@@ -94,7 +93,7 @@ public class NhanVienAiven {
         String query = "DELETE FROM NhanVien WHERE Id_NV = ?";
 
         try (
-            Connection conn = DriverManager.getConnection(JDBC_URL, USER, PASSWORD);
+            Connection conn = getConn();
             PreparedStatement stmt = conn.prepareStatement(query)
         ) {
             stmt.setInt(1, id);
@@ -106,13 +105,13 @@ public class NhanVienAiven {
         }
     }
 
-    // ✅ Tìm kiếm nhân viên theo tên (LIKE)
+    // ✅ Tìm kiếm nhân viên theo tên
     public List<NhanVien> timKiemNhanVien(String keyword) {
         List<NhanVien> list = new ArrayList<>();
         String query = "SELECT Id_NV, TenNV, NgayVL, Sdt, ChucVu, Id_NQL, TinhTrang FROM NhanVien WHERE TenNV LIKE ?";
 
         try (
-            Connection conn = DriverManager.getConnection(JDBC_URL, USER, PASSWORD);
+            Connection conn = getConn();
             PreparedStatement stmt = conn.prepareStatement(query)
         ) {
             stmt.setString(1, "%" + keyword + "%");

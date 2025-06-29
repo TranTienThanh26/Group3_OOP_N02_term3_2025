@@ -1,20 +1,25 @@
 package com.example.servingwebcontent.Model;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import java.io.Serializable;
 
 public class CartItem implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private int maMonAn;
+
+    @JsonAlias({"tenMon", "tenMonAn"})
     private String tenMonAn;
+
     private int soLuong;
+
+    @JsonAlias({"gia", "donGia"}) // ✅ hỗ trợ cả "gia" và "donGia"
     private int donGia;
+
     private int thanhTien;
 
-    // ✅ Constructor mặc định
     public CartItem() {}
 
-    // ✅ Constructor đầy đủ
     public CartItem(int maMonAn, String tenMonAn, int soLuong, int donGia) {
         this.maMonAn = maMonAn;
         this.tenMonAn = tenMonAn;
@@ -23,7 +28,7 @@ public class CartItem implements Serializable {
         this.thanhTien = soLuong * donGia;
     }
 
-    // ===== GETTERS =====
+    // ==== GETTERS ====
     public int getMaMonAn() {
         return maMonAn;
     }
@@ -44,7 +49,7 @@ public class CartItem implements Serializable {
         return thanhTien;
     }
 
-    // ===== SETTERS =====
+    // ==== SETTERS ====
     public void setMaMonAn(int maMonAn) {
         this.maMonAn = maMonAn;
     }
@@ -67,7 +72,6 @@ public class CartItem implements Serializable {
         this.thanhTien = thanhTien;
     }
 
-    // ===== TIỆN ÍCH: cập nhật lại thành tiền =====
     private void updateThanhTien() {
         this.thanhTien = this.soLuong * this.donGia;
     }

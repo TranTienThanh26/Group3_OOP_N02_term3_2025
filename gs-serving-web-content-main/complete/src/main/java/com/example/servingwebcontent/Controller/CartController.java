@@ -99,6 +99,14 @@ public class CartController {
         session.setAttribute("cart", cart);
         return "redirect:/cart";
     }
+    // Thêm phương thức reset giỏ hàng
+    @PostMapping("/cart/reset")
+    @ResponseBody
+    public ResponseEntity<String> resetCart(HttpSession session) {
+    session.removeAttribute("cart"); // Xóa giỏ hàng khỏi session
+    return ResponseEntity.ok("✅ Giỏ hàng đã được reset.");
+}
+
 
     // 📦 Helper: Lấy danh sách giỏ hàng từ session
     private List<CartItem> getCartFromSession(HttpSession session) {

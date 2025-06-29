@@ -1,7 +1,6 @@
 package com.example.servingwebcontent.database;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.UUID;
@@ -10,27 +9,21 @@ import com.example.servingwebcontent.Model.NguoiDung;
 
 public class insertToAiven {
 
-    // Kết nối Aiven
-    private static final String JDBC_URL =
-        "jdbc:mysql://mysql-338b99d8-restaurantmanager.e.aivencloud.com:19834/defaultdb?ssl-mode=REQUIRED";
-    private static final String USER = "avnadmin";
-    private static final String PASSWORD = "AVNS_HNm9Mr2leXuYSrqITaj";
-
     public void insertNguoiDungToDb(NguoiDung nguoiDung) {
         try (
-            Connection conn = DriverManager.getConnection(JDBC_URL, USER, PASSWORD);
+            Connection conn = new myConnection().getConnection();
             PreparedStatement pst = conn.prepareStatement(
                 "INSERT INTO NguoiDung (UserID, Email, MatKhau, VaiTro) VALUES (?, ?, ?, ?)"
             )
         ) {
-            // Tạo userId nếu chưa có (bạn có thể dùng AUTO_INCREMENT trong DB để đơn giản hóa hơn)
+            // Tạo userId nếu chưa có
             int userId = nguoiDung.getUserID() == 0
-                         ? Math.abs(UUID.randomUUID().hashCode()) // random nhưng ít trùng lặp hơn Random
+                         ? Math.abs(UUID.randomUUID().hashCode())
                          : nguoiDung.getUserID();
 
             String role = nguoiDung.getRole();
             if (role == null || role.trim().isEmpty()) {
-                role = "Khach Hang"; // Giá trị mặc định hợp lệ theo ENUM trong DB
+                role = "Khach Hang"; // Giá trị mặc định
             }
 
             pst.setInt(1, userId);

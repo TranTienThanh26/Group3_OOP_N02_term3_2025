@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Hồ Sơ Khách Hàng</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        function openModal(id) {
+            document.getElementById(id).classList.remove('hidden');
+        }
+        function closeModal(id) {
+            document.getElementById(id).classList.add('hidden');
+        }
+    </script>
+</head>
+<body class="bg-yellow-50 min-h-screen font-sans">
+<div class="max-w-6xl mx-auto py-10 px-4">
+    <div class="bg-white shadow-lg rounded-xl p-8">
+        <h1 class="text-3xl font-bold text-yellow-800 text-center mb-6">👤 Hồ Sơ Khách Hàng</h1>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
+            <div>
+                <label class="text-gray-600 font-medium">📧 Email:</label>
+                <p class="bg-gray-100 p-2 rounded" th:text="${user.email}">example@gmail.com</p>
+            </div>
+            <div>
+                <label class="text-gray-600 font-medium">👤 Họ tên:</label>
+                <p class="bg-gray-100 p-2 rounded" th:text="${user.hoTen}">Nguyễn Văn A</p>
+            </div>
+            <div>
+                <label class="text-gray-600 font-medium">🔐 Mật khẩu:</label>
+                <input type="password" class="bg-gray-100 p-2 rounded w-full" th:value="${user.password}" readonly />
+            </div>
+        </div>
+
+        <div class="flex gap-4 justify-center">
+            <button onclick="openModal('modalPassword')" class="bg-yellow-600 hover:bg-yellow-700 text-white px-5 py-2 rounded-lg shadow">Đổi mật khẩu</button>
+            <button onclick="openModal('modalEmail')" class="bg-yellow-600 hover:bg-yellow-700 text-white px-5 py-2 rounded-lg shadow">Đổi Email</button>
+        </div>
+
+        <hr class="my-10 border-yellow-300">
+
+        <h2 class="text-2xl font-bold text-yellow-800 mb-6">🧾 Lịch sử hóa đơn</h2>
+
+        <div th:each="hd : ${dsHoaDon}" class="bg-white border-l-4 border-yellow-400 p-4 rounded shadow mb-6">
+            <p><strong>Mã hóa đơn:</strong> <span th:text="${hd.idHoaDon}">1</span></p>
+            <p><strong>Ngày lập:</strong> <span th:text="${hd.ngayHD}">2025-06-29 02:52:57</span></p>
+            <p><strong>Trạng thái:</strong> <span th:text="${hd.trangthai}">Thành công</span></p>
+            <p><strong>Tổng tiền:</strong>
+                <span th:text="${hd.tongtien} + ' ₫'">100000 ₫</span>
+            </p>
+            <button class="mt-2 text-blue-600 underline"
+                    th:onclick="'openModal(\'cthdModal-' + ${hd.idHoaDon} + '\')'">
+                Xem chi tiết món ăn
+            </button>
+        </div>
+
+        <div class="text-center mt-6">
+            <a href="/CustomerHome" class="text-yellow-700 font-semibold underline">← Quay về trang chủ</a>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: Đổi mật khẩu -->
+<div id="modalPassword" class="hidden fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
+    <div class="bg-white p-6 rounded-xl shadow-xl w-full max-w-md relative">
+        <h2 class="text-xl font-bold mb-4 text-yellow-800">Đổi mật khẩu</h2>
+        <form method="post" th:action="@{/updatePassword}">
+            <input type="password" name="newPassword" placeholder="Nhập mật khẩu mới" required class="w-full p-3 border rounded mb-4">
+            <div class="flex justify-between">
+                <button type="submit" class="bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded">Cập nhật</button>
+                <button type="button" onclick="closeModal('modalPassword')" class="text-gray-600 underline">Hủy</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Modal: Đổi email -->
+<div id="modalEmail" class="hidden fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
+    <div class="bg-white p-6 rounded-xl shadow-xl w-full max-w-md relative">
+        <h2 class="text-xl font-bold mb-4 text-yellow-800">Đổi Email</h2>
+        <form method="post" th:action="@{/updateEmail}">
+            <input type="email" name="newEmail" placeholder="Nhập email mới" required class="w-full p-3 border rounded mb-4">
+            <div class="flex justify-between">
+                <button type="submit" class="bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded">Cập nhật</button>
+                <button type="button" onclick="closeModal('modalEmail')" class="text-gray-600 underline">Hủy</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Modal chi tiết hóa đơn -->
+<div th:each="hd : ${dsHoaDon}" th:id="'cthdModal-' + ${hd.idHoaDon}"
+     class="hidden fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
+    <div class="bg-white rounded-xl shadow-xl p-6 w-full max-w-2xl">
+        <h3 class="text-lg font-bold text-yellow-800 mb-4">
+            Chi tiết món ăn - Hóa đơn <span th:text="${hd.idHoaDon}">1</span>
+        </h3>
+        <table class="w-full border text-center">
+            <thead class="bg-yellow-100">
+                <tr>
+                    <th class="p-2 border">Tên món</th>
+                    <th class="p-2 border">Số lượng</th>
+                    <th class="p-2 border">Đơn giá</th>
+                    <th class="p-2 border">Thành tiền</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="item : ${hd.dsMonAn}">
+                    <td class="p-2 border" th:text="${item.tenMonAn}">Cơm gà</td>
+                    <td class="p-2 border" th:text="${item.soLuong}">2</td>
+                    <td class="p-2 border" th:text="${item.donGia} + ' ₫'">50000 ₫</td>
+                    <td class="p-2 border" th:text="${item.thanhTien} + ' ₫'">100000 ₫</td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="text-right mt-4">
+            <button class="text-gray-600 underline"
+                    th:onclick="'closeModal(\'cthdModal-' + ${hd.idHoaDon} + '\')'">Đóng</button>
+        </div>
+    </div>
+</div>
+</body>
+</html>

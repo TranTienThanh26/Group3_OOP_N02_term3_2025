@@ -6,16 +6,15 @@ import com.example.servingwebcontent.Model.*;
 
 public class NguoiDungAiven {
 
-    private static final String JDBC_URL =
-        "jdbc:mysql://mysql-338b99d8-restaurantmanager.e.aivencloud.com:19834/defaultdb?ssl-mode=REQUIRED";
-    private static final String USER = "avnadmin";
-    private static final String PASSWORD = "AVNS_HNm9Mr2leXuYSrqITaj";
+    private Connection getConn() throws SQLException {
+        return new myConnection().getConnection();
+    }
 
     public NguoiDung login(String email, String matKhau) {
         String sql = "SELECT * FROM NguoiDung WHERE Email = ? AND TrangThai = 'Active'";
 
         try (
-            Connection conn = DriverManager.getConnection(JDBC_URL, USER, PASSWORD);
+            Connection conn = getConn();
             PreparedStatement pst = conn.prepareStatement(sql)
         ) {
             pst.setString(1, email.trim());
@@ -24,13 +23,7 @@ public class NguoiDungAiven {
             if (rs.next()) {
                 String storedPassword = rs.getString("MatKhau");
 
-                System.out.println(">>> DEBUG Email: " + email);
-                System.out.println(">>> DEBUG DB Password: " + storedPassword);
-                System.out.println(">>> DEBUG Input Password: " + matKhau.trim());
-
                 if (matKhau.trim().equals(storedPassword)) {
-                    System.out.println("✅ Đăng nhập thành công!");
-
                     int userID = rs.getInt("UserID");
                     String role = rs.getString("VaiTro");
 
@@ -38,16 +31,9 @@ public class NguoiDungAiven {
                         return getKhachHangByID(userID, conn, email, storedPassword);
                     } else if ("Nhan Vien".equalsIgnoreCase(role)) {
                         return getNhanVienByID(userID, conn, email, storedPassword);
-                    } else {
-                        System.out.println("⚠️ Vai trò không hợp lệ: " + role);
                     }
-                } else {
-                    System.out.println("❌ Mật khẩu không khớp.");
                 }
-            } else {
-                System.out.println("❌ Không tìm thấy người dùng hoặc trạng thái không phải 'Active'.");
             }
-
         } catch (SQLException e) {
             System.err.println("❌ Lỗi khi truy vấn MySQL:");
             e.printStackTrace();
@@ -67,7 +53,7 @@ public class NguoiDungAiven {
                 kh.setEmail(email);
                 kh.setPassword(password);
                 kh.setRole("Khach Hang");
-                kh.setHoTen(rs.getString("TenKH")); // ✅ sửa lại đúng cột
+                kh.setHoTen(rs.getString("TenKH"));
                 kh.setNgayThamGia(rs.getString("NgayThamGia"));
                 kh.setDoanhSo(rs.getInt("DoanhSo"));
                 kh.setDiem(rs.getInt("Diem"));
@@ -76,7 +62,7 @@ public class NguoiDungAiven {
         }
         return null;
     }
-    
+
     private NhanVien getNhanVienByID(int userID, Connection conn, String email, String password) throws SQLException {
         String query = "SELECT * FROM NhanVien WHERE UserID = ?";
         try (PreparedStatement pst = conn.prepareStatement(query)) {
@@ -88,7 +74,7 @@ public class NguoiDungAiven {
                 nv.setEmail(email);
                 nv.setPassword(password);
                 nv.setRole("Nhan Vien");
-                nv.setHoTen(rs.getString("TenNV")); // ✅ sửa lại đúng cột
+                nv.setHoTen(rs.getString("TenNV"));
                 nv.setId_NhanVien(rs.getInt("Id_NV"));
                 nv.setNgayVL(rs.getString("NgayVL"));
                 nv.setSdt(rs.getString("Sdt"));
@@ -99,5 +85,41 @@ public class NguoiDungAiven {
             }
         }
         return null;
+    }
+
+    // ✅ Cập nhật mật khẩu
+    public boolean capNhatMatKhau(int userId, String matKhauMoi) {
+        String sql = "UPDATE NguoiDung SET MatKhau = ? WHERE UserID = ?";
+        try (
+            Connection conn = getConn();
+            PreparedStatement pst = conn.prepareStatement(sql)
+        ) {
+            pst.setString(1, matKhauMoi.trim());
+            pst.setInt(2, userId);
+            int rows = pst.executeUpdate();
+            return rows > 0;
+        } catch (SQLException e) {
+            System.err.println("❌ Lỗi khi cập nhật mật khẩu:");
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    // ✅ Cập nhật email
+    public boolean capNhatEmail(int userId, String emailMoi) {
+        String sql = "UPDATE NguoiDung SET Email = ? WHERE UserID = ?";
+        try (
+            Connection conn = getConn();
+            PreparedStatement pst = conn.prepareStatement(sql)
+        ) {
+            pst.setString(1, emailMoi.trim());
+            pst.setInt(2, userId);
+            int rows = pst.executeUpdate();
+            return rows > 0;
+        } catch (SQLException e) {
+            System.err.println("❌ Lỗi khi cập nhật email:");
+            e.printStackTrace();
+            return false;
+        }
     }
 }

@@ -25,7 +25,7 @@ public class HoaDonController {
     private final BanAiven banAiven = new BanAiven();
     private final CTHDAiven cthdAiven = new CTHDAiven();
 
-    // ✅ 1. Hiển thị danh sách hóa đơn
+    // 1. Hiển thị danh sách hóa đơn
     @GetMapping("/hoadon")
     public String hienThiHoaDon(Model model, HttpSession session) {
         NguoiDung nguoiDung = (NguoiDung) session.getAttribute("user");
@@ -34,59 +34,72 @@ public class HoaDonController {
         int idKH = KhachHangAiven.layMaKhachHangTheoUserID(nguoiDung.getUserID());
         if (idKH == -1) return "redirect:/login?error=nokhachhang";
 
+        // Lấy danh sách hóa đơn của khách hàng
         List<HoaDon> danhSach = hoaDonDB.getDanhSachHoaDonKhongTrung()
                 .stream()
                 .filter(hd -> hd.getIdKH() == idKH)
                 .collect(Collectors.toCollection(ArrayList::new));
 
-        Set<Integer> idsDaCo = danhSach.stream()
-                .map(HoaDon::getIdHoaDon)
-                .collect(Collectors.toSet());
-
+        // Lấy danh sách hóa đơn tạm trong session (chưa thanh toán)
         Object dsTamRaw = session.getAttribute("dsHoaDonTam");
-        List<Integer> idHoaDonTam = new ArrayList<>();
-
+        List<HoaDon> dsHoaDonTam = new ArrayList<>();
         if (dsTamRaw instanceof List<?>) {
             for (Object obj : (List<?>) dsTamRaw) {
                 if (obj instanceof HoaDon hdSession) {
-                    int id = hdSession.getIdHoaDon();
-
-                    if (idsDaCo.contains(id)) {
-                        for (HoaDon hdDB : danhSach) {
-                            if (hdDB.getIdHoaDon() == id && hdSession.getDsMonAn() != null && !hdSession.getDsMonAn().isEmpty()) {
-                                hdDB.setDsMonAn(hdSession.getDsMonAn());
-                                idHoaDonTam.add(id);
-                                break;
-                            }
-                        }
-                    } else {
-                        if (hdSession.getDsMonAn() == null) {
-                            hdSession.setDsMonAn(new ArrayList<>());
-                        }
-                        danhSach.add(hdSession);
-                        idsDaCo.add(id);
-                        if (!hdSession.getDsMonAn().isEmpty()) {
-                            idHoaDonTam.add(id);
-                        }
-                    }
+                    dsHoaDonTam.add(hdSession);
                 }
             }
         }
 
+        // Map idHoaDon -> HoaDon trong session để tra cứu nhanh
+        Map<Integer, HoaDon> mapTam = dsHoaDonTam.stream()
+                .collect(Collectors.toMap(HoaDon::getIdHoaDon, hd -> hd));
+
+        // Với từng hóa đơn, nếu trạng thái "Thành công" thì lấy chi tiết món ăn từ CTHD,
+        // còn chưa thanh toán thì lấy dsMonAn trong session
         for (HoaDon hd : danhSach) {
+            if ("Thành công".equalsIgnoreCase(hd.getTrangthai())) {
+                // Lấy chi tiết món ăn từ bảng CTHD
+                List<CTHD> cthdList = cthdAiven.getDsMonAnTheoHoaDon(hd.getIdHoaDon());
+                List<CartItem> dsMonAn = cthdList.stream().map(cthd -> {
+                    CartItem item = new CartItem();
+                    item.setMaMonAn(cthd.getID_MonAn());
+                    item.setTenMonAn(cthd.getTenMonAn());
+                    item.setSoLuong(cthd.getSoluong());
+                    item.setDonGia(cthd.getDonGia());
+                    item.setThanhTien(cthd.getThanhTien());
+                    return item;
+                }).collect(Collectors.toList());
+                hd.setDsMonAn(dsMonAn);
+            } else {
+                // Nếu chưa thanh toán, lấy danh sách món ăn từ session nếu có
+                if (mapTam.containsKey(hd.getIdHoaDon())) {
+                    HoaDon hdTam = mapTam.get(hd.getIdHoaDon());
+                    if (hdTam.getDsMonAn() != null && !hdTam.getDsMonAn().isEmpty()) {
+                        hd.setDsMonAn(hdTam.getDsMonAn());
+                    }
+                }
+            }
             if (hd.getDsMonAn() == null) {
                 hd.setDsMonAn(new ArrayList<>());
             }
         }
 
-        model.addAttribute("dsHoaDon", danhSach);
-        model.addAttribute("dsHoaDonTamID", idHoaDonTam);
-        model.addAttribute("dsHoaDonJson", danhSach);
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            String jsonHoaDon = mapper.writeValueAsString(danhSach);
 
-        return "Customer/HoaDon";
+            model.addAttribute("dsHoaDon", danhSach);
+            model.addAttribute("jsonDsHoaDon", jsonHoaDon);
+
+            return "Customer/HoaDon";
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "redirect:/hoadon?error=json";
+        }
     }
 
-    // ✅ 2. Tạo hóa đơn
+    // 2. Tạo hóa đơn
     @PostMapping("/taohoadon")
     public String taoHoaDon(
             HttpSession session,
@@ -114,8 +127,18 @@ public class HoaDonController {
             hoaDon.setDsMonAn(cart);
 
             int idMoi = hoaDonDB.themHoaDon(hoaDon);
-            if (idMoi > 0) hoaDon.setIdHoaDon(idMoi);
+            if (idMoi > 0) {
+                hoaDon.setIdHoaDon(idMoi);
 
+                // Lưu chi tiết món ăn vào bảng CTHD
+                for (CartItem item : cart) {
+                    CTHD cthd = new CTHD(idMoi, item.getMaMonAn(), item.getTenMonAn(),
+                            item.getSoLuong(), item.getDonGia(), item.getThanhTien());
+                    cthdAiven.insertCTHD(cthd);
+                }
+            }
+
+            // Lưu hóa đơn tạm trong session
             List<HoaDon> dsTam = new ArrayList<>();
             Object old = session.getAttribute("dsHoaDonTam");
             if (old instanceof List<?>) {
@@ -134,7 +157,7 @@ public class HoaDonController {
         }
     }
 
-    // ✅ 3. Xóa hóa đơn
+    // 3. Xóa hóa đơn
     @GetMapping("/hoadon/xoa/{id}")
     public String xoaHoaDon(@PathVariable("id") int id, HttpSession session) {
         hoaDonDB.xoaHoaDon(id);
@@ -153,16 +176,15 @@ public class HoaDonController {
         return "redirect:/hoadon?deleted";
     }
 
-    // ✅ 4. Thanh toán hóa đơn + lưu chi tiết
+    // 4. Thanh toán hóa đơn
     @GetMapping("/hoadon/thanhtoan")
     public String thanhToanHoaDon(@RequestParam("id") int id, HttpSession session, Model model) {
         HoaDon hd = hoaDonDB.timHoaDonTheoId(id);
         if (hd == null) return "redirect:/hoadon?error=notfound";
-    
-        // ✅ In ra ID hóa đơn đang xử lý
+
         System.out.println("➡️ Thanh toán hóa đơn ID: " + id);
-    
-        // Lấy danh sách món ăn từ session
+
+        // Lấy dsMonAn từ session (dsHoaDonTam) nếu có
         Object tamList = session.getAttribute("dsHoaDonTam");
         if (tamList instanceof List<?>) {
             for (Object o : (List<?>) tamList) {
@@ -172,29 +194,32 @@ public class HoaDonController {
                 }
             }
         }
-    
+
         hd.setTrangthai("Thành công");
         hoaDonDB.capNhatHoaDon(hd);
-    
-        System.out.println("✅ Cập nhật trạng thái hóa đơn thành công. Bắt đầu lưu chi tiết...");
-    
+
+        System.out.println("✅ Cập nhật trạng thái hóa đơn thành công.");
+
+        // Cập nhật lại chi tiết hóa đơn trong bảng CTHD (có thể thêm hoặc cập nhật nếu cần)
+        // Nếu bạn muốn xóa hết chi tiết cũ rồi thêm lại, có thể gọi xóa rồi insert
+        // Đây là ví dụ xóa rồi thêm lại:
+        cthdAiven.deleteCTHDTheoHoaDon(id);  // Bạn cần thêm hàm này trong CTHDAiven để xóa chi tiết cũ
         for (CartItem item : hd.getDsMonAn()) {
-            int idMonAn = item.getMaMonAn();
-            String ten = item.getTenMonAn();
-            int sl = item.getSoLuong();
-            int gia = item.getDonGia();
-            int thanhTien = item.getThanhTien();
-    
-            // ✅ In chi tiết từng món
-            System.out.printf("🧾 CTHD -> HD: %d | MA: %d | Tên: %s | SL: %d | ĐG: %d | TT: %d\n",
-                    id, idMonAn, ten, sl, gia, thanhTien);
-    
-            CTHD cthd = new CTHD(id, idMonAn, ten, sl, gia, thanhTien);
+            CTHD cthd = new CTHD(id, item.getMaMonAn(), item.getTenMonAn(),
+                    item.getSoLuong(), item.getDonGia(), item.getThanhTien());
             cthdAiven.insertCTHD(cthd);
         }
-    
+
+        // Reset giỏ hàng và bàn chọn trong session nếu có
+        session.removeAttribute("cart");
+        session.removeAttribute("selectedTable");
+
+        // Thêm tên người dùng vào model để hiển thị trong giao diện
+        NguoiDung nguoiDung = (NguoiDung) session.getAttribute("user");
+        if (nguoiDung != null) {
+            model.addAttribute("tenNguoiDung", nguoiDung.getHoTen());
+        }
         model.addAttribute("hoaDon", hd);
         return "Customer/CTHD";
-}
     }
-    
+}

@@ -1,26 +1,23 @@
 package com.example.servingwebcontent.database;
 
+import com.example.servingwebcontent.Model.CartItem;
+import com.example.servingwebcontent.Model.HoaDon;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.example.servingwebcontent.Model.HoaDon;
-
 public class HoaDonAiven {
 
-    private static final String JDBC_URL =
-        "jdbc:mysql://mysql-338b99d8-restaurantmanager.e.aivencloud.com:19834/defaultdb?ssl-mode=REQUIRED";
-    private static final String USER = "avnadmin";
-    private static final String PASSWORD = "AVNS_HNm9Mr2leXuYSrqITaj";
-
-    // ✅ Lấy danh sách tất cả hóa đơn
     public List<HoaDon> getDanhSachHoaDon() {
         List<HoaDon> list = new ArrayList<>();
         String query = "SELECT * FROM HoaDon";
 
         try (
-            Connection conn = DriverManager.getConnection(JDBC_URL, USER, PASSWORD);
+            Connection conn = new myConnection().getConnection();
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(query)
         ) {
@@ -36,13 +33,12 @@ public class HoaDonAiven {
         return list;
     }
 
-    // ✅ Lấy danh sách hóa đơn theo khách hàng
     public List<HoaDon> getHoaDonTheoKhachHang(int idKH) {
         List<HoaDon> list = new ArrayList<>();
         String query = "SELECT * FROM HoaDon WHERE IDKH = ? ORDER BY NgayHD DESC";
 
         try (
-            Connection conn = DriverManager.getConnection(JDBC_URL, USER, PASSWORD);
+            Connection conn = new myConnection().getConnection();
             PreparedStatement stmt = conn.prepareStatement(query)
         ) {
             stmt.setInt(1, idKH);
@@ -59,12 +55,11 @@ public class HoaDonAiven {
         return list;
     }
 
-    // ✅ Thêm hóa đơn mới và trả về ID được tạo
     public int themHoaDon(HoaDon hoaDon) {
-        String query = "INSERT INTO HoaDon (IDKH, IDBan, NgayHD, TienMonAn, TongTien, TrangThai) VALUES (?, ?, ?, ?, ?, ?)";
-
+        String query = "INSERT INTO HoaDon (IDKH, IDBan, NgayHD, TienMonAn, TongTien, TrangThai, dsMonAn) VALUES (?, ?, ?, ?, ?, ?, ?)";
+    
         try (
-            Connection conn = DriverManager.getConnection(JDBC_URL, USER, PASSWORD);
+            Connection conn = new myConnection().getConnection();
             PreparedStatement stmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)
         ) {
             stmt.setInt(1, hoaDon.getIdKH());
@@ -73,31 +68,35 @@ public class HoaDonAiven {
             stmt.setInt(4, hoaDon.getTienMonAn());
             stmt.setInt(5, hoaDon.getTongtien());
             stmt.setString(6, hoaDon.getTrangthai());
-
+    
+            String dsMonAnJson = new ObjectMapper().writeValueAsString(hoaDon.getDsMonAn());
+            stmt.setString(7, dsMonAnJson);
+    
             int rows = stmt.executeUpdate();
             if (rows > 0) {
                 ResultSet rs = stmt.getGeneratedKeys();
                 if (rs.next()) {
                     int idMoi = rs.getInt(1);
                     hoaDon.setIdHoaDon(idMoi);
+                    System.out.println("✅ [LOG] Đã tạo hóa đơn mới: HD=" + hoaDon.getIdHoaDon() + ", KH=" + hoaDon.getIdKH() + ", Bàn=" + hoaDon.getIdBan());
                     System.out.println("✅ Đã thêm hóa đơn với ID: " + idMoi);
                     return idMoi;
                 }
             }
-        } catch (SQLException e) {
+        } catch (Exception e) {
             System.err.println("❌ Lỗi khi thêm HoaDon:");
             e.printStackTrace();
         }
-
+    
         return -1;
     }
+    
 
-    // ✅ Cập nhật hóa đơn
     public void capNhatHoaDon(HoaDon hoaDon) {
-        String query = "UPDATE HoaDon SET IDKH = ?, IDBan = ?, NgayHD = ?, TienMonAn = ?, TongTien = ?, TrangThai = ? WHERE IDHoaDon = ?";
+        String query = "UPDATE HoaDon SET IDKH = ?, IDBan = ?, NgayHD = ?, TienMonAn = ?, TongTien = ?, TrangThai = ?, dsMonAn = ? WHERE IDHoaDon = ?";
 
         try (
-            Connection conn = DriverManager.getConnection(JDBC_URL, USER, PASSWORD);
+            Connection conn = new myConnection().getConnection();
             PreparedStatement stmt = conn.prepareStatement(query)
         ) {
             stmt.setInt(1, hoaDon.getIdKH());
@@ -106,21 +105,26 @@ public class HoaDonAiven {
             stmt.setInt(4, hoaDon.getTienMonAn());
             stmt.setInt(5, hoaDon.getTongtien());
             stmt.setString(6, hoaDon.getTrangthai());
-            stmt.setInt(7, hoaDon.getIdHoaDon());
+
+            String dsMonAnJson = new ObjectMapper().writeValueAsString(hoaDon.getDsMonAn());
+            stmt.setString(7, dsMonAnJson);
+
+            stmt.setInt(8, hoaDon.getIdHoaDon());
 
             int rows = stmt.executeUpdate();
             System.out.println("✅ Đã cập nhật " + rows + " hóa đơn.");
-        } catch (SQLException e) {
+        } catch (Exception e) {
             System.err.println("❌ Lỗi khi cập nhật HoaDon:");
             e.printStackTrace();
         }
     }
 
-    // ✅ Xoá chi tiết hóa đơn theo ID hóa đơn
     public void xoaChiTietHoaDonTheoIdHD(int idHD) {
         String sql = "DELETE FROM CTHD WHERE ID_HD = ?";
-        try (Connection conn = DriverManager.getConnection(JDBC_URL, USER, PASSWORD);
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (
+            Connection conn = new myConnection().getConnection();
+            PreparedStatement stmt = conn.prepareStatement(sql)
+        ) {
             stmt.setInt(1, idHD);
             int rows = stmt.executeUpdate();
             System.out.println("🗑️ Đã xoá " + rows + " chi tiết hóa đơn.");
@@ -130,14 +134,13 @@ public class HoaDonAiven {
         }
     }
 
-    // ✅ Xoá hóa đơn theo ID (xoá cả CTHD trước)
     public void xoaHoaDon(int idHoaDon) {
         xoaChiTietHoaDonTheoIdHD(idHoaDon);
 
         String query = "DELETE FROM HoaDon WHERE IDHoaDon = ?";
 
         try (
-            Connection conn = DriverManager.getConnection(JDBC_URL, USER, PASSWORD);
+            Connection conn = new myConnection().getConnection();
             PreparedStatement stmt = conn.prepareStatement(query)
         ) {
             stmt.setInt(1, idHoaDon);
@@ -149,14 +152,12 @@ public class HoaDonAiven {
         }
     }
 
-    // ✅ Hàm hỗ trợ: Tạo đối tượng HoaDon từ ResultSet (format ngayHD)
     private HoaDon taoHoaDonTuResultSet(ResultSet rs) throws SQLException {
         HoaDon hd = new HoaDon();
         hd.setIdHoaDon(rs.getInt("IDHoaDon"));
         hd.setIdKH(rs.getInt("IDKH"));
         hd.setIdBan(rs.getInt("IDBan"));
 
-        // ✅ Format Timestamp -> String "yyyy-MM-dd HH:mm:ss"
         Timestamp timestamp = rs.getTimestamp("NgayHD");
         String ngayHD = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timestamp);
         hd.setNgayHD(ngayHD);
@@ -164,17 +165,30 @@ public class HoaDonAiven {
         hd.setTienMonAn(rs.getInt("TienMonAn"));
         hd.setTongtien(rs.getInt("TongTien"));
         hd.setTrangthai(rs.getString("TrangThai"));
+
+        String dsMonAnStr = rs.getString("dsMonAn");
+        if (dsMonAnStr != null && !dsMonAnStr.isEmpty()) {
+            try {
+                List<CartItem> ds = new ObjectMapper().readValue(
+                    dsMonAnStr,
+                    new TypeReference<List<CartItem>>() {}
+                );
+                hd.setDsMonAn(ds);
+            } catch (Exception e) {
+                System.err.println("❌ Lỗi khi đọc dsMonAn từ JSON:");
+                e.printStackTrace();
+            }
+        }
+
         return hd;
     }
 
-    // ✅ Lấy danh sách hóa đơn không trùng lặp
     public List<HoaDon> getDanhSachHoaDonKhongTrung() {
         List<HoaDon> list = new ArrayList<>();
-        String query = "SELECT DISTINCT IDHoaDon, IDKH, IDBan, NgayHD, TienMonAn, TongTien, TrangThai " +
-                       "FROM HoaDon ORDER BY NgayHD DESC";
+        String query = "SELECT DISTINCT IDHoaDon, IDKH, IDBan, NgayHD, TienMonAn, TongTien, TrangThai, dsMonAn FROM HoaDon ORDER BY NgayHD DESC";
 
         try (
-            Connection conn = DriverManager.getConnection(JDBC_URL, USER, PASSWORD);
+            Connection conn = new myConnection().getConnection();
             PreparedStatement stmt = conn.prepareStatement(query);
             ResultSet rs = stmt.executeQuery()
         ) {
@@ -189,31 +203,21 @@ public class HoaDonAiven {
 
         return list;
     }
+
     public HoaDon timHoaDonTheoId(int id) {
         String sql = "SELECT * FROM HoaDon WHERE IDHoaDon = ?";
         try (
-            Connection conn = DriverManager.getConnection(JDBC_URL, USER, PASSWORD);
+            Connection conn = new myConnection().getConnection();
             PreparedStatement stmt = conn.prepareStatement(sql)
         ) {
             stmt.setInt(1, id);
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
-                HoaDon hd = new HoaDon();
-                hd.setIdHoaDon(rs.getInt("IDHoaDon"));
-                hd.setIdKH(rs.getInt("IDKH"));
-                hd.setIdBan(rs.getInt("IDBan"));
-                hd.setNgayHD(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(rs.getTimestamp("NgayHD")));
-                hd.setTienMonAn(rs.getInt("TienMonAn"));
-                hd.setTongtien(rs.getInt("TongTien"));
-                hd.setTrangthai(rs.getString("TrangThai"));
-                return hd;
+                return taoHoaDonTuResultSet(rs);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
     }
-    
-
-    
 }

@@ -3,6 +3,7 @@ package com.example.servingwebcontent.Controller;
 import com.example.servingwebcontent.Model.NguoiDung;
 import com.example.servingwebcontent.Model.NhanVien;
 import com.example.servingwebcontent.Model.KhachHang;
+import com.example.servingwebcontent.database.KhachHangAiven;
 import com.example.servingwebcontent.database.NguoiDungAiven;
 
 import jakarta.servlet.http.HttpSession;
@@ -33,8 +34,11 @@ public class LoginController {
             // 👉 Gán tên hiển thị dùng chung
             if ("Nhan Vien".equalsIgnoreCase(user.getRole()) && user instanceof NhanVien nv) {
                 user.setHoTen(nv.getHoTen());
-            } else if ("Khach Hang".equalsIgnoreCase(user.getRole()) && user instanceof KhachHang kh) {
-                user.setHoTen(kh.getHoTen());
+            } else if ("Khach Hang".equalsIgnoreCase(user.getRole())) {
+                KhachHang kh = new KhachHangAiven().timKhachTheoUserID(user.getUserID());
+                if (kh != null) {
+                    user.setHoTen(kh.getHoTen());
+                }
             }
 
             // 👉 Lưu user vào session

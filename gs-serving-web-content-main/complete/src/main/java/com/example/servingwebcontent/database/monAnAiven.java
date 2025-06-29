@@ -1,17 +1,16 @@
 package com.example.servingwebcontent.database;
 
+import com.example.servingwebcontent.Model.MonAn;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.example.servingwebcontent.Model.MonAn;
-
 public class monAnAiven {
 
-    private static final String JDBC_URL =
-        "jdbc:mysql://mysql-338b99d8-restaurantmanager.e.aivencloud.com:19834/defaultdb?ssl-mode=REQUIRED";
-    private static final String USER = "avnadmin";
-    private static final String PASSWORD = "AVNS_HNm9Mr2leXuYSrqITaj";
+    private Connection getConn() throws SQLException {
+        return new myConnection().getConnection();
+    }
 
     // ✅ Lấy danh sách món ăn
     public List<MonAn> getMonAnListFromAiven() {
@@ -19,7 +18,7 @@ public class monAnAiven {
         String query = "SELECT MaMonAn, TenMonAn, DonGia, LoaiMonAn, TrangThai, SoLuongDaBan, HinhAnh FROM MonAn";
 
         try (
-            Connection conn = DriverManager.getConnection(JDBC_URL, USER, PASSWORD);
+            Connection conn = getConn();
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(query)
         ) {
@@ -47,7 +46,7 @@ public class monAnAiven {
         String query = "INSERT INTO MonAn (TenMonAn, DonGia, LoaiMonAn, TrangThai, SoLuongDaBan, HinhAnh) VALUES (?, ?, ?, ?, ?, ?)";
 
         try (
-            Connection conn = DriverManager.getConnection(JDBC_URL, USER, PASSWORD);
+            Connection conn = getConn();
             PreparedStatement stmt = conn.prepareStatement(query)
         ) {
             stmt.setString(1, monAn.getTenMonAn());
@@ -70,7 +69,7 @@ public class monAnAiven {
         String query = "UPDATE MonAn SET TenMonAn = ?, DonGia = ?, LoaiMonAn = ?, TrangThai = ?, SoLuongDaBan = ?, HinhAnh = ? WHERE MaMonAn = ?";
 
         try (
-            Connection conn = DriverManager.getConnection(JDBC_URL, USER, PASSWORD);
+            Connection conn = getConn();
             PreparedStatement stmt = conn.prepareStatement(query)
         ) {
             stmt.setString(1, monAn.getTenMonAn());
@@ -94,7 +93,7 @@ public class monAnAiven {
         String query = "DELETE FROM MonAn WHERE MaMonAn = ?";
 
         try (
-            Connection conn = DriverManager.getConnection(JDBC_URL, USER, PASSWORD);
+            Connection conn = getConn();
             PreparedStatement stmt = conn.prepareStatement(query)
         ) {
             stmt.setInt(1, id);
@@ -106,12 +105,12 @@ public class monAnAiven {
         }
     }
 
-    // ✅ Tìm món ăn theo tên (phục vụ CartController)
+    // ✅ Tìm món ăn theo tên
     public MonAn timMonAnTheoTen(String tenMonAn) {
         String query = "SELECT MaMonAn, TenMonAn, DonGia, LoaiMonAn, TrangThai, SoLuongDaBan, HinhAnh FROM MonAn WHERE TenMonAn = ? LIMIT 1";
 
         try (
-            Connection conn = DriverManager.getConnection(JDBC_URL, USER, PASSWORD);
+            Connection conn = getConn();
             PreparedStatement stmt = conn.prepareStatement(query)
         ) {
             stmt.setString(1, tenMonAn);
@@ -136,12 +135,12 @@ public class monAnAiven {
         return null;
     }
 
-    // ✅ Tìm món ăn theo ID (dự phòng)
+    // ✅ Tìm món ăn theo ID
     public MonAn timMonAnTheoId(int id) {
         String query = "SELECT MaMonAn, TenMonAn, DonGia, LoaiMonAn, TrangThai, SoLuongDaBan, HinhAnh FROM MonAn WHERE MaMonAn = ?";
 
         try (
-            Connection conn = DriverManager.getConnection(JDBC_URL, USER, PASSWORD);
+            Connection conn = getConn();
             PreparedStatement stmt = conn.prepareStatement(query)
         ) {
             stmt.setInt(1, id);
