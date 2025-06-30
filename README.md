@@ -162,7 +162,7 @@ Xây dựng hệ thống Quản lý Nhà Hàng một cách chuyên nghiệp, lin
  • Hiển thị danh sách món trong 1 hóa đơn
 
 
-  📁 Cấu trúc thư mục Project
+  📁 Cấu trúc thư mục Project:
 
 ```
 Project/
@@ -186,37 +186,36 @@ Project/
 │   ├── TestNguoiDung.java
 │   └── TestNhanVien.java
 ├── README.md
-
-
-
-
+  
+```
  
-##Để kiểm tra tính đúng đắn và độ ổn định của hệ thống quản lý nhà hàng, chúng tôi thực hiện kiểm thử cho các chức năng chính của từng lớp như sau:
 
-1.Lớp NguoiDung, KhachHang, NhanVien:
+ **Để kiểm tra tính đúng đắn và độ ổn định của hệ thống quản lý nhà hàng, chúng tôi thực hiện kiểm thử cho các chức năng chính của từng lớp như sau:
+
+1. Lớp NguoiDung, KhachHang, NhanVien:
 Kiểm thử các chức năng như đăng ký, đăng nhập, hiển thị thông tin người dùng, phân quyền theo vai trò, và cập nhật trạng thái tài khoản.
 
-2.Lớp Ban:
+2. Lớp Ban:
 Kiểm tra việc tạo mới, hiển thị danh sách bàn ăn, cập nhật trạng thái bàn theo thời gian thực và phân bổ bàn vào hóa đơn.
 
-3.Lớp MonAn:
+3. Lớp MonAn:
 Kiểm thử các thao tác như thêm món ăn, hiển thị danh sách món, cập nhật thông tin và trạng thái món ăn, đồng thời xử lý các tình huống như hết hàng.
 
-4.Lớp HoaDon:
+4. Lớp HoaDon:
 Thực hiện kiểm thử tạo hóa đơn mới, hiển thị thông tin hóa đơn, tính tổng tiền, cập nhật trạng thái và đảm bảo kết nối đúng với các bảng liên quan như bàn và khách hàng.
 
-5.Lớp CTHD (Chi Tiết Hóa Đơn):
+5. Lớp CTHD (Chi Tiết Hóa Đơn):
 Kiểm thử việc tạo dòng chi tiết hóa đơn khi khách gọi món, tính thành tiền, cập nhật số lượng và hiển thị danh sách món đã gọi theo từng hóa đơn.
 
 
 
-## ✨ Nội dung đề tài
+## ✨ Nội dung đề tài:
 
 Xây dựng ứng dụng **quản lý nhà hàng** chuyên nghiệp, hỗ trợ quản lý người dùng, khách hàng, nhân viên, bàn ăn, món ăn, hóa đơn và chi tiết hóa đơn.
 
 ---
 
-## 🎯 Yêu cầu tổng quan
+## 🎯 Yêu cầu tổng quan:
 
 - Giao diện ứng dụng xây dựng bằng **Java Spring Boot**.
 - Có chức năng **quản lý toàn bộ hoạt động của nhà hàng**, bao gồm:
@@ -233,7 +232,7 @@ Xây dựng ứng dụng **quản lý nhà hàng** chuyên nghiệp, hỗ trợ 
 
 ---
 
-## 🔹 Chức năng quản lý người dùng (NguoiDung)
+## 🔹 Chức năng quản lý người dùng (NguoiDung):
 
 - Thêm, sửa, xóa người dùng.
 - Phân quyền người dùng theo vai trò: Khách hàng, Nhân viên, Quản lý, Admin.
@@ -242,7 +241,7 @@ Xây dựng ứng dụng **quản lý nhà hàng** chuyên nghiệp, hỗ trợ 
 
 ---
 
-## 🔹 Chức năng quản lý khách hàng (KhachHang)
+## 🔹 Chức năng quản lý khách hàng (KhachHang):
 
 - Thêm, sửa, xóa khách hàng.
 - Hiển thị thông tin khách hàng (họ tên, doanh số, điểm).
@@ -251,7 +250,7 @@ Xây dựng ứng dụng **quản lý nhà hàng** chuyên nghiệp, hỗ trợ 
 
 ---
 
-## 🔹 Chức năng quản lý nhân viên (NhanVien)
+## 🔹 Chức năng quản lý nhân viên (NhanVien):
 
 - Thêm, sửa, xóa nhân viên.
 - Quản lý thông tin nhân viên (chức vụ, tình trạng, người quản lý).
@@ -260,7 +259,7 @@ Xây dựng ứng dụng **quản lý nhà hàng** chuyên nghiệp, hỗ trợ 
 
 ---
 
-## 🔹 Chức năng quản lý bàn ăn (Ban)
+## 🔹 Chức năng quản lý bàn ăn (Ban):
 
 - Hiển thị danh sách bàn ăn.
 - Cập nhật trạng thái bàn (Trống, Đã đặt, Đang phục vụ, Đang dọn dẹp).
@@ -268,7 +267,7 @@ Xây dựng ứng dụng **quản lý nhà hàng** chuyên nghiệp, hỗ trợ 
 
 ---
 
-## 🔹 Chức năng quản lý món ăn (MonAn)
+## 🔹 Chức năng quản lý món ăn (MonAn):
 
 - Thêm, sửa, xóa món ăn.
 - Hiển thị chi tiết thông tin món ăn (giá, loại, trạng thái, ảnh).
@@ -276,7 +275,7 @@ Xây dựng ứng dụng **quản lý nhà hàng** chuyên nghiệp, hỗ trợ 
 
 ---
 
-## 🔹 Chức năng quản lý hóa đơn (HoaDon)
+## 🔹 Chức năng quản lý hóa đơn (HoaDon):
 
 - Tạo Hóa Đơn
 - Gắn hóa đơn với khách hàng và bàn ăn.
@@ -285,7 +284,7 @@ Xây dựng ứng dụng **quản lý nhà hàng** chuyên nghiệp, hỗ trợ 
 
 ---
 
-## 🔹 Chức năng quản lý chi tiết hóa đơn (CTHD)
+## 🔹 Chức năng quản lý chi tiết hóa đơn (CTHD):
 
 - Thêm món ăn vào hóa đơn (chi tiết).
 - Cập nhật số lượng và đơn giá theo món.
@@ -300,20 +299,23 @@ Xây dựng ứng dụng **quản lý nhà hàng** chuyên nghiệp, hỗ trợ 
 1.2: UML Class Diagram :
 ![Class Diagram](ClassDiagram.png)
 
+1.3: Activity Diagram :
 ![Activity Diagram](ActivityDiagram.png).
 
-Lưu đồ thuật toán của phương thức chính: Thông báo danh sách món ăn đã được đặt bởi khách hàng: 
+
+
+**Lưu đồ thuật toán của phương thức chính: Thông báo danh sách món ăn đã được đặt bởi khách hàng: 
 
 ![Algorithm flow chart](Luudothuattoan.png)
 
 Phân công công việc:
 
-Thành viên 	Nhiệm vụ
+Thành viên &	Nhiệm vụ:
 
-Trung:	    In danh sách món ăn đã đặt của khách hàng.
+-Trung:	    In danh sách món ăn đã đặt của khách hàng.
 
-Dũng:	    Kiểm tra món ăn đã được thanh toán hay chưa
+-Dũng:	    Kiểm tra món ăn đã được thanh toán hay chưa.
 
-Thành:	    Hiển thị tên khách hàng đặt món.
+-Thành:	    Hiển thị tên khách hàng đặt món.
 
 
