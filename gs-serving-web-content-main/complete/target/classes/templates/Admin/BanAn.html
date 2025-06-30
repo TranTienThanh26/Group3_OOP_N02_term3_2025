@@ -56,7 +56,6 @@
             opacity: 0.9;
         }
 
-        /* Style nút theo loại */
         .btn-add {
             background-color: #2ecc71;
             color: white;
@@ -122,7 +121,7 @@
 
 <div class="center">
     <input type="text" id="tenBanMoi" placeholder="Tên bàn mới">
-    <input type="text" id="trangThaiMoi" placeholder="Trạng thái (Trống/Đã đặt)">
+    <input type="text" id="trangThaiMoi" placeholder="Trạng thái (Trống/Đã đặt/Đang phục vụ/Đang dọn dẹp)">
     <button class="btn-add" onclick="themBan()">➕ Thêm bàn</button>
 </div>
 
@@ -194,7 +193,7 @@
 
     function suaBan(maBan, oldTenBan, oldTrangThai) {
         const tenBan = prompt("Sửa tên bàn:", oldTenBan);
-        const trangThai = prompt("Sửa trạng thái:", oldTrangThai);
+        const trangThai = prompt("Sửa trạng thái (Trống/Đã đặt/Đang phục vụ/Đang dọn dẹp):", oldTrangThai);
 
         if (tenBan && trangThai) {
             fetch("/ban/api/sua", {
