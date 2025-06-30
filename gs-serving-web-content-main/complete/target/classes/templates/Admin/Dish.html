@@ -6,6 +6,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
   <style>
+    html { scroll-behavior: smooth; }
     body { font-family: 'Inter', sans-serif; }
     .card:hover { transform: translateY(-4px) scale(1.01); }
     .card { transition: all 0.3s ease-in-out; cursor: pointer; }
@@ -29,11 +30,10 @@
 <!-- TÌM KIẾM MÓN ĂN -->
 <div class="max-w-6xl mx-auto px-4 mt-6">
   <form th:action="@{/manage/menu}" method="get" class="flex flex-col md:flex-row items-start md:items-center gap-3">
-    <input type="text" name="keyword"
+    <input type="text" id="searchInput" name="keyword"
            placeholder="Tìm món ăn theo tên..."
            th:value="${keyword}"
-           class="w-full md:w-[300px] px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
-    />
+           class="w-full md:w-[300px] px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400" />
     <button type="submit"
             class="bg-blue-600 text-white font-semibold px-5 py-2 rounded-md shadow hover:bg-blue-700 transition-all duration-200">
       Tìm kiếm
@@ -41,7 +41,7 @@
   </form>
 </div>
 
-<!-- SCRIPT ẨN/HIỆN -->
+<!-- SCRIPT TOGGLE -->
 <script>
   function toggleOptions(id) {
     const panel = document.getElementById(id);
@@ -49,9 +49,9 @@
   }
 </script>
 
-<!-- TEMPLATE DANH MỤC (KHÔNG CÒN TIÊU ĐỀ) -->
+<!-- FRAGMENT DANH MỤC -->
 <section th:fragment="danhMuc(mons)" class="max-w-6xl mx-auto py-6 px-4">
-  <div class="grid md:grid-cols-2 gap-6">
+  <div id="foodList" class="grid md:grid-cols-2 gap-6">
     <div th:each="mon : ${mons}" class="bg-white rounded-xl shadow p-4">
       <div class="card flex items-center space-x-4" th:onclick="'toggleOptions(\'options-' + ${mon.maMonAn} + '\')'">
         <img th:src="@{/images/{img}(img=${mon.hinhAnh})}" alt="Ảnh món ăn" class="w-24 h-20 rounded object-cover">
@@ -109,7 +109,7 @@
   </div>
 </section>
 
-<!-- NÚT THÊM MÓN ĂN -->
+<!-- NÚT THÊM -->
 <div class="max-w-6xl mx-auto px-4 mt-8 text-right">
   <button onclick="document.getElementById('modal-add').classList.remove('hidden')"
           class="bg-green-600 text-white font-semibold px-5 py-2 rounded hover:bg-green-700">
@@ -117,7 +117,7 @@
   </button>
 </div>
 
-<!-- Modal thêm món ăn -->
+<!-- MODAL THÊM -->
 <div id="modal-add" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black bg-opacity-50">
   <div class="bg-white rounded-xl shadow-xl max-w-md w-full p-6">
     <h3 class="text-lg font-bold mb-4 text-green-600">Thêm món ăn mới</h3>
@@ -151,32 +151,23 @@
   </div>
 </div>
 
-<!-- HIỂN THỊ KẾT QUẢ TÌM KIẾM -->
-<div th:if="${isSearch}" class="max-w-6xl mx-auto px-4 mt-10">
-  <h2 class="text-2xl font-bold mb-6 text-red-600">KẾT QUẢ TÌM KIẾM</h2>
-
-  <section th:if="${#lists.size(monChinh) > 0}" th:replace="~{this :: danhMuc(${monChinh})}"></section>
-  <section th:if="${#lists.size(khaiVi) > 0}" th:replace="~{this :: danhMuc(${khaiVi})}"></section>
-  <section th:if="${#lists.size(trangMieng) > 0}" th:replace="~{this :: danhMuc(${trangMieng})}"></section>
-  <section th:if="${#lists.size(doUong) > 0}" th:replace="~{this :: danhMuc(${doUong})}"></section>
-
-  <p th:if="${#lists.isEmpty(monChinh) and #lists.isEmpty(khaiVi) and #lists.isEmpty(trangMieng) and #lists.isEmpty(doUong)}"
-     class="text-gray-500 text-lg mt-4">Không tìm thấy món ăn phù hợp.</p>
-</div>
-
-<!-- HIỂN THỊ TẤT CẢ KHI KHÔNG TÌM KIẾM -->
+<!-- HIỂN THỊ DANH MỤC -->
 <div th:if="${!isSearch}">
+  <div id="monchinh" class="pt-20 -mt-20"></div>
   <h2 class="text-2xl font-bold mb-6 text-red-600 px-4">MÓN CHÍNH</h2>
-  <section id="monchinh" th:replace="~{this :: danhMuc(${monChinh})}"></section>
+  <section th:replace="~{this :: danhMuc(${monChinh})}"></section>
 
+  <div id="khaivi" class="pt-20 -mt-20"></div>
   <h2 class="text-2xl font-bold mb-6 text-red-600 px-4">KHAI VỊ</h2>
-  <section id="khaivi" th:replace="~{this :: danhMuc(${khaiVi})}"></section>
+  <section th:replace="~{this :: danhMuc(${khaiVi})}"></section>
 
+  <div id="trangmieng" class="pt-20 -mt-20"></div>
   <h2 class="text-2xl font-bold mb-6 text-red-600 px-4">TRÁNG MIỆNG</h2>
-  <section id="trangmieng" th:replace="~{this :: danhMuc(${trangMieng})}"></section>
+  <section th:replace="~{this :: danhMuc(${trangMieng})}"></section>
 
+  <div id="douong" class="pt-20 -mt-20"></div>
   <h2 class="text-2xl font-bold mb-6 text-red-600 px-4">ĐỒ UỐNG</h2>
-  <section id="douong" th:replace="~{this :: danhMuc(${doUong})}"></section>
+  <section th:replace="~{this :: danhMuc(${doUong})}"></section>
 </div>
 
 <!-- SCRIPT mở modal -->
@@ -194,5 +185,23 @@
   });
 </script>
 
+<!-- SCRIPT lọc theo tên -->
+<script>
+  document.getElementById("searchInput").addEventListener("input", function () {
+    const keyword = this.value.trim().toLowerCase();
+    const cards = document.querySelectorAll("#foodList .card");
+
+    cards.forEach(card => {
+      const name = card.querySelector("h3")?.textContent.toLowerCase() || "";
+      const parent = card.closest("div");
+      if (name.startsWith(keyword)) {
+        parent.style.display = "block";
+      } else {
+        parent.style.display = "none";
+      }
+    });
+  });
+</script>
+
 </body>
-</html>  
+</html>

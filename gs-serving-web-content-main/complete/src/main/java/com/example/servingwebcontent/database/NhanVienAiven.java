@@ -105,34 +105,36 @@ public class NhanVienAiven {
         }
     }
 
-    // ✅ Tìm kiếm nhân viên theo tên
     public List<NhanVien> timKiemNhanVien(String keyword) {
-        List<NhanVien> list = new ArrayList<>();
-        String query = "SELECT Id_NV, TenNV, NgayVL, Sdt, ChucVu, Id_NQL, TinhTrang FROM NhanVien WHERE TenNV LIKE ?";
+    List<NhanVien> list = new ArrayList<>();
+    String query = "SELECT Id_NV, TenNV, NgayVL, Sdt, ChucVu, Id_NQL, TinhTrang FROM NhanVien " +
+                   "WHERE CAST(Id_NV AS CHAR) LIKE ? OR TenNV LIKE ?";
 
-        try (
-            Connection conn = getConn();
-            PreparedStatement stmt = conn.prepareStatement(query)
-        ) {
-            stmt.setString(1, "%" + keyword + "%");
-            ResultSet rs = stmt.executeQuery();
+    try (
+        Connection conn = getConn();
+        PreparedStatement stmt = conn.prepareStatement(query)
+    ) {
+        String pattern = "%" + keyword + "%";
+        stmt.setString(1, pattern);
+        stmt.setString(2, pattern);
+        ResultSet rs = stmt.executeQuery();
 
-            while (rs.next()) {
-                NhanVien nv = new NhanVien();
-                nv.setId_NhanVien(rs.getInt("Id_NV"));
-                nv.setHoTen(rs.getString("TenNV"));
-                nv.setNgayVL(rs.getDate("NgayVL").toString());
-                nv.setSdt(rs.getString("Sdt"));
-                nv.setChucvu(rs.getString("ChucVu"));
-                nv.setId_NQL(rs.getInt("Id_NQL"));
-                nv.setTinhTrang(rs.getString("TinhTrang"));
-                list.add(nv);
-            }
-        } catch (SQLException e) {
-            System.err.println("❌ Lỗi khi tìm kiếm NhanVien:");
-            e.printStackTrace();
+        while (rs.next()) {
+            NhanVien nv = new NhanVien();
+            nv.setId_NhanVien(rs.getInt("Id_NV"));
+            nv.setHoTen(rs.getString("TenNV"));
+            nv.setNgayVL(rs.getDate("NgayVL").toString());
+            nv.setSdt(rs.getString("Sdt"));
+            nv.setChucvu(rs.getString("ChucVu"));
+            nv.setId_NQL(rs.getInt("Id_NQL"));
+            nv.setTinhTrang(rs.getString("TinhTrang"));
+            list.add(nv);
         }
-
-        return list;
+    } catch (SQLException e) {
+        System.err.println("❌ Lỗi khi tìm kiếm NhanVien:");
+        e.printStackTrace();
     }
+
+    return list;
+}
 }

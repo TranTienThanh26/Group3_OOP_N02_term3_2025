@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Quản lý Nhân Viên</title>
     <style>
+        /* Giao diện tổng thể */
         body {
             margin: 0;
             padding: 0;
@@ -130,10 +131,44 @@
             margin-bottom: 10px;
             font-size: 20px;
         }
+
+        /* Modal sửa nhân viên */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+
+        .modal-content {
+            background-color: #fff;
+            margin: 10% auto;
+            padding: 20px;
+            border-radius: 12px;
+            width: 80%;
+            max-width: 500px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+            position: relative;
+        }
+
+        .close {
+            position: absolute;
+            right: 16px;
+            top: 8px;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+        }
     </style>
 
     <script>
         function fillEdit(button) {
+            // Gán dữ liệu
             document.getElementById("id_NhanVien").value = button.getAttribute("data-id");
             document.getElementById("tenNV").value = button.getAttribute("data-ten");
             document.getElementById("ngayVL").value = button.getAttribute("data-ngayvl");
@@ -141,6 +176,21 @@
             document.getElementById("chucvu").value = button.getAttribute("data-chucvu");
             document.getElementById("id_NQL").value = button.getAttribute("data-idnql");
             document.getElementById("tinhTrang").value = button.getAttribute("data-tinhtrang");
+
+            // Hiển thị modal
+            document.getElementById("editModal").style.display = "block";
+        }
+
+        function closeModal() {
+            document.getElementById("editModal").style.display = "none";
+        }
+
+        // Ẩn modal nếu click ra ngoài
+        window.onclick = function(event) {
+            const modal = document.getElementById("editModal");
+            if (event.target === modal) {
+                modal.style.display = "none";
+            }
         }
     </script>
 </head>
@@ -167,7 +217,7 @@
         <button type="submit">➕ Thêm</button>
     </form>
 
-    <!-- 📋 Danh sách nhân viên -->
+    <!-- 📋 Danh sách Nhân Viên -->
     <h2>Danh sách Nhân Viên</h2>
     <table>
         <thead>
@@ -203,13 +253,30 @@
                                  data-tinhtrang=${nv.tinhTrang}">
                     ✏️ Sửa
                 </button>
-                <a th:href="@{/nhanvien/xoa/{id}(id=${nv.id_NhanVien})}">🗑️ Xoá</a>
+                <a th:href="@{/nhanvien/xoa/{id}(id=${nv.id_NhanVien})}"
+                   onclick="return confirm('Bạn có chắc muốn xoá nhân viên này?')">🗑️ Xoá</a>
             </td>
         </tr>
         </tbody>
     </table>
+</div>
 
-
+<!-- ✅ Modal sửa nhân viên -->
+<div id="editModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <h2>Sửa Nhân Viên</h2>
+        <form th:action="@{/nhanvien/sua}" method="post" th:object="${nvMoi}">
+            <input type="hidden" id="id_NhanVien" th:field="*{id_NhanVien}">
+            <input type="text" id="tenNV" th:field="*{hoTen}" placeholder="Tên nhân viên" required>
+            <input type="date" id="ngayVL" th:field="*{ngayVL}" required>
+            <input type="text" id="sdt" th:field="*{sdt}" placeholder="Số điện thoại" required>
+            <input type="text" id="chucvu" th:field="*{chucvu}" placeholder="Chức vụ">
+            <input type="number" id="id_NQL" th:field="*{id_NQL}" placeholder="ID NQL">
+            <input type="text" id="tinhTrang" th:field="*{tinhTrang}" placeholder="Tình trạng">
+            <button type="submit">✅ Cập nhật</button>
+        </form>
+    </div>
 </div>
 </body>
 </html>

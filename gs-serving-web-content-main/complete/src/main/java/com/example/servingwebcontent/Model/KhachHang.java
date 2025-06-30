@@ -1,21 +1,19 @@
 package com.example.servingwebcontent.Model;
 
 public class KhachHang extends NguoiDung {
-    private String ten;           // Tên khách hàng (tương ứng với cột Ten trong bảng KhachHang)
-    private String ngayThamGia;  // Ngày khách hàng tham gia
-    private int doanhSo;         // Tổng doanh số đã mua
-    private int diem;            // Điểm tích lũy
+    private String ten;           // ⚠️ Giữ nguyên tên biến là 'ten'
+    private String ngayThamGia;
+    private int doanhSo;
+    private int diem;
 
-    // ✅ Constructor mặc định
     public KhachHang() {
-        super(); // Gọi constructor mặc định của lớp cha NguoiDung
+        super();
         this.setRole("khachhang");
     }
 
-    // ✅ Constructor đầy đủ có kiểm tra dữ liệu
     public KhachHang(int userID, String ten, String email, String password,
                      String ngayThamGia, int doanhSo, int diem) {
-        super(); // gọi trước để tránh lỗi constructor chain
+        super();
 
         try {
             if (userID <= 0) throw new IllegalArgumentException("User ID phải lớn hơn 0.");
@@ -30,7 +28,6 @@ public class KhachHang extends NguoiDung {
             if (doanhSo < 0) throw new IllegalArgumentException("Doanh số không được âm.");
             if (diem < 0) throw new IllegalArgumentException("Điểm không được âm.");
 
-            // Gán giá trị nếu hợp lệ
             this.setUserID(userID);
             this.setEmail(email);
             this.setPassword(password);
@@ -48,7 +45,6 @@ public class KhachHang extends NguoiDung {
         }
     }
 
-    // ✅ Getter/Setter cho tên
     public String getTen() {
         return ten;
     }
@@ -57,7 +53,6 @@ public class KhachHang extends NguoiDung {
         this.ten = ten;
     }
 
-    // ✅ Các getter/setter còn lại
     public String getNgayThamGia() {
         return ngayThamGia;
     }
@@ -80,5 +75,37 @@ public class KhachHang extends NguoiDung {
 
     public void setDiem(int diem) {
         this.diem = diem;
+    }
+
+    public int getUserID() {
+        return super.getUserID();
+    }
+
+    public void setUserID(int userID) {
+        super.setUserID(userID);
+    }
+
+    public String getEmail() {
+        return super.getEmail();
+    }
+
+    public void setEmail(String email) {
+        super.setEmail(email);
+    }
+
+    public String getPassword() {
+        return super.getPassword();
+    }
+
+    public void setPassword(String password) {
+        super.setPassword(password);
+    }
+
+    public String getRole() {
+        return super.getRole();
+    }
+
+    public void setRole(String role) {
+        super.setRole(role);
     }
 }

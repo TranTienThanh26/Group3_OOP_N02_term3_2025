@@ -80,7 +80,7 @@ public class KhachHangAiven {
             while (rs.next()) {
                 KhachHang kh = new KhachHang();
                 kh.setUserID(rs.getInt("UserID"));
-                kh.setHoTen(rs.getString("TenKH"));
+                kh.setTen(rs.getString("TenKH"));
                 kh.setEmail(rs.getString("Email"));
                 kh.setPassword(rs.getString("MatKhau"));
                 kh.setNgayThamGia(rs.getDate("NgayThamGia").toString());
@@ -96,7 +96,7 @@ public class KhachHangAiven {
     }
 
     public void themKhachHang(KhachHang kh) {
-        String queryNguoiDung = "INSERT INTO NguoiDung (UserID, Email, MatKhau, VaiTro) VALUES (?, ?, ?, 'khach')";
+       String queryNguoiDung = "INSERT INTO NguoiDung (UserID, Email, MatKhau, VaiTro) VALUES (?, ?, ?, 'Khach Hang')";
         String queryKhachHang = "INSERT INTO KhachHang (UserID, TenKH, NgayThamGia, Diem) VALUES (?, ?, ?, ?)";
 
         try (
@@ -110,7 +110,7 @@ public class KhachHangAiven {
             stmtNguoiDung.executeUpdate();
 
             stmtKhachHang.setInt(1, kh.getUserID());
-            stmtKhachHang.setString(2, kh.getHoTen());
+            stmtKhachHang.setString(2, kh.getTen());
             stmtKhachHang.setDate(3, Date.valueOf(kh.getNgayThamGia()));
             stmtKhachHang.setInt(4, kh.getDiem());
             int rows = stmtKhachHang.executeUpdate();
@@ -136,7 +136,7 @@ public class KhachHangAiven {
             stmtND.setInt(3, kh.getUserID());
             stmtND.executeUpdate();
 
-            stmtKH.setString(1, kh.getHoTen());
+            stmtKH.setString(1, kh.getTen());
             stmtKH.setDate(2, Date.valueOf(kh.getNgayThamGia()));
             stmtKH.setInt(3, kh.getDiem());
             stmtKH.setInt(4, kh.getUserID());
@@ -175,7 +175,7 @@ public class KhachHangAiven {
         List<KhachHang> list = new ArrayList<>();
         String query = "SELECT nd.UserID, nd.Email, nd.MatKhau, nd.VaiTro, kh.TenKH, kh.NgayThamGia, kh.Diem " +
                        "FROM KhachHang kh JOIN NguoiDung nd ON kh.UserID = nd.UserID " +
-                       "WHERE kh.TenKH LIKE ? OR nd.Email LIKE ?";
+                       "WHERE kh.TenKH LIKE ? OR nd.Email LIKE ? OR CAST(nd.UserID AS CHAR) LIKE ?";
 
         try (
             Connection conn = new myConnection().getConnection();
@@ -184,12 +184,13 @@ public class KhachHangAiven {
             String likeKeyword = "%" + keyword + "%";
             stmt.setString(1, likeKeyword);
             stmt.setString(2, likeKeyword);
+            stmt.setString(3, likeKeyword);
 
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
                 KhachHang kh = new KhachHang();
                 kh.setUserID(rs.getInt("UserID"));
-                kh.setHoTen(rs.getString("TenKH"));
+                kh.setTen(rs.getString("TenKH"));
                 kh.setEmail(rs.getString("Email"));
                 kh.setPassword(rs.getString("MatKhau"));
                 kh.setNgayThamGia(rs.getDate("NgayThamGia").toString());
@@ -220,7 +221,7 @@ public class KhachHangAiven {
             if (rs.next()) {
                 kh = new KhachHang();
                 kh.setUserID(rs.getInt("UserID"));
-                kh.setHoTen(rs.getString("TenKH"));
+                kh.setTen(rs.getString("TenKH"));
                 kh.setEmail(rs.getString("Email"));
                 kh.setPassword(rs.getString("MatKhau"));
                 kh.setNgayThamGia(rs.getDate("NgayThamGia").toString());
