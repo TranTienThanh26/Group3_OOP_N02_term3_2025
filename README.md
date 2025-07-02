@@ -162,28 +162,51 @@ Xây dựng hệ thống Quản lý Nhà Hàng một cách chuyên nghiệp, lin
 
   📁 Cấu trúc thư mục Project:
 
+## 📁 Cấu trúc thư mục dự án
+
 ```
 Project/
-├── .vscode/
-├── bin/
-├── src/
-│   ├── Main.java
-│   ├── Ban.java
-│   ├── CTHD.java
-│   ├── HoaDon.java
-│   ├── KhachHang.java
-│   ├── MonAn.java
-│   ├── NguoiDung.java
-│   └── NhanVien.java
-├── test/
-│   ├── TestBan.java
-│   ├── TestCTHD.java
-│   ├── TestHoaDon.java
-│   ├── TestKhachHang.java
-│   ├── TestMonAn.java
-│   ├── TestNguoiDung.java
-│   └── TestNhanVien.java
-├── README.md
+├── .vscode/                                      # Cấu hình cho VSCode
+├── bin/                                          # File biên dịch .class (tự tạo khi chạy)
+├── gs-serving-web-content-main/                 # Dự án Spring Boot
+│   ├── complete/
+│   ├── img/
+│   ├── initial/
+│   │   └── src/
+│   │       └── main/
+│   │           ├── java/com/example/servingwebcontent/
+│   │           │   ├── controller/               # Các lớp điều khiển (Controller)
+│   │           │   ├── database/                 # Truy vấn cơ sở dữ liệu (DAO/Service)
+│   │           │   ├── model/                    # Các lớp mô hình dữ liệu (Entity/Model)
+│   │           │   └── WebServingContentApplication.java  # Lớp Main chạy Spring Boot
+│   │           └── resources/
+│   │               ├── static/                   # Thư mục chứa file giao diện tĩnh (CSS, JS, ảnh)
+│   │               ├── templates/                # Giao diện sử dụng Thymeleaf
+│   │               └── application.properties    # File cấu hình ứng dụng Spring Boot
+│   └── test/java/com/example/servingwebcontent/
+│       └── WebServingContentApplicationTest.java  # Kiểm thử ứng dụng Spring Boot
+├── review/                                       # Mã nguồn được xây dựng thủ công (không dùng Spring)
+│   ├── src/                                      # Mã nguồn chính
+│   │   ├── Main.java                             # Lớp Main chạy ứng dụng
+│   │   ├── Ban.java                              # Lớp quản lý bàn
+│   │   ├── CTHD.java                             # Lớp chi tiết hóa đơn
+│   │   ├── CartItem.java                         # Lớp mục giỏ hàng (nếu có dùng trong UI)
+│   │   ├── HoaDon.java                           # Lớp hóa đơn
+│   │   ├── KhachHang.java                        # Lớp khách hàng
+│   │   ├── MonAn.java                            # Lớp món ăn
+│   │   ├── NguoiDung.java                        # Lớp người dùng (user)
+│   │   └── NhanVien.java                         # Lớp nhân viên
+│   ├── test/                                     # Thư mục chứa các lớp kiểm thử
+│   │   ├── TestBan.java                          # Kiểm thử lớp Ban
+│   │   ├── TestCTHD.java                         # Kiểm thử lớp CTHD
+│   │   ├── TestHoaDon.java                       # Kiểm thử lớp HoaDon
+│   │   ├── TestKhachHang.java                    # Kiểm thử lớp KhachHang
+│   │   ├── TestMonAn.java                        # Kiểm thử lớp MonAn
+│   │   ├── TestNguoiDung.java                    # Kiểm thử lớp NguoiDung
+│   │   └── TestNhanVien.java                     # Kiểm thử lớp NhanVien
+│   └── README.md                                 # Tài liệu mô tả dự án
+```
+
   
 ```
  
