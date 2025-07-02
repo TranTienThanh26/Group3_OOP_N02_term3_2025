@@ -19,10 +19,9 @@ Xây dựng hệ thống Quản lý Nhà Hàng một cách chuyên nghiệp, lin
 ----------------
 ### Chức năng chính cho khách hàng
 > * Đăng nhập
-> * Đăng ký tài khoản
 > * Đặt bàn và gọi món
-> * Đổi điểm tích lũy
-> * Quản lý thông tin cá nhân 
+> * Quản lý thông tin cá nhân
+> * Thanh toán hóa đơn
 > * Xem lịch sử hóa đơn
 
 ### Chức năng nhân viên (bao gồm cả nhân viên tiếp tân, nhân viên kho và quản trị viên)
@@ -50,7 +49,7 @@ Xây dựng hệ thống Quản lý Nhà Hàng một cách chuyên nghiệp, lin
 
 **Phương thức hoạt động liên quan đến người dùng:**
 
- • Đăng ký, đăng nhập bằng email  
+ • Đăng nhập bằng email và mật khẩu 
  • Phân quyền theo vai trò  
  • Kết nối với bảng KhachHang hoặc NhanVien để mở rộng thông tin  
  • Duy trì trạng thái tài khoản
@@ -69,8 +68,7 @@ Xây dựng hệ thống Quản lý Nhà Hàng một cách chuyên nghiệp, lin
 **Phương thức hoạt động liên quan đến khách hàng:**
 
  • Hiển thị thông tin khách hàng  
- • Tính tổng doanh số, điểm thưởng  
- • Đặt bàn, thanh toán hóa đơn
+ • Đặt bàn, đặt món, hiển thị hóa đơn(các món ăn đã đặt) và in ra hóa đơnđơn
 
 
 **III. Class Nhân Viên (NhanVien)**  
@@ -121,7 +119,7 @@ Xây dựng hệ thống Quản lý Nhà Hàng một cách chuyên nghiệp, lin
 **Phương thức hoạt động liên quan đến món ăn:**
 
  • Hiển thị danh sách món ăn  
- • Cập nhật trạng thái và số lượng  
+ • Cập nhật giá tiền và số lượng  
  • Quản lý thực đơn
 
 
@@ -139,7 +137,7 @@ Xây dựng hệ thống Quản lý Nhà Hàng một cách chuyên nghiệp, lin
 **Phương thức hoạt động liên quan đến hóa đơn:**
 
  • Tạo hóa đơn mới  
- • Gắn hóa đơn với khách hàng và bàn  
+ • Gắn hóa đơn với khách hàng, món ăn và bàn  
  • Cập nhật trạng thái hóa đơn  
  • Tính tổng tiền
 
@@ -193,13 +191,13 @@ Project/
  **Để kiểm tra tính đúng đắn và độ ổn định của hệ thống quản lý nhà hàng, chúng tôi thực hiện kiểm thử cho các chức năng chính của từng lớp như sau:
 
 1. Lớp NguoiDung, KhachHang, NhanVien:
-Kiểm thử các chức năng như đăng ký, đăng nhập, hiển thị thông tin người dùng, phân quyền theo vai trò, và cập nhật trạng thái tài khoản.
+Kiểm thử các chức năng như đăng nhập, hiển thị thông tin người dùng, phân quyền theo vai trò, và cập nhật trạng thái tài khoản.
 
 2. Lớp Ban:
 Kiểm tra việc tạo mới, hiển thị danh sách bàn ăn, cập nhật trạng thái bàn theo thời gian thực và phân bổ bàn vào hóa đơn.
 
 3. Lớp MonAn:
-Kiểm thử các thao tác như thêm món ăn, hiển thị danh sách món, cập nhật thông tin và trạng thái món ăn, đồng thời xử lý các tình huống như hết hàng.
+Kiểm thử các thao tác như thêm món ăn, hiển thị danh sách món, cập nhật thông tin và số lượng món ăn.
 
 4. Lớp HoaDon:
 Thực hiện kiểm thử tạo hóa đơn mới, hiển thị thông tin hóa đơn, tính tổng tiền, cập nhật trạng thái và đảm bảo kết nối đúng với các bảng liên quan như bàn và khách hàng.
@@ -226,6 +224,7 @@ Xây dựng ứng dụng **quản lý nhà hàng** chuyên nghiệp, hỗ trợ 
   - Món ăn
   - Hóa đơn
   - Chi tiết hóa đơn
+  - Cartiten
 - Dữ liệu được lưu trữ bằng **file nhị phân**.
 - Sử dụng các **Collection** như `ArrayList`, `HashMap`, `LinkedList`,... để xử lý dữ liệu trong bộ nhớ.
 - Tạo đầy đủ các **class** để xử lý và lưu trữ dữ liệu vào file.
@@ -234,8 +233,7 @@ Xây dựng ứng dụng **quản lý nhà hàng** chuyên nghiệp, hỗ trợ 
 
 ## 🔹 Chức năng quản lý người dùng (NguoiDung):
 
-- Thêm, sửa, xóa người dùng.
-- Phân quyền người dùng theo vai trò: Khách hàng, Nhân viên, Quản lý, Admin.
+- Phân quyền người dùng theo vai trò: Khách hàng, Nhân viên.
 - Liên kết người dùng với bảng Khách hàng hoặc Nhân viên.
 - Kiểm soát trạng thái tài khoản (hoạt động / không hoạt động).
 
@@ -244,8 +242,8 @@ Xây dựng ứng dụng **quản lý nhà hàng** chuyên nghiệp, hỗ trợ 
 ## 🔹 Chức năng quản lý khách hàng (KhachHang):
 
 - Thêm, sửa, xóa khách hàng.
+- Tìm kiếm Khách hàng.
 - Hiển thị thông tin khách hàng (họ tên, doanh số, điểm).
-- Tính điểm tích lũy và tổng chi tiêu.
 - Gắn khách hàng với hóa đơn.
 
 ---
@@ -254,6 +252,7 @@ Xây dựng ứng dụng **quản lý nhà hàng** chuyên nghiệp, hỗ trợ 
 
 - Thêm, sửa, xóa nhân viên.
 - Quản lý thông tin nhân viên (chức vụ, tình trạng, người quản lý).
+- Tìm kiếm Nhân viên.
 - Phân công công việc theo chức năng.
 - Gắn tài khoản `NguoiDung` cho từng nhân viên.
 
@@ -264,12 +263,15 @@ Xây dựng ứng dụng **quản lý nhà hàng** chuyên nghiệp, hỗ trợ 
 - Hiển thị danh sách bàn ăn.
 - Cập nhật trạng thái bàn (Trống, Đã đặt, Đang phục vụ, Đang dọn dẹp).
 - Gắn bàn với hóa đơn theo thời gian thực.
+- Thêm, sửa và xóa Bàn ăn.
+- Tìm kiếm Bàn ăn.
 
 ---
 
 ## 🔹 Chức năng quản lý món ăn (MonAn):
 
 - Thêm, sửa, xóa món ăn.
+- Tìm kiếm Món Ăn.
 - Hiển thị chi tiết thông tin món ăn (giá, loại, trạng thái, ảnh).
 - Cập nhật số lượng đã bán và trạng thái kinh doanh.
 
